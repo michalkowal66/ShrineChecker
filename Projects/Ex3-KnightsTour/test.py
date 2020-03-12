@@ -1,13 +1,14 @@
-x = 1
+def test():
 
-def run(x):
-    while x != 3:
-        for i in range(8):
-            print(i)
-            if i == 6:
-                x += 1
-                break
-        if x == 3:
-            print(x)
+    for i in range(8):
+        if i == :
+            return True
 
-run(x)
+    return False
+
+if not test():
+    print("False")
+else:
+    print("Done")
+
+    
