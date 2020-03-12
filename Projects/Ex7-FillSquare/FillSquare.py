@@ -28,7 +28,7 @@ def fillSquare(move, table, curr_x, curr_y, move_x, move_y):
     if move == 16:
         return True
 
-    for u in range(4):
+    for i in range(4):
         new_x = curr_x + move_x[i]
         new_y = curr_y + move_y[i]
         if checkMove(new_x, new_y, table):
