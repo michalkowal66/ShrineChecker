@@ -7,9 +7,9 @@ def findWay():
     move_x = [1, 0, -1, 0]
     move_y = [0, -1, 0, 1]
 
-    maze = [ [1, 0, 0, 0], 
-             [1, 1, 0, 1], 
-             [1, 1, 1, 1], 
+    maze = [ [1, 1, 0, 0], 
+             [0, 1, 0, 1], 
+             [0, 1, 1, 1], 
              [1, 1, 0, 3] ] 
     print("Initial maze:",maze)
 
@@ -17,7 +17,6 @@ def findWay():
         print("Solved maze:",maze)
     else:
         print("Error")
-
 
 def checkMove(check_x, check_y, maze):
     if check_x == 3 and check_y == 3:
@@ -45,3 +44,4 @@ def solveMaze(move, maze, curr_x, curr_y, move_x, move_y):
     return False
 
 findWay()
+

@@ -84,8 +84,7 @@ def logged(id):
         return
     elif loggeddec == "2":
         if deluser(id):
-            return
-            
+            return  
 
 def blocked(id):
     now = time.time()
