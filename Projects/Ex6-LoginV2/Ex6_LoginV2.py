@@ -133,5 +133,3 @@ json.dump(data, open("data.txt",'w'))
 json.dump(tries, open("tries.txt",'w'))
 json.dump(block, open("block.txt",'w'))
 json.dump(tstamps, open("tstamps.txt", 'w'))
-
-print("test")
