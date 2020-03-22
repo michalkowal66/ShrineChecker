@@ -7,10 +7,10 @@ def findWay():
     move_x = [1, 0, -1, 0]
     move_y = [0, -1, 0, 1]
 
-    maze = [ [1, 1, 0, 0], 
-             [0, 1, 0, 1], 
-             [0, 1, 1, 1], 
-             [1, 1, 0, 3] ] 
+    maze = [ [1, 0, 0, 0], 
+             [1, 0, 1, 1], 
+             [1, 0, 0, 1], 
+             [1, 1, 1, 3] ] 
     print("Initial maze:",maze)
 
     if solveMaze(move, maze, init_x, init_y, move_x, move_y):
