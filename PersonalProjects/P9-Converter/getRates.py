@@ -38,8 +38,9 @@ for container in table.find_all('tr'):
     rate = (buy + sell)/2
     dataBase[currencies] = rate
 
-print(dataBase)
-
+if __name__ == "__main__":
+    print(dataBase)
+    
 
 
 
