@@ -1,19 +1,19 @@
 class Person():
+    lista = []
     def __init__(self, fname, lname, age):
         self.fname = fname
         self.lname = lname
         self.age = age
-        self.list = []
+        Person.lista.append([self.fname, self.lname, self.age])
 
-    def addPerson(person):
-        self.list.append(person)
+    @classmethod
+    def print_list(cls):
+        return cls.lista
 
 class Student(Person):
-    def __init__(self, fname, lname, age, year, grades):
+    def __init__(self, fname, lname, age, year):
         super().__init__(fname, lname, age)
         self.year = year
-        self.courses_taken = courses_taken
-        self.grades = []
 
 class Teacher(Person):
     def __init__(self, fname, lname, age, salary):
@@ -21,8 +21,15 @@ class Teacher(Person):
         self.salary = salary
 
     def showSalary(self):
-        print("Teacher: %a being %c years old makes: %d $/per annum" % (self.fname, self.age, self.salary))
+        print("Teacher:", self.fname, self.lname, "being", self.age, "years old makes:", self.salary, "dollars per annum")
 
 
-ex1 = Teacher("Michael", "Scott", 32, 55000)
-print(ex1.age)
+if __name__ == "__main__":
+    ex1 = Teacher("Michael", "Scott", 32, 55_000)
+    ex1.showSalary()
+
+    ex2 = Student("Andrew", "Maurice", 19, 1)
+
+    ex3 = Person("Michał", "Kowal", 22)
+
+    print(Person.print_list())
