@@ -6,7 +6,9 @@ def drawReinf(min_cover, min_bar_dist, beam_height, beam_width, bar_fi, number_o
 
     dist = (b_eff - bars_n*fi)/(bars_n-1)
 
-    from_edge = cmin+ fi/2
+    print(F"Distances between bars: {round(dist + bar_fi, 2)}")
+
+    from_edge = cmin + fi/2
     positions = [(from_edge + (dist + fi)*_, height-from_edge) for _ in range(bars_n)]
 
     beam = plt.Rectangle((0,0), width, height, edgecolor = "black", facecolor = "gray")
@@ -25,9 +27,9 @@ def drawReinf(min_cover, min_bar_dist, beam_height, beam_width, bar_fi, number_o
 cmin = 6
 cp = 3
 height = 45
-width = 35
-fi = 2.8
-bars_n = 4
+width = 250
+fi = 1.6
+bars_n = 14
 
 b_eff = width - 2*cmin
 

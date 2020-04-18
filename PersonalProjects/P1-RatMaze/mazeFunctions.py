@@ -1,7 +1,11 @@
 import random
 import numpy as np
 
-def initMaze(start_pos, moves, maze, walls, path, crush_wall): #Initializes the maze creation process according to Prim's algorithm
+def initMaze(start_pos, moves, walls, path, crush_wall): #Initializes the maze creation process according to Prim's algorithm
+    size = int(input("Choose the size of a maze: "))    #Defining maze size
+    maze = np.full((size+size-1,size+size-1), "◼")    #Creating maze as np.array
+    print(F"Initial array:\n{maze}\n")
+    
     maze[start_pos] = "❑"  #We choose starting point we make a part of path
     path.append(start_pos)
     for move in moves:  #We check if it's possible to make any new move from the initial position, if yes we add it's position to wall list
@@ -101,17 +105,13 @@ def solveMaze(visited, maze, curr_pos, rat_moves):  #Main path finding utility
             
     return False #If it's not possible to find a way out of maze the function returns False
 
-size = int(input("Choose the size of a maze: "))    #Defining maze size
-maze = np.full((size,size), "◼")    #Creating maze as np.array
-print(F"Initial array:\n{maze}\n")
-
 rat_moves = [(1, 0), (0, -1), (-1, 0), (0, 1)]  #Rat's possible moves in the maze
 moves = [(2, 0), (0, -2), (-2, 0), (0, 2)]  #Moves (y,x) in the opposite direction than stated due to arrays indexing - (1,0) -> 1 down, 0 to side
 crush_wall = [(1, 0), (0, -1), (-1, 0), (0, 1)] #Returning moves that crush wall to create a passage
 
 start_pos = (0, 0)
-
 path = []
 walls = []
 
-initMaze(start_pos, moves, maze, walls, path, crush_wall)
+if __name__ == "__main__":
+    initMaze(start_pos, moves, walls, path, crush_wall)
