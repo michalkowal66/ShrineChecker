@@ -1,43 +1,48 @@
 import matplotlib.pyplot as plt
 
-def drawReinf(min_cover, min_bar_dist, beam_height, beam_width, bar_fi, number_of_bars, effective_width):
-    fig = plt.figure(frameon=False)
-    ax = fig.add_axes([0, 0, 1, 1])
+class DrawingUtil():
+    def __init__(self, min_cover, min_bar_dist, beam_height, beam_width, bar_fi, n_bars):
+        self.min_cover = min_cover
+        self.min_bar_dist = min_bar_dist
+        self.beam_height = beam_height
+        self.beam_width = beam_width
+        self.bar_fi = bar_fi
+        self.n_bars = n_bars
 
-    dist = (b_eff - bars_n*fi)/(bars_n-1)
+    def drawReinf(self):
+        b_eff = self.beam_width - 2*self.min_cover
 
-    print(F"Distances between bars: {round(dist + bar_fi, 2)}")
+        if b_eff < (self.bar_fi*self.n_bars + self.min_bar_dist*(self.n_bars-1)):
+            print("Impossible to fit bars into chosen cross-section!")
 
-    from_edge = cmin + fi/2
-    positions = [(from_edge + (dist + fi)*_, height-from_edge) for _ in range(bars_n)]
+        fig = plt.figure(frameon=False)
+        ax = fig.add_axes([0, 0, 1, 1])
 
-    beam = plt.Rectangle((0,0), width, height, edgecolor = "black", facecolor = "gray")
-    ax.add_patch(beam)
+        dist = (b_eff - self.n_bars*self.bar_fi)/(self.n_bars-1)
 
-    for _ in range(bars_n):
-        bar = plt.Circle(positions[_], fi/2, edgecolor = "black", facecolor = "red")
-        ax.add_patch(bar)
+        print(F"Distances between bars: {round(dist + self.bar_fi, 2)}")
 
-    ax.axis("off")
-    plt.axis("scaled")
+        from_edge = self.min_cover + self.bar_fi/2
+        positions = [(from_edge + (dist + self.bar_fi)*_, self.beam_height-from_edge) for _ in range(self.n_bars)]
 
-    plt.show()
+        beam = plt.Rectangle((0,0), self.beam_width, self.beam_height, edgecolor = "black", facecolor = "gray")
+        ax.add_patch(beam)
 
-#User defined values:
-cmin = 6
-cp = 3
-height = 45
-width = 250
-fi = 1.6
-bars_n = 14
+        for _ in range(self.n_bars):
+            bar = plt.Circle(positions[_], self.bar_fi/2, edgecolor = "black", facecolor = "red")
+            ax.add_patch(bar)
 
-b_eff = width - 2*cmin
+        ax.axis("off")
+        plt.axis("scaled")
 
-if b_eff < (fi*bars_n + cp*(bars_n-1)):
-    print("Impossible to fit bars into chosen cross-section!")
-else:
-    drawReinf(cmin, cp, height, width, fi, bars_n, b_eff)
+        plt.show()
 
+if __name__ == "__main__":
+    beams = []
+
+    beams.append(DrawingUtil(6, 3, 35, 70, 1.6, 8))
+
+    beams[0].drawReinf()
 
 
 

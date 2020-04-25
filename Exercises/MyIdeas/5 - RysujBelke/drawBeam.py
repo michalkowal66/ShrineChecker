@@ -15,6 +15,9 @@ class Ui(QtWidgets.QMainWindow):
         self.coverInput = self.findChild(QtWidgets.QLineEdit, "coverInput")
         self.bardistInput = self.findChild(QtWidgets.QLineEdit, "bardistInput")
         self.barsInput = self.findChild(QtWidgets.QLineEdit, "barsInput")
+        self.drawCanvas = self.findChild(QtWidgets.QFrame, "drawCanvas")
+        self.drawBtn = self.findChild(QtWidgets.QPushButton, "drawBtn")
+
 
 
 if __name__ == "__main__":
