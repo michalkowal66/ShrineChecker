@@ -2,19 +2,23 @@ from matplotlib import pyplot as plt
 import numpy as np
 import csv
 from collections import Counter
+import pandas as pd
 
 #Plotting bar plots using data from previous exercise
 #Note - it's possible to mix the plot types on a single plot - for example one set of data will be presented as bars and other as lines
 
 plt.style.use("fivethirtyeight")
 
-with open("data.csv") as csv_file:
-    csv_reader = csv.DictReader(csv_file)
+# with open("data.csv") as csv_file:
+#     csv_reader = csv.DictReader(csv_file)
+data = pd.read_csv('data.csv')
+ids = data['Responder_id']
+lang_responses = data["LanguagesWorkedWith"]
 
-    language_counter = Counter()    #We create a counter
+language_counter = Counter()    #We create a counter
 
-    for row in csv_reader:
-        language_counter.update(row["LanguagesWorkedWith"].split(";"))  #For each row of csv file we update the counter with a list of languages
+for response in lang_responses:
+        language_counter.update(response.split(";"))  #For each row of csv file we update the counter with a list of languages
                                                                         #We use split to change the form of data storing from one element lits
                                                                         #to n-long list of elements which were divided by ; symbol
 
