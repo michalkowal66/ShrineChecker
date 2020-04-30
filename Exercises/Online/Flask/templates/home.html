@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% if title %}
-    <title>Webpage Homepage - {{ title }}</title>
-    {% else %}
-    <title>Webpage Homepage</title>
-    {% endif %}
-</head>
-<body>
-    <h1>Home page</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block page_content %}
+<h1 class="display-3">You are on the main page of my website.</h1>
+{% endblock %}
