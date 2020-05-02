@@ -37,6 +37,10 @@ def home():
     # Form variable is defined as NameForm class instance
     if form.validate_on_submit():
     # Returns true after the form has been sent and accepted by all field validators
+        old_name = session.get('name')
+        if old_name is not None and old_name != form.name.data:
+            flash('Seems like you have a different name now!')
+
         session['name'] = form.name.data
         # Provided in the form user's name is now stored in the session
         # dictionary in key 'name'.
