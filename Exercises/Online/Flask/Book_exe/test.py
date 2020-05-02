@@ -1,4 +1,8 @@
-from webpage import app
-from flask import current_app
+class Test():
+    def name(self):
+        return 'Cześć'
+    ex = 'Pa'
 
-print(app.url_map)
+form = Test()
+
+print(form.name())

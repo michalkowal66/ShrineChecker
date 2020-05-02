@@ -1,6 +1,15 @@
 {% extends "bootstrap/base.html" %}
+<!-- Using module Flask-Bootstrap after initialization of the bootstrap we extend -->
+<!-- the base bootstrap template, using 'extend/endblock' in document i call -->
+<!-- for certain part of template and add in it new parts that will work as template -->
 
 {% block title %}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% endblock %}
 
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
@@ -18,11 +27,23 @@
             <ul class="nav navbar-nav">
                 <li><a href="/">Home</a></li>
                 <li><a href="/contact">Contact</a></li>
+                <li><a href="/time">Time</a></li>
             </ul>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.locale('locale') }}
+{% endblock %}
+<!-- Function super() is responsible for inheritance of the scripts -->
+<!-- declared in the bootstrap base template, additionally I add moment script -->
+<!-- If we want to keep something from the main template's block we must -->
+<!-- call super() to inherit the content of such block -->
+
 
 {% block content %}
 <div class="container">
