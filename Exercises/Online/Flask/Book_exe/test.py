@@ -1,8 +1,7 @@
-class Test():
-    def name(self):
-        return 'Cześć'
-    ex = 'Pa'
+# import os
+# basedir = os.path.abspath(os.path.dirname(__file__))
 
-form = Test()
-
-print(form.name())
+# print(os.path.dirname(__file__))
+# print(os.path.abspath(__file__))
+# print(os.path.abspath(os.path.dirname(__file__)))
+# print(os.path.join(basedir, 'data.sqlite'))

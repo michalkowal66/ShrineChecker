@@ -7,9 +7,20 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 # Yet validators and fields are imported directly from WTForms.
+import os
+from flask_sqlalchemy import SQLAlchemy
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 # We initialize the flask application, creating class instance
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+# URL address to the database according to chosen SQL type
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Provides better performance
+db = SQLAlchemy(app)
+# Object db is an SQLAlchemy class instance, it represents the database
+# provides access to Flask-SQLAlchemy functions
+
 bootstrap = Bootstrap(app)
 # We initialize the bootstrap module for bootstrap templates
 moment = Moment(app)
@@ -18,6 +29,28 @@ moment = Moment(app)
 app.config['SECRET_KEY'] = 'trudny do odgadnięcia ciąg znaków'
 # app.config is a dictionary containing configurational variables used either
 # by modules or the app itself. In our case we create it for WTForms
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    # We define the table name using __tablename__ variable
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    # Class variables are Model's attribute defined as db.Column class
+    # instances. First argument given to constructor is the column's
+    # type and model's attribute.
+    users = db.relationship('User', backref='role', lazy='dynamic')
+    # Creating relationship between tables 'one to many' type
+    def __repr__(self):
+        return '<Role %r>' % self.name
+    # Method may be used for debugging and testing
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    def __repr__(self):
+        return '<User %r>' % self.username
 
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
@@ -99,4 +132,4 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     app.run(debug=True)
-    # Setting debug= True enables live changes tracking
+    # Setting debug=True enables live changes tracking 
