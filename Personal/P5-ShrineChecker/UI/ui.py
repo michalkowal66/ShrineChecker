@@ -10,7 +10,6 @@ from datetime import datetime
 #To do list:
 #Make the animation showing that desired perk is available
 #Prepare the proper bg and css
-#Make a method for saving and loading data - DRY
 
 class SC_Ui(Ui_MainWindow):
     def __init__(self):
@@ -114,10 +113,7 @@ class SC_Ui(Ui_MainWindow):
         else:
             self.perks_list.addItem(perk)
             self.desired_perks.append(perk)
-            with io.open(f'{self.local_data}/{self.desired_perks_csv}', 'a', encoding='utf-8') as output:
-                    writer = csv.writer(output, lineterminator='\n')
-                    writer.writerow([perk])
-
+            self.data_loader("save", perk, self.desired_perks_csv)
         self.check_shrine()
     
     def remove_perk(self):
@@ -199,10 +195,15 @@ class SC_Ui(Ui_MainWindow):
 
     def data_loader(self, action, source, target):
         if action == 'save':
-            with io.open(f'{self.local_data}/{target}', 'w', encoding='utf-8') as output:
-                writer = csv.writer(output, lineterminator='\n')
-                for val in source:
-                    writer.writerow([val])
+            if type(source) == list:
+                with io.open(f'{self.local_data}/{target}', 'w', encoding='utf-8') as output:
+                    writer = csv.writer(output, lineterminator='\n')
+                    for val in source:
+                        writer.writerow([val])
+            elif type(source) == str:
+                with io.open(f'{self.local_data}/{target}', 'a', encoding='utf-8') as output:
+                    writer = csv.writer(output, lineterminator='\n')
+                    writer.writerow([source])
         elif action == 'load':
             target.clear()
             with open(f'{self.local_data}/{source}', newline='') as f:
