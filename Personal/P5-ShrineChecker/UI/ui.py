@@ -9,7 +9,7 @@ from datetime import datetime
 
 #To do list:
 #Make the animation showing that desired perk is available
-#Prepare the proper bg and css
+#Prepare the proper css
 
 class SC_Ui(Ui_MainWindow):
     def __init__(self):
@@ -25,8 +25,10 @@ class SC_Ui(Ui_MainWindow):
         
     def setupUi(self, MainWindow):
         super(SC_Ui, self).setupUi(MainWindow)
-        # elements = {'img1': self.img1, 'img2': self.img2, 'img3': self.img3, 'img4': self.img4, 
-        #             'perk1_lbl': self.perk1_lbl, 'perk2_lbl': self.perk2_lbl, 'perk3_lbl': self.perk3_lbl, 'perk4_lbl': self.perk4_lbl}
+        self.iterables = {'img1': self.img1, 'img2': self.img2, 'img3': self.img3,
+                        'img4': self.img4, 'perk1_lbl': self.perk1_lbl,
+                        'perk2_lbl': self.perk2_lbl, 'perk3_lbl': self.perk3_lbl,
+                        'perk4_lbl': self.perk4_lbl}
         self.load_local_data()
         self.load_content()
         self.load_shrine()
@@ -35,7 +37,7 @@ class SC_Ui(Ui_MainWindow):
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reload_btn.clicked.connect(self.dl_shrine)
 
-        self.bg.setPixmap(QtGui.QPixmap('bg.jpg'))
+        self.bg.setPixmap(QtGui.QPixmap('bg3.png'))
         self.bg.setScaledContents(True)
 
     def load_local_data(self):
@@ -48,7 +50,6 @@ class SC_Ui(Ui_MainWindow):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
             self.dl_perks()
             self.dl_shrine()
-
         else:     
             self.data_loader("load", self.desired_perks_csv, self.desired_perks)
             self.data_loader("load", self.perks_csv, self.perks)
@@ -57,7 +58,6 @@ class SC_Ui(Ui_MainWindow):
     def load_content(self):
         for perk in self.perks:
             self.perks_combo.addItem(perk)
-
         if len(self.desired_perks) > 0:
             for perk in self.desired_perks:
                 self.perks_list.addItem(perk)
@@ -65,34 +65,17 @@ class SC_Ui(Ui_MainWindow):
     def load_shrine(self):
         self.date_lbl.setText(self.current_shrine[0])
 
-        # for i in range(1,5):
-        #     d = elements[f'img{i}']
-        #     d.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[i]}.png'))
-        #     d.setScaledContents(True)
-        #     e = elements[f'perk{i}_lbl']
-        #     e.setText(self.current_shrine[i])
-
-        self.img1.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[1]}.png'))
-        self.img1.setScaledContents(True)
-        self.perk1_lbl.setText(self.current_shrine[1])
-
-        self.img2.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[2]}.png'))
-        self.img2.setScaledContents(True)
-        self.perk2_lbl.setText(self.current_shrine[2])
-
-        self.img3.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[3]}.png'))
-        self.img3.setScaledContents(True)
-        self.perk3_lbl.setText(self.current_shrine[3])
-
-        self.img4.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[4]}.png'))
-        self.img4.setScaledContents(True)
-        self.perk4_lbl.setText(self.current_shrine[4])
+        for _ in range(1,5):
+            d = self.iterables[f'img{_}']
+            d.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[_]}.png'))
+            d.setScaledContents(True)
+            e = self.iterables[f'perk{_}_lbl']
+            e.setText(self.current_shrine[_])
 
     def check_shrine(self):
-        self.perk1_lbl.setStyleSheet("color:white")
-        self.perk2_lbl.setStyleSheet("color:white")
-        self.perk3_lbl.setStyleSheet("color:white")
-        self.perk4_lbl.setStyleSheet("color:white")
+        for _ in range(1,5):
+            e = self.iterables[f'perk{_}_lbl']
+            e.setStyleSheet("color:white")
         for perk in self.desired_perks:
             if perk in self.current_shrine:
                 perk_index = self.current_shrine.index(perk)
