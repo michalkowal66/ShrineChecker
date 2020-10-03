@@ -8,7 +8,7 @@ import requests
 from datetime import datetime
 
 #To do list:
-#Make the animation showing that desired perk is available
+#Create sleep functionality and notifications
 #Prepare the proper css
 
 class SC_Ui(Ui_MainWindow):
@@ -28,7 +28,7 @@ class SC_Ui(Ui_MainWindow):
         self.iterables = {'img1': self.img1, 'img2': self.img2, 'img3': self.img3,
                         'img4': self.img4, 'perk1_lbl': self.perk1_lbl,
                         'perk2_lbl': self.perk2_lbl, 'perk3_lbl': self.perk3_lbl,
-                        'perk4_lbl': self.perk4_lbl}
+                        'perk4_lbl': self.perk4_lbl}        
         self.load_local_data()
         self.load_content()
         self.load_shrine()
@@ -43,7 +43,6 @@ class SC_Ui(Ui_MainWindow):
 
     def load_local_data(self):
         if not os.path.exists(self.local_dir):
-            #print('Seems like there is no local data to load, making new directory and downloading necessary data.')
             os.mkdir(self.local_dir)
             os.mkdir(self.local_data)
             os.mkdir(self.local_data + '\img')
@@ -76,19 +75,13 @@ class SC_Ui(Ui_MainWindow):
 
     def check_shrine(self):
         for _ in range(1,5):
-            e = self.iterables[f'perk{_}_lbl']
-            e.setStyleSheet('color:white')
+            label = self.iterables[f'perk{_}_lbl']
+            label.setStyleSheet('color:#6e6d6d;')
         for perk in self.desired_perks:
             if perk in self.current_shrine:
                 perk_index = self.current_shrine.index(perk)
-                if perk_index == 1:
-                    self.perk1_lbl.setStyleSheet('color:red')
-                elif perk_index == 2:
-                    self.perk2_lbl.setStyleSheet('color:red')
-                elif perk_index == 3:
-                    self.perk3_lbl.setStyleSheet('color:red')
-                elif perk_index == 4:
-                    self.perk4_lbl.setStyleSheet('color:red')
+                label = self.iterables[f'perk{perk_index}_lbl']
+                label.setStyleSheet('color:#cd0a0a; font:bold')
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
