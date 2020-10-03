@@ -21,13 +21,62 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QtCore.QSize(900, 600))
         MainWindow.setMaximumSize(QtCore.QSize(900, 600))
-        MainWindow.setStyleSheet("font: 14pt \"Sylfaen\";\n"
+        MainWindow.setStyleSheet("font: 12pt \"Sylfaen\";\n"
 "color: rgb(255, 255, 255);\n"
+"\n"
 "")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setStyleSheet("QPushButton {\n"
+"    background-color:#2F3538;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color:#404040;\n"
+"}\n"
+"\n"
+"QComboBox {\n"
+"    background-color:#2F3538;\n"
+"    selection-background-color:#2F3538;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color:#2F3538;\n"
+"    selection-background-color: #404040;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {    \n"
+"    background:#404040;\n"
+"}\n"
+"\n"
+"QPushButton#settings_btn{\n"
+"    qproperty-iconSize: 30px;\n"
+"}\n"
+"\n"
+"QLabel#perk1_lbl {\n"
+"    font: 14pt \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"QLabel#perk2_lbl {\n"
+"    font: 14pt \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"QLabel#perk3_lbl {\n"
+"    font: 14pt \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"QLabel#perk4_lbl {\n"
+"    font: 14pt \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"")
         self.centralwidget.setObjectName("centralwidget")
         self.perks_combo = QtWidgets.QComboBox(self.centralwidget)
         self.perks_combo.setGeometry(QtCore.QRect(25, 80, 280, 30))
+        self.perks_combo.setStyleSheet("")
         self.perks_combo.setObjectName("perks_combo")
         self.perks_list = QtWidgets.QListWidget(self.centralwidget)
         self.perks_list.setGeometry(QtCore.QRect(25, 120, 280, 390))
@@ -35,12 +84,13 @@ class Ui_MainWindow(object):
         self.perks_list.setObjectName("perks_list")
         self.lbl1 = QtWidgets.QLabel(self.centralwidget)
         self.lbl1.setGeometry(QtCore.QRect(25, 40, 250, 30))
-        self.lbl1.setStyleSheet("font: 16pt \"Sylfaen\";\n"
+        self.lbl1.setStyleSheet("font: 14pt \"Sylfaen\";\n"
 "background-color: rgba(0, 0, 0, 0);")
-        self.lbl1.setAlignment(QtCore.Qt.AlignCenter)
+        self.lbl1.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.lbl1.setObjectName("lbl1")
         self.add_btn = QtWidgets.QPushButton(self.centralwidget)
         self.add_btn.setGeometry(QtCore.QRect(25, 520, 120, 30))
+        self.add_btn.setStyleSheet("")
         self.add_btn.setObjectName("add_btn")
         self.remove_btn = QtWidgets.QPushButton(self.centralwidget)
         self.remove_btn.setGeometry(QtCore.QRect(185, 520, 120, 30))
@@ -108,7 +158,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk1_lbl.sizePolicy().hasHeightForWidth())
         self.perk1_lbl.setSizePolicy(sizePolicy)
-        self.perk1_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
+        self.perk1_lbl.setStyleSheet("")
         self.perk1_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk1_lbl.setObjectName("perk1_lbl")
         self.perk2_lbl = QtWidgets.QLabel(self.centralwidget)
@@ -118,7 +168,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk2_lbl.sizePolicy().hasHeightForWidth())
         self.perk2_lbl.setSizePolicy(sizePolicy)
-        self.perk2_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
+        self.perk2_lbl.setStyleSheet("")
         self.perk2_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk2_lbl.setObjectName("perk2_lbl")
         self.perk3_lbl = QtWidgets.QLabel(self.centralwidget)
@@ -128,7 +178,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk3_lbl.sizePolicy().hasHeightForWidth())
         self.perk3_lbl.setSizePolicy(sizePolicy)
-        self.perk3_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
+        self.perk3_lbl.setStyleSheet("")
         self.perk3_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk3_lbl.setObjectName("perk3_lbl")
         self.perk4_lbl = QtWidgets.QLabel(self.centralwidget)
@@ -138,7 +188,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk4_lbl.sizePolicy().hasHeightForWidth())
         self.perk4_lbl.setSizePolicy(sizePolicy)
-        self.perk4_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
+        self.perk4_lbl.setStyleSheet("")
         self.perk4_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk4_lbl.setObjectName("perk4_lbl")
         self.lbl1_2 = QtWidgets.QLabel(self.centralwidget)
@@ -149,6 +199,13 @@ class Ui_MainWindow(object):
         self.lbl1_2.setObjectName("lbl1_2")
         self.reload_btn = QtWidgets.QPushButton(self.centralwidget)
         self.reload_btn.setGeometry(QtCore.QRect(780, 530, 100, 30))
+        font = QtGui.QFont()
+        font.setFamily("Sylfaen")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.reload_btn.setFont(font)
         self.reload_btn.setObjectName("reload_btn")
         self.date_lbl = QtWidgets.QLabel(self.centralwidget)
         self.date_lbl.setGeometry(QtCore.QRect(760, 565, 140, 30))
@@ -164,9 +221,12 @@ class Ui_MainWindow(object):
         self.bg.setGeometry(QtCore.QRect(0, 0, 900, 600))
         self.bg.setStyleSheet("")
         self.bg.setText("")
+        self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
+        self.bg.setScaledContents(True)
         self.bg.setObjectName("bg")
         self.settings_btn = QtWidgets.QPushButton(self.centralwidget)
         self.settings_btn.setGeometry(QtCore.QRect(150, 520, 30, 30))
+        self.settings_btn.setStyleSheet("")
         self.settings_btn.setText("")
         self.settings_btn.setObjectName("settings_btn")
         self.bg.raise_()

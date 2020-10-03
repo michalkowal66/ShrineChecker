@@ -32,11 +32,61 @@
    <string>Shrine Checker</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">font: 14pt &quot;Sylfaen&quot;;
+   <string notr="true">font: 12pt &quot;Sylfaen&quot;;
 color: rgb(255, 255, 255);
+
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	background-color:#404040;
+}
+
+QComboBox {
+	background-color:#2F3538;
+	selection-background-color:#2F3538;
+}
+
+QComboBox QAbstractItemView {
+    background-color:#2F3538;
+	selection-background-color: #404040;
+}
+
+QScrollBar:vertical {    
+	background:#404040;
+}
+
+QPushButton#settings_btn{
+	qproperty-iconSize: 30px;
+}
+
+QLabel#perk1_lbl {
+	font: 14pt &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk2_lbl {
+	font: 14pt &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk3_lbl {
+	font: 14pt &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk4_lbl {
+	font: 14pt &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+</string>
+   </property>
    <widget class="QComboBox" name="perks_combo">
     <property name="geometry">
      <rect>
@@ -45,6 +95,9 @@ color: rgb(255, 255, 255);
       <width>280</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
    </widget>
    <widget class="QListWidget" name="perks_list">
@@ -70,14 +123,14 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 16pt &quot;Sylfaen&quot;;
+     <string notr="true">font: 14pt &quot;Sylfaen&quot;;
 background-color: rgba(0, 0, 0, 0);</string>
     </property>
     <property name="text">
      <string>Desired perks:</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="add_btn">
@@ -88,6 +141,9 @@ background-color: rgba(0, 0, 0, 0);</string>
       <width>120</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>Add</string>
@@ -282,7 +338,7 @@ background-color: rgba(0, 0, 0, 0);</string>
      </sizepolicy>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>TextLabel</string>
@@ -307,7 +363,7 @@ background-color: rgba(0, 0, 0, 0);</string>
      </sizepolicy>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>TextLabel</string>
@@ -332,7 +388,7 @@ background-color: rgba(0, 0, 0, 0);</string>
      </sizepolicy>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>TextLabel</string>
@@ -357,7 +413,7 @@ background-color: rgba(0, 0, 0, 0);</string>
      </sizepolicy>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>TextLabel</string>
@@ -394,6 +450,15 @@ background-color: rgba(0, 0, 0, 0);</string>
       <width>100</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Sylfaen</family>
+      <pointsize>12</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
     </property>
     <property name="text">
      <string>Reload</string>
@@ -439,6 +504,12 @@ background-color: rgba(0, 0, 0, 0);</string>
     <property name="text">
      <string/>
     </property>
+    <property name="pixmap">
+     <pixmap>../rsc/bg.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="settings_btn">
     <property name="geometry">
@@ -448,6 +519,9 @@ background-color: rgba(0, 0, 0, 0);</string>
       <width>30</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="text">
      <string/>
