@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'sc_ui.ui'
+# Form implementation generated from reading ui file 'sc_ui_base.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.2
 #
@@ -21,9 +21,9 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QtCore.QSize(900, 600))
         MainWindow.setMaximumSize(QtCore.QSize(900, 600))
-        MainWindow.setStyleSheet("font: 16pt \"Sylfaen\";\n"
+        MainWindow.setStyleSheet("font: 14pt \"Sylfaen\";\n"
 "color: rgb(255, 255, 255);\n"
-"background-color: rgba(0, 0, 0, 0);")
+"")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.perks_combo = QtWidgets.QComboBox(self.centralwidget)
@@ -31,10 +31,12 @@ class Ui_MainWindow(object):
         self.perks_combo.setObjectName("perks_combo")
         self.perks_list = QtWidgets.QListWidget(self.centralwidget)
         self.perks_list.setGeometry(QtCore.QRect(25, 120, 280, 390))
+        self.perks_list.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
         self.perks_list.setObjectName("perks_list")
         self.lbl1 = QtWidgets.QLabel(self.centralwidget)
         self.lbl1.setGeometry(QtCore.QRect(25, 40, 250, 30))
-        self.lbl1.setStyleSheet("font: 18pt \"Sylfaen\";")
+        self.lbl1.setStyleSheet("font: 16pt \"Sylfaen\";\n"
+"background-color: rgba(0, 0, 0, 0);")
         self.lbl1.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl1.setObjectName("lbl1")
         self.add_btn = QtWidgets.QPushButton(self.centralwidget)
@@ -106,6 +108,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk1_lbl.sizePolicy().hasHeightForWidth())
         self.perk1_lbl.setSizePolicy(sizePolicy)
+        self.perk1_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
         self.perk1_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk1_lbl.setObjectName("perk1_lbl")
         self.perk2_lbl = QtWidgets.QLabel(self.centralwidget)
@@ -115,6 +118,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk2_lbl.sizePolicy().hasHeightForWidth())
         self.perk2_lbl.setSizePolicy(sizePolicy)
+        self.perk2_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
         self.perk2_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk2_lbl.setObjectName("perk2_lbl")
         self.perk3_lbl = QtWidgets.QLabel(self.centralwidget)
@@ -124,6 +128,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk3_lbl.sizePolicy().hasHeightForWidth())
         self.perk3_lbl.setSizePolicy(sizePolicy)
+        self.perk3_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
         self.perk3_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk3_lbl.setObjectName("perk3_lbl")
         self.perk4_lbl = QtWidgets.QLabel(self.centralwidget)
@@ -133,11 +138,13 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.perk4_lbl.sizePolicy().hasHeightForWidth())
         self.perk4_lbl.setSizePolicy(sizePolicy)
+        self.perk4_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
         self.perk4_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk4_lbl.setObjectName("perk4_lbl")
         self.lbl1_2 = QtWidgets.QLabel(self.centralwidget)
         self.lbl1_2.setGeometry(QtCore.QRect(470, 10, 300, 35))
-        self.lbl1_2.setStyleSheet("font: 24pt \"Sylfaen\";")
+        self.lbl1_2.setStyleSheet("font: 24pt \"Sylfaen\";\n"
+"background-color: rgba(0, 0, 0, 0);")
         self.lbl1_2.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl1_2.setObjectName("lbl1_2")
         self.reload_btn = QtWidgets.QPushButton(self.centralwidget)
@@ -150,6 +157,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.date_lbl.sizePolicy().hasHeightForWidth())
         self.date_lbl.setSizePolicy(sizePolicy)
+        self.date_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
         self.date_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.date_lbl.setObjectName("date_lbl")
         self.bg = QtWidgets.QLabel(self.centralwidget)
@@ -157,6 +165,10 @@ class Ui_MainWindow(object):
         self.bg.setStyleSheet("")
         self.bg.setText("")
         self.bg.setObjectName("bg")
+        self.settings_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.settings_btn.setGeometry(QtCore.QRect(150, 520, 30, 30))
+        self.settings_btn.setText("")
+        self.settings_btn.setObjectName("settings_btn")
         self.bg.raise_()
         self.perks_combo.raise_()
         self.perks_list.raise_()
@@ -174,6 +186,7 @@ class Ui_MainWindow(object):
         self.lbl1_2.raise_()
         self.reload_btn.raise_()
         self.date_lbl.raise_()
+        self.settings_btn.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -184,7 +197,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Shrine Checker"))
         self.lbl1.setText(_translate("MainWindow", "Desired perks:"))
         self.add_btn.setText(_translate("MainWindow", "Add"))
         self.remove_btn.setText(_translate("MainWindow", "Remove"))

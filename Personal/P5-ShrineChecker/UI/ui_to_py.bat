@@ -1,1 +1,0 @@
-pyuic5.exe sc_ui.ui -o sc_ui.py -x

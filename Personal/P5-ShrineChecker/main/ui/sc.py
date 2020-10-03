@@ -36,13 +36,14 @@ class SC_Ui(Ui_MainWindow):
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reload_btn.clicked.connect(self.dl_shrine)
-
-        self.bg.setPixmap(QtGui.QPixmap('bg3.png'))
+        self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
         self.bg.setScaledContents(True)
+        setting_icon = QtGui.QIcon('main/rsc/settings.png')
+        self.settings_btn.setIcon(setting_icon)
 
     def load_local_data(self):
         if not os.path.exists(self.local_dir):
-            #print("Seems like there is no local data to load, making new directory and downloading necessary data.")
+            #print('Seems like there is no local data to load, making new directory and downloading necessary data.')
             os.mkdir(self.local_dir)
             os.mkdir(self.local_data)
             os.mkdir(self.local_data + '\img')
@@ -51,9 +52,11 @@ class SC_Ui(Ui_MainWindow):
             self.dl_perks()
             self.dl_shrine()
         else:     
-            self.data_loader("load", self.desired_perks_csv, self.desired_perks)
-            self.data_loader("load", self.perks_csv, self.perks)
-            self.data_loader("load", self.shrine_csv, self.current_shrine)
+            self.data_loader('load', self.desired_perks_csv, self.desired_perks)
+            self.data_loader('load', self.perks_csv, self.perks)
+            self.data_loader('load', self.shrine_csv, self.current_shrine)
+            if str(datetime.date(datetime.now())) != self.current_shrine[0]:
+                self.dl_shrine()
 
     def load_content(self):
         for perk in self.perks:
@@ -64,7 +67,6 @@ class SC_Ui(Ui_MainWindow):
         
     def load_shrine(self):
         self.date_lbl.setText(self.current_shrine[0])
-
         for _ in range(1,5):
             d = self.iterables[f'img{_}']
             d.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[_]}.png'))
@@ -75,18 +77,18 @@ class SC_Ui(Ui_MainWindow):
     def check_shrine(self):
         for _ in range(1,5):
             e = self.iterables[f'perk{_}_lbl']
-            e.setStyleSheet("color:white")
+            e.setStyleSheet('color:white')
         for perk in self.desired_perks:
             if perk in self.current_shrine:
                 perk_index = self.current_shrine.index(perk)
                 if perk_index == 1:
-                    self.perk1_lbl.setStyleSheet("color:red")
+                    self.perk1_lbl.setStyleSheet('color:red')
                 elif perk_index == 2:
-                    self.perk2_lbl.setStyleSheet("color:red")
+                    self.perk2_lbl.setStyleSheet('color:red')
                 elif perk_index == 3:
-                    self.perk3_lbl.setStyleSheet("color:red")
+                    self.perk3_lbl.setStyleSheet('color:red')
                 elif perk_index == 4:
-                    self.perk4_lbl.setStyleSheet("color:red")
+                    self.perk4_lbl.setStyleSheet('color:red')
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
@@ -96,7 +98,7 @@ class SC_Ui(Ui_MainWindow):
         else:
             self.perks_list.addItem(perk)
             self.desired_perks.append(perk)
-            self.data_loader("save", perk, self.desired_perks_csv)
+            self.data_loader('save', perk, self.desired_perks_csv)
         self.check_shrine()
     
     def remove_perk(self):
@@ -106,7 +108,7 @@ class SC_Ui(Ui_MainWindow):
             for perk in sel_perks:
                 self.perks_list.takeItem(self.perks_list.row(perk))
                 self.desired_perks.remove(sel_perk_txt)
-                self.data_loader("save", self.desired_perks, self.desired_perks_csv)
+                self.data_loader('save', self.desired_perks, self.desired_perks_csv)
             self.check_shrine()
         except:
             return
@@ -124,6 +126,8 @@ class SC_Ui(Ui_MainWindow):
             if raw_perk.startswith('Name'):
                 continue
             perk = raw_perk[:-1]
+            if perk == 'Déjà Vu':
+                    perk = 'Deja Vu'
             print(f'\nDownloading: {perk}')
             img_tag = cells[0].find('a')
             if img_tag is not None:
@@ -153,27 +157,25 @@ class SC_Ui(Ui_MainWindow):
                     f.write(img.content)
             self.perks.append(perk)
             print(f'{perk} downloaded!')
-
-        self.data_loader("save", self.perks, self.perks_csv)
+        self.data_loader('save', self.perks, self.perks_csv)
     
     def dl_shrine(self):
         self.current_shrine.clear()
-        curr_time = str(datetime.date(datetime.now()))
         shrine_url = 'https://deadbydaylight.gamepedia.com/Shrine_of_Secrets#Current_Shrine_of_Secrets'
         req_shrine = requests.get(shrine_url)
         soup_shrine = bs(req_shrine.content, 'lxml')    
         curr_shrine_table = soup_shrine.find('table',{'class':'wikitable'}).find('tbody').find_all('tr')
-
         for row in curr_shrine_table:
             cell = row.find('td')
             if cell is not None:
                 perk = cell.get_text()
-                if ':' in perk:
+                if perk == 'Déjà Vu':
+                    perk = 'Deja Vu'
+                elif ':' in perk:
                     perk = perk.replace(':', '')
                 self.current_shrine.append(perk[:-1])
-                print(f'{perk} downloaded!')
-        self.current_shrine.insert(0, curr_time)
-        self.data_loader("save", self.current_shrine, self.shrine_csv)
+        self.current_shrine.insert(0, str(datetime.date(datetime.now())))
+        self.data_loader('save', self.current_shrine, self.shrine_csv)
         self.load_shrine()
 
     def data_loader(self, action, source, target):
@@ -194,7 +196,7 @@ class SC_Ui(Ui_MainWindow):
                 for line in reader:
                     target.append(line[0])
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
