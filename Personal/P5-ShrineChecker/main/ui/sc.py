@@ -28,7 +28,9 @@ class SC_Ui(Ui_MainWindow):
         self.iterables = {'img1': self.img1, 'img2': self.img2, 'img3': self.img3,
                         'img4': self.img4, 'perk1_lbl': self.perk1_lbl,
                         'perk2_lbl': self.perk2_lbl, 'perk3_lbl': self.perk3_lbl,
-                        'perk4_lbl': self.perk4_lbl}        
+                        'perk4_lbl': self.perk4_lbl, 'frame1': self.frame1,
+                        'frame2': self.frame2, 'frame3': self.frame3,
+                        'frame4': self.frame4}        
         self.load_local_data()
         self.load_content()
         self.load_shrine()
@@ -63,6 +65,10 @@ class SC_Ui(Ui_MainWindow):
         if len(self.desired_perks) > 0:
             for perk in self.desired_perks:
                 self.perks_list.addItem(perk)
+        for _ in range(1,5):
+            frame = self.iterables[f'frame{_}']
+            frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
+            frame.setScaledContents(True)
         
     def load_shrine(self):
         self.date_lbl.setText(self.current_shrine[0])
@@ -77,11 +83,17 @@ class SC_Ui(Ui_MainWindow):
         for _ in range(1,5):
             label = self.iterables[f'perk{_}_lbl']
             label.setStyleSheet('color:#6e6d6d;')
+            img = self.iterables[f'img{_}']
+            img.setStyleSheet('border: none;')
+            frame = self.iterables[f'frame{_}']
+            frame.setHidden(True)
         for perk in self.desired_perks:
             if perk in self.current_shrine:
                 perk_index = self.current_shrine.index(perk)
                 label = self.iterables[f'perk{perk_index}_lbl']
-                label.setStyleSheet('color:#cd0a0a; font:bold')
+                label.setStyleSheet('color:white; font:bold')
+                frame = self.iterables[f'frame{perk_index}']
+                frame.setHidden(False)
 
     def add_perk(self):
         perk = self.perks_combo.currentText()

@@ -26,7 +26,8 @@ class Ui_MainWindow(object):
 "\n"
 "")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setStyleSheet("QPushButton {\n"
+        self.centralwidget.setStyleSheet("\n"
+"QPushButton {\n"
 "    background-color:#2F3538;\n"
 "}\n"
 "\n"
@@ -42,6 +43,7 @@ class Ui_MainWindow(object):
 "QComboBox QAbstractItemView {\n"
 "    background-color:#2F3538;\n"
 "    selection-background-color: #404040;\n"
+"    outline: 0;\n"
 "}\n"
 "\n"
 "QScrollBar:vertical {    \n"
@@ -72,6 +74,23 @@ class Ui_MainWindow(object):
 "    color: #6e6d6d;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
+"\n"
+"QListWidget{\n"
+"    color: white;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"    border: 1px solid rgba(255, 255, 255, 0.3);\n"
+"    outline: 0;\n"
+"}\n"
+"\n"
+"QListWidget::item:hover {\n"
+"    color: white;\n"
+"    background-color: rgba(47, 53, 56, 0.3);\n"
+"}\n"
+"\n"
+"QListWidget::item:selected {\n"
+"    color: white;\n"
+"    background-color: rgba(64, 64, 64, 0.3);\n"
+"}\n"
 "")
         self.centralwidget.setObjectName("centralwidget")
         self.perks_combo = QtWidgets.QComboBox(self.centralwidget)
@@ -80,7 +99,7 @@ class Ui_MainWindow(object):
         self.perks_combo.setObjectName("perks_combo")
         self.perks_list = QtWidgets.QListWidget(self.centralwidget)
         self.perks_list.setGeometry(QtCore.QRect(25, 120, 280, 390))
-        self.perks_list.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
+        self.perks_list.setStyleSheet("")
         self.perks_list.setObjectName("perks_list")
         self.lbl1 = QtWidgets.QLabel(self.centralwidget)
         self.lbl1.setGeometry(QtCore.QRect(25, 40, 250, 30))
@@ -105,6 +124,8 @@ class Ui_MainWindow(object):
         self.img1.setMinimumSize(QtCore.QSize(100, 100))
         self.img1.setMaximumSize(QtCore.QSize(100, 100))
         self.img1.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.img1.setToolTip("")
+        self.img1.setWhatsThis("")
         self.img1.setStyleSheet("")
         self.img1.setText("")
         self.img1.setAlignment(QtCore.Qt.AlignCenter)
@@ -229,6 +250,70 @@ class Ui_MainWindow(object):
         self.settings_btn.setStyleSheet("")
         self.settings_btn.setText("")
         self.settings_btn.setObjectName("settings_btn")
+        self.frame1 = QtWidgets.QLabel(self.centralwidget)
+        self.frame1.setGeometry(QtCore.QRect(545, 75, 150, 150))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame1.sizePolicy().hasHeightForWidth())
+        self.frame1.setSizePolicy(sizePolicy)
+        self.frame1.setMinimumSize(QtCore.QSize(150, 150))
+        self.frame1.setMaximumSize(QtCore.QSize(150, 150))
+        self.frame1.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.frame1.setToolTip("")
+        self.frame1.setWhatsThis("")
+        self.frame1.setStyleSheet("")
+        self.frame1.setText("")
+        self.frame1.setAlignment(QtCore.Qt.AlignCenter)
+        self.frame1.setObjectName("frame1")
+        self.frame2 = QtWidgets.QLabel(self.centralwidget)
+        self.frame2.setGeometry(QtCore.QRect(395, 225, 150, 150))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame2.sizePolicy().hasHeightForWidth())
+        self.frame2.setSizePolicy(sizePolicy)
+        self.frame2.setMinimumSize(QtCore.QSize(150, 150))
+        self.frame2.setMaximumSize(QtCore.QSize(150, 150))
+        self.frame2.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.frame2.setToolTip("")
+        self.frame2.setWhatsThis("")
+        self.frame2.setStyleSheet("")
+        self.frame2.setText("")
+        self.frame2.setAlignment(QtCore.Qt.AlignCenter)
+        self.frame2.setObjectName("frame2")
+        self.frame3 = QtWidgets.QLabel(self.centralwidget)
+        self.frame3.setGeometry(QtCore.QRect(695, 225, 150, 150))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame3.sizePolicy().hasHeightForWidth())
+        self.frame3.setSizePolicy(sizePolicy)
+        self.frame3.setMinimumSize(QtCore.QSize(150, 150))
+        self.frame3.setMaximumSize(QtCore.QSize(150, 150))
+        self.frame3.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.frame3.setToolTip("")
+        self.frame3.setWhatsThis("")
+        self.frame3.setStyleSheet("")
+        self.frame3.setText("")
+        self.frame3.setAlignment(QtCore.Qt.AlignCenter)
+        self.frame3.setObjectName("frame3")
+        self.frame4 = QtWidgets.QLabel(self.centralwidget)
+        self.frame4.setGeometry(QtCore.QRect(545, 375, 150, 150))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame4.sizePolicy().hasHeightForWidth())
+        self.frame4.setSizePolicy(sizePolicy)
+        self.frame4.setMinimumSize(QtCore.QSize(150, 150))
+        self.frame4.setMaximumSize(QtCore.QSize(150, 150))
+        self.frame4.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.frame4.setToolTip("")
+        self.frame4.setWhatsThis("")
+        self.frame4.setStyleSheet("")
+        self.frame4.setText("")
+        self.frame4.setAlignment(QtCore.Qt.AlignCenter)
+        self.frame4.setObjectName("frame4")
         self.bg.raise_()
         self.perks_combo.raise_()
         self.perks_list.raise_()
@@ -247,6 +332,10 @@ class Ui_MainWindow(object):
         self.reload_btn.raise_()
         self.date_lbl.raise_()
         self.settings_btn.raise_()
+        self.frame1.raise_()
+        self.frame2.raise_()
+        self.frame3.raise_()
+        self.frame4.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)

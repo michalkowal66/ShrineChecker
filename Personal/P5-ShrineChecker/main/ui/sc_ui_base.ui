@@ -39,7 +39,8 @@ color: rgb(255, 255, 255);
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">QPushButton {
+    <string notr="true">
+QPushButton {
 	background-color:#2F3538;
 }
 
@@ -55,6 +56,7 @@ QComboBox {
 QComboBox QAbstractItemView {
     background-color:#2F3538;
 	selection-background-color: #404040;
+	outline: 0;
 }
 
 QScrollBar:vertical {    
@@ -85,6 +87,23 @@ QLabel#perk4_lbl {
 	color: #6e6d6d;
 	background-color: rgba(0, 0, 0, 0);
 }
+
+QListWidget{
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	outline: 0;
+}
+
+QListWidget::item:hover {
+	color: white;
+    background-color: rgba(47, 53, 56, 0.3);
+}
+
+QListWidget::item:selected {
+	color: white;
+	background-color: rgba(64, 64, 64, 0.3);
+}
 </string>
    </property>
    <widget class="QComboBox" name="perks_combo">
@@ -110,7 +129,7 @@ QLabel#perk4_lbl {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+     <string notr="true"/>
     </property>
    </widget>
    <widget class="QLabel" name="lbl1">
@@ -191,6 +210,12 @@ background-color: rgba(0, 0, 0, 0);</string>
     </property>
     <property name="cursor">
      <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
     </property>
     <property name="styleSheet">
      <string notr="true"/>
@@ -527,6 +552,190 @@ background-color: rgba(0, 0, 0, 0);</string>
      <string/>
     </property>
    </widget>
+   <widget class="QLabel" name="frame1">
+    <property name="geometry">
+     <rect>
+      <x>545</x>
+      <y>75</y>
+      <width>150</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="frame2">
+    <property name="geometry">
+     <rect>
+      <x>395</x>
+      <y>225</y>
+      <width>150</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="frame3">
+    <property name="geometry">
+     <rect>
+      <x>695</x>
+      <y>225</y>
+      <width>150</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="frame4">
+    <property name="geometry">
+     <rect>
+      <x>545</x>
+      <y>375</y>
+      <width>150</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>150</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
    <zorder>bg</zorder>
    <zorder>perks_combo</zorder>
    <zorder>perks_list</zorder>
@@ -545,6 +754,10 @@ background-color: rgba(0, 0, 0, 0);</string>
    <zorder>reload_btn</zorder>
    <zorder>date_lbl</zorder>
    <zorder>settings_btn</zorder>
+   <zorder>frame1</zorder>
+   <zorder>frame2</zorder>
+   <zorder>frame3</zorder>
+   <zorder>frame4</zorder>
   </widget>
  </widget>
  <tabstops>
