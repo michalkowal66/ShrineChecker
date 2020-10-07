@@ -7,13 +7,15 @@ import requests
 from datetime import datetime
 from sc_ui import *
 from sc_settings import *
+from PyQt5.QtWidgets import QSystemTrayIcon, QMenu
+from PyQt5.QtGui import QIcon
 
 #To do list:
-#Make settings dialog box
 #Create sleep functionality and notifications
 #Prepare the proper css
 
 class SC_Ui(Ui_MainWindow):
+    tray_icon = None
     def __init__(self, parent=None):
         Ui_MainWindow.__init__(self)
         self.current_shrine = []
@@ -46,11 +48,11 @@ class SC_Ui(Ui_MainWindow):
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reload_btn.clicked.connect(self.dl_shrine)
+        self.settings_btn.clicked.connect(self.open_settings)
         self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
         self.bg.setScaledContents(True)
         self.settings_btn.setIcon(QtGui.QIcon('main/rsc/settings.png'))
-        self.settings_btn.clicked.connect(self.open_settings)
-
+        
     def load_local_data(self):
         if not os.path.exists(self.local_dir):
             os.mkdir(self.local_dir)
@@ -84,6 +86,18 @@ class SC_Ui(Ui_MainWindow):
             frame = self.iterables[f'frame{_}']
             frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
             frame.setScaledContents(True)
+        tray_icon = QSystemTrayIcon(QIcon('main/rsc/settings.png'), parent=app)
+        tray_icon.show()
+        menu = QMenu()
+        showAction = menu.addAction('Show')
+        showAction.triggered.connect(MainWindow.show)
+        hideAction = menu.addAction('Hide')
+        hideAction.triggered.connect(MainWindow.hide)
+        exitAction = menu.addAction('Exit')
+        exitAction.triggered.connect(MainWindow.close)
+        menu.show()
+        tray_icon.setContextMenu(menu)
+
         
     def load_shrine(self):
         self.date_lbl.setText(self.current_shrine[0])
@@ -239,10 +253,11 @@ class Settings_ui(Ui_Dialog):
 
 class BaseClass(QtWidgets.QMainWindow):
     def closeEvent(self, event):
-        if ui.min_to_tray:
-            event.ignore()
-        else:
+        if not ui.min_to_tray or MainWindow.isHidden():
             event.accept()
+        else:
+            MainWindow.hide()
+            event.ignore()
 
 if __name__ == '__main__':
     import sys
