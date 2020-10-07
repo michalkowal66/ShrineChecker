@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>360</width>
+    <height>200</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>360</width>
+    <height>200</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>360</width>
+    <height>200</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Settings</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QLabel#settings_lbl {
+	color: white;
+	font: 14pt &quot;Sylfaen&quot;;
+}
+
+QCheckBox {
+	color: white;
+	font: 12pt &quot;Sylfaen&quot;;
+}
+
+QLabel {
+	color: white;
+	font: 12pt &quot;Sylfaen&quot;;
+}
+
+QPushButton {
+	color: white;
+	font: 12pt &quot;Sylfaen&quot;;
+	background-color:#2F3538;
+}
+
+
+QPushButton:hover {
+	color: white;
+	font: 12pt &quot;Sylfaen&quot;;
+	background-color:#404040;
+}</string>
+  </property>
+  <widget class="QCheckBox" name="tray_check">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>200</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Minimize to tray on exit</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="save_btn">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>150</y>
+     <width>80</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="settings_lbl">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>10</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Settings</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="reset_lbl">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>100</y>
+     <width>230</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Erase and download all local data.</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="startup_check">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>70</y>
+     <width>200</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Run with startup</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bg">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>360</width>
+     <height>200</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../rsc/bg.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="reset_btn">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>100</y>
+     <width>80</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Reset</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <zorder>bg</zorder>
+  <zorder>tray_check</zorder>
+  <zorder>save_btn</zorder>
+  <zorder>settings_lbl</zorder>
+  <zorder>reset_lbl</zorder>
+  <zorder>startup_check</zorder>
+  <zorder>reset_btn</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

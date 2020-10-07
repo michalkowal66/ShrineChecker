@@ -1,0 +1,1 @@
+pyuic5.exe sc_settings.ui -o sc_settings.py -x
