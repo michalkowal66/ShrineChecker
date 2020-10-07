@@ -2,26 +2,34 @@ import csv
 from csv import reader
 import io
 import os
-from sc_ui import *
 from bs4 import BeautifulSoup as bs
 import requests
 from datetime import datetime
+from sc_ui import *
+from sc_settings import *
 
 #To do list:
+#Make settings dialog box
 #Create sleep functionality and notifications
 #Prepare the proper css
 
 class SC_Ui(Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, parent=None):
+        Ui_MainWindow.__init__(self)
         self.current_shrine = []
         self.desired_perks = []
         self.perks = []
+        self.settings = []
         self.perks_csv = 'perks.csv'
         self.shrine_csv = 'shrine.csv'
         self.desired_perks_csv = 'desired_perks.csv'
+        self.settings_csv = 'settings.csv'
         self.local_dir = os.path.expanduser('~') + '\Documents\ShrineChecker'
         self.local_data = self.local_dir + '\local'
         self.local_img = self.local_data + '\img'
+        self.iterables = None
+        self.min_to_tray = bool
+        self.add_to_startup = bool
         
     def setupUi(self, MainWindow):
         super(SC_Ui, self).setupUi(MainWindow)
@@ -40,8 +48,8 @@ class SC_Ui(Ui_MainWindow):
         self.reload_btn.clicked.connect(self.dl_shrine)
         self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
         self.bg.setScaledContents(True)
-        setting_icon = QtGui.QIcon('main/rsc/settings.png')
-        self.settings_btn.setIcon(setting_icon)
+        self.settings_btn.setIcon(QtGui.QIcon('main/rsc/settings.png'))
+        self.settings_btn.clicked.connect(self.open_settings)
 
     def load_local_data(self):
         if not os.path.exists(self.local_dir):
@@ -50,12 +58,19 @@ class SC_Ui(Ui_MainWindow):
             os.mkdir(self.local_data + '\img')
             with open(f'{self.local_data}/{self.desired_perks_csv}', 'a'):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
+            with open(f'{self.local_data}/{self.desired_perks_csv}', 'a'):
+                os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
             self.dl_perks()
             self.dl_shrine()
         else:     
             self.data_loader('load', self.desired_perks_csv, self.desired_perks)
             self.data_loader('load', self.perks_csv, self.perks)
             self.data_loader('load', self.shrine_csv, self.current_shrine)
+            with open(f'{self.local_data}/{self.settings_csv}', newline='') as f:
+                reader = csv.reader(f)
+                for line in reader:
+                    self.settings.append(int(line[0]))   
+            self.min_to_tray, self.add_to_startup = self.settings
             if str(datetime.date(datetime.now())) != self.current_shrine[0]:
                 self.dl_shrine()
 
@@ -117,7 +132,12 @@ class SC_Ui(Ui_MainWindow):
             self.check_shrine()
         except:
             return
-    
+
+    def open_settings(self):
+        settings_dialog.tray_check.setChecked(self.min_to_tray)
+        settings_dialog.startup_check.setChecked(self.add_to_startup)
+        Dialog.show()
+
     def dl_perks(self):
         perks_url = 'https://deadbydaylight.gamepedia.com/Perks'
         req_perks = requests.get(perks_url)
@@ -201,11 +221,37 @@ class SC_Ui(Ui_MainWindow):
                 for line in reader:
                     target.append(line[0])
 
+class Settings_ui(Ui_Dialog):
+    def setupUi(self, Dialog, tray=bool, startup=bool):
+        super(Settings_ui, self).setupUi(Dialog)
+        self.tray_check.setChecked(tray)
+        self.startup_check.setChecked(startup)
+        self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
+        self.save_btn.clicked.connect(self.save)
+
+    def save(self):
+        ui.min_to_tray = 1 if self.tray_check.isChecked() else 0
+        ui.add_to_startup = 1 if self.startup_check.isChecked() else 0
+        ui.data_loader('save', [ui.min_to_tray, ui.add_to_startup], ui.settings_csv)
+
+    def reset(self):
+        return
+
+class BaseClass(QtWidgets.QMainWindow):
+    def closeEvent(self, event):
+        if ui.min_to_tray:
+            event.ignore()
+        else:
+            event.accept()
+
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    MainWindow = BaseClass()
     ui = SC_Ui()
     ui.setupUi(MainWindow)
+    Dialog = QtWidgets.QDialog()
+    settings_dialog = Settings_ui()
+    settings_dialog.setupUi(Dialog, ui.min_to_tray, ui.add_to_startup)
     MainWindow.show()
     sys.exit(app.exec_())
