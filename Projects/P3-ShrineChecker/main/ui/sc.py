@@ -8,12 +8,26 @@ import time
 from datetime import datetime
 from sc_ui import *
 from sc_settings import *
+from sc_notification import *
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
+from win10toast import ToastNotifier
 
 #To do list:
 #Create sleep functionality and notifications
 #Prepare the proper css
+
+class Worker(QtCore.QRunnable):
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        self.fn(*self.args, **self.kwargs)   
 
 class SC_Ui(Ui_MainWindow):
     tray_icon = None
@@ -33,6 +47,7 @@ class SC_Ui(Ui_MainWindow):
         self.iterables = None
         self.min_to_tray = bool
         self.add_to_startup = bool
+        self.threadpool = QtCore.QThreadPool()
         
     def setupUi(self, MainWindow):
         super(SC_Ui, self).setupUi(MainWindow)
@@ -125,7 +140,18 @@ class SC_Ui(Ui_MainWindow):
                     frame = self.iterables[f'frame{perk_index}']
                     frame.setHidden(False)
         else:
-            print("Shrine checked while hidden")
+            while MainWindow.isHidden():
+                time.sleep(60*60*2)
+                matches = []
+                print("Shrine checked while hidden")
+                for perk in self.desired_perks:
+                    if perk in self.current_shrine:
+                        print(f'{perk} is now available in the Shrine of Secrets!')
+                        matches.append(perk)
+                        if len(matches) == 4:
+                            toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path=None)
+                toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path=None)
+                self.dl_shrine()
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
@@ -158,7 +184,8 @@ class SC_Ui(Ui_MainWindow):
     def hide_ui(self):
         Dialog.close()
         MainWindow.hide()
-        #Threading shuld be implemented here
+        worker = Worker(self.check_shrine)
+        self.threadpool.start(worker)
         
     def dl_perks(self):
         perks_url = 'https://deadbydaylight.gamepedia.com/Perks'
@@ -205,6 +232,7 @@ class SC_Ui(Ui_MainWindow):
             self.perks.append(perk)
             print(f'{perk} downloaded!')
         self.data_loader('save', self.perks, self.perks_csv)
+        print('Perks downloaded and saved.')
     
     def dl_shrine(self):
         self.current_shrine.clear()
@@ -223,7 +251,9 @@ class SC_Ui(Ui_MainWindow):
                 self.current_shrine.append(perk[:-1])
         self.current_shrine.insert(0, str(datetime.date(datetime.now())))
         self.data_loader('save', self.current_shrine, self.shrine_csv)
+        print('Shrine downloaded and saved.')
         self.load_shrine()
+        print('Shrine loaded.')
 
     def data_loader(self, action, source, target):
         if action == 'save':
@@ -259,6 +289,11 @@ class Settings_ui(Ui_Dialog):
     def reset(self):
         return
 
+# class Notifiactions_ui(Ui_Form):
+#     def setupUi(self, Dialog, tray=bool, startup=bool):
+#         super(Notifiactions_ui, self).setupUi(Form)
+#         self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
+        
 class ui_BaseClass(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         if not ui.min_to_tray or MainWindow.isHidden():
@@ -271,14 +306,23 @@ class settings_BaseClass(QtWidgets.QDialog):
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self)
 
+# class notifications_BaseClass(QtWidgets.QWidget):
+#     def __init__(self, parent=None):
+#         QtWidgets.QWidget.__init__(self)
+        
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = ui_BaseClass()
+    Dialog = settings_BaseClass()
+    # Form = notifications_BaseClass()
+    # Form.setWindowFlags(QtCore.Qt.FramelessWindowHint)
     ui = SC_Ui()
     ui.setupUi(MainWindow)
-    Dialog = settings_BaseClass()
     settings_dialog = Settings_ui()
     settings_dialog.setupUi(Dialog, ui.min_to_tray, ui.add_to_startup)
+    # notifications = Notifiactions_ui()
+    # notifications.setupUi(Form)
     MainWindow.show()
+    toast = ToastNotifier()
     sys.exit(app.exec_())
