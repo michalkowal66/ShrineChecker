@@ -4,6 +4,7 @@ import io
 import os
 from bs4 import BeautifulSoup as bs
 import requests
+import time
 from datetime import datetime
 from sc_ui import *
 from sc_settings import *
@@ -44,7 +45,7 @@ class SC_Ui(Ui_MainWindow):
         self.load_local_data()
         self.load_content()
         self.load_shrine()
-        self.check_shrine()
+        self.check_shrine(init=True)
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reload_btn.clicked.connect(self.dl_shrine)
@@ -92,13 +93,12 @@ class SC_Ui(Ui_MainWindow):
         showAction = menu.addAction('Show')
         showAction.triggered.connect(MainWindow.show)
         hideAction = menu.addAction('Hide')
-        hideAction.triggered.connect(MainWindow.hide)
+        hideAction.triggered.connect(self.hide_ui)
         exitAction = menu.addAction('Exit')
         exitAction.triggered.connect(MainWindow.close)
         menu.show()
         tray_icon.setContextMenu(menu)
 
-        
     def load_shrine(self):
         self.date_lbl.setText(self.current_shrine[0])
         for _ in range(1,5):
@@ -108,21 +108,24 @@ class SC_Ui(Ui_MainWindow):
             e = self.iterables[f'perk{_}_lbl']
             e.setText(self.current_shrine[_])
 
-    def check_shrine(self):
-        for _ in range(1,5):
-            label = self.iterables[f'perk{_}_lbl']
-            label.setStyleSheet('color:#6e6d6d;')
-            img = self.iterables[f'img{_}']
-            img.setStyleSheet('border: none;')
-            frame = self.iterables[f'frame{_}']
-            frame.setHidden(True)
-        for perk in self.desired_perks:
-            if perk in self.current_shrine:
-                perk_index = self.current_shrine.index(perk)
-                label = self.iterables[f'perk{perk_index}_lbl']
-                label.setStyleSheet('color:white; font:bold')
-                frame = self.iterables[f'frame{perk_index}']
-                frame.setHidden(False)
+    def check_shrine(self, init=False):
+        if not MainWindow.isHidden() or init == True:
+            for _ in range(1,5):
+                label = self.iterables[f'perk{_}_lbl']
+                label.setStyleSheet('color:#6e6d6d;')
+                img = self.iterables[f'img{_}']
+                img.setStyleSheet('border: none;')
+                frame = self.iterables[f'frame{_}']
+                frame.setHidden(True)
+            for perk in self.desired_perks:
+                if perk in self.current_shrine:
+                    perk_index = self.current_shrine.index(perk)
+                    label = self.iterables[f'perk{perk_index}_lbl']
+                    label.setStyleSheet('color:white; font:bold')
+                    frame = self.iterables[f'frame{perk_index}']
+                    frame.setHidden(False)
+        else:
+            print("Shrine checked while hidden")
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
@@ -152,6 +155,11 @@ class SC_Ui(Ui_MainWindow):
         settings_dialog.startup_check.setChecked(self.add_to_startup)
         Dialog.show()
 
+    def hide_ui(self):
+        Dialog.close()
+        MainWindow.hide()
+        #Threading shuld be implemented here
+        
     def dl_perks(self):
         perks_url = 'https://deadbydaylight.gamepedia.com/Perks'
         req_perks = requests.get(perks_url)
@@ -251,21 +259,25 @@ class Settings_ui(Ui_Dialog):
     def reset(self):
         return
 
-class BaseClass(QtWidgets.QMainWindow):
+class ui_BaseClass(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         if not ui.min_to_tray or MainWindow.isHidden():
             event.accept()
         else:
-            MainWindow.hide()
+            ui.hide_ui()
             event.ignore()
+
+class settings_BaseClass(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self)
 
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = BaseClass()
+    MainWindow = ui_BaseClass()
     ui = SC_Ui()
     ui.setupUi(MainWindow)
-    Dialog = QtWidgets.QDialog()
+    Dialog = settings_BaseClass()
     settings_dialog = Settings_ui()
     settings_dialog.setupUi(Dialog, ui.min_to_tray, ui.add_to_startup)
     MainWindow.show()
