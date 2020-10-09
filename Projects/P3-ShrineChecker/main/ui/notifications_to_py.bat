@@ -1,0 +1,1 @@
+pyuic5.exe sc_notification.ui -o sc_notification.py -x
