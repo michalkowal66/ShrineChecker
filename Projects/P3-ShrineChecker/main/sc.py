@@ -2,17 +2,16 @@ import csv
 from csv import reader
 import io
 import os
+import shutil
 from bs4 import BeautifulSoup as bs
 import requests
 import time
-from datetime import datetime
-from sc_ui import *
-from sc_settings import *
-from sc_notification import *
-from PyQt5.QtWidgets import QSystemTrayIcon, QMenu
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
 from win10toast import ToastNotifier
+from datetime import datetime
+from PyQt5 import QtCore, QtGui, QtWidgets
+from ui.sc_ui import Ui_MainWindow
+from ui.sc_settings import Ui_Dialog
+# from ui.sc_notification import Ui_Form
 
 #To do list:
 #Create sleep functionality and notifications
@@ -41,12 +40,12 @@ class SC_Ui(Ui_MainWindow):
         self.shrine_csv = 'shrine.csv'
         self.desired_perks_csv = 'desired_perks.csv'
         self.settings_csv = 'settings.csv'
-        self.local_dir = os.path.expanduser('~') + '\Documents\ShrineChecker'
-        self.local_data = self.local_dir + '\local'
-        self.local_img = self.local_data + '\img'
+        self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
+        self.local_data = self.local_dir + '\\local'
+        self.local_img = self.local_data + '\\img'
         self.iterables = None
-        self.min_to_tray = bool
-        self.add_to_startup = bool
+        self.min_to_tray = 1
+        self.add_to_startup = 1
         self.threadpool = QtCore.QThreadPool()
         
     def setupUi(self, MainWindow):
@@ -73,11 +72,12 @@ class SC_Ui(Ui_MainWindow):
         if not os.path.exists(self.local_dir):
             os.mkdir(self.local_dir)
             os.mkdir(self.local_data)
-            os.mkdir(self.local_data + '\img')
+            os.mkdir(self.local_data + '\\img')
             with open(f'{self.local_data}/{self.desired_perks_csv}', 'a'):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
             with open(f'{self.local_data}/{self.desired_perks_csv}', 'a'):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
+            ui.data_loader('save', [self.min_to_tray, self.add_to_startup], self.settings_csv)
             self.dl_perks()
             self.dl_shrine()
         else:     
@@ -102,9 +102,9 @@ class SC_Ui(Ui_MainWindow):
             frame = self.iterables[f'frame{_}']
             frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
             frame.setScaledContents(True)
-        tray_icon = QSystemTrayIcon(QIcon('main/rsc/settings.png'), parent=app)
+        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon('main/rsc/icon.ico'), parent=app)
         tray_icon.show()
-        menu = QMenu()
+        menu = QtWidgets.QMenu()
         showAction = menu.addAction('Show')
         showAction.triggered.connect(MainWindow.show)
         hideAction = menu.addAction('Hide')
@@ -118,7 +118,7 @@ class SC_Ui(Ui_MainWindow):
         self.date_lbl.setText(self.current_shrine[0])
         for _ in range(1,5):
             d = self.iterables[f'img{_}']
-            d.setPixmap(QtGui.QPixmap(self.local_img+f'\{self.current_shrine[_]}.png'))
+            d.setPixmap(QtGui.QPixmap(self.local_img+f'\\{self.current_shrine[_]}.png'))
             d.setScaledContents(True)
             e = self.iterables[f'perk{_}_lbl']
             e.setText(self.current_shrine[_])
@@ -149,15 +149,15 @@ class SC_Ui(Ui_MainWindow):
                         print(f'{perk} is now available in the Shrine of Secrets!')
                         matches.append(perk)
                         if len(matches) == 4:
-                            toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path=None)
-                toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path=None)
+                            toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path='main/rsc/icon.ico')
+                toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path='main/rsc/icon.ico')
                 self.dl_shrine()
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
         items = self.perks_list.findItems(perk, QtCore.Qt.MatchExactly)
         if len(items) > 0:
-            return
+            return None
         else:
             self.perks_list.addItem(perk)
             self.desired_perks.append(perk)
@@ -174,7 +174,7 @@ class SC_Ui(Ui_MainWindow):
                 self.data_loader('save', self.desired_perks, self.desired_perks_csv)
             self.check_shrine()
         except:
-            return
+            return None
 
     def open_settings(self):
         settings_dialog.tray_check.setChecked(self.min_to_tray)
@@ -205,10 +205,9 @@ class SC_Ui(Ui_MainWindow):
             print(f'\nDownloading: {perk}')
             img_tag = cells[0].find('a')
             if img_tag is not None:
-                img_urls_tag = img_tag.find('img')['srcset']
-                img_urls = img_urls_tag.split()
+                img_url = img_tag.find('img')['src']
                 with open(f'{self.local_data}/img/{perk}.png', 'wb') as f:
-                    img = requests.get(img_urls[0])
+                    img = requests.get(img_url)
                     f.write(img.content)
             self.perks.append(perk)
             print(f'{perk} downloaded!')
@@ -222,12 +221,11 @@ class SC_Ui(Ui_MainWindow):
             print(f'\nDownloading: {perk}')
             img_tag = cells[0].find('a')
             if img_tag is not None:
-                img_urls_tag = img_tag.find('img')['srcset']
-                img_urls = img_urls_tag.split()
+                img_url = img_tag.find('img')['src']
                 if ':' in perk:
                     perk = perk.replace(':', '')
                 with open(f'{self.local_data}/img/{perk}.png', 'wb') as f:
-                    img = requests.get(img_urls[0])
+                    img = requests.get(img_url)
                     f.write(img.content)
             self.perks.append(perk)
             print(f'{perk} downloaded!')
@@ -274,12 +272,13 @@ class SC_Ui(Ui_MainWindow):
                     target.append(line[0])
 
 class Settings_ui(Ui_Dialog):
-    def setupUi(self, Dialog, tray=bool, startup=bool):
+    def setupUi(self, Dialog, tray=True, startup=True):
         super(Settings_ui, self).setupUi(Dialog)
         self.tray_check.setChecked(tray)
         self.startup_check.setChecked(startup)
         self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
         self.save_btn.clicked.connect(self.save)
+        self.reset_btn.clicked.connect(self.reset)
 
     def save(self):
         ui.min_to_tray = 1 if self.tray_check.isChecked() else 0
@@ -287,7 +286,8 @@ class Settings_ui(Ui_Dialog):
         ui.data_loader('save', [ui.min_to_tray, ui.add_to_startup], ui.settings_csv)
 
     def reset(self):
-        return
+        shutil.rmtree(ui.local_dir)
+        ui.load_local_data()
 
 # class Notifiactions_ui(Ui_Form):
 #     def setupUi(self, Dialog, tray=bool, startup=bool):
@@ -295,6 +295,10 @@ class Settings_ui(Ui_Dialog):
 #         self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
         
 class ui_BaseClass(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        QtWidgets.QMainWindow.__init__(self)
+        self.setWindowIcon(QtGui.QIcon('main/rsc/icon.ico'))
+        
     def closeEvent(self, event):
         if not ui.min_to_tray or MainWindow.isHidden():
             event.accept()
@@ -305,6 +309,7 @@ class ui_BaseClass(QtWidgets.QMainWindow):
 class settings_BaseClass(QtWidgets.QDialog):
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self)
+        self.setWindowIcon(QtGui.QIcon('main/rsc/icon.ico'))
 
 # class notifications_BaseClass(QtWidgets.QWidget):
 #     def __init__(self, parent=None):
@@ -324,5 +329,6 @@ if __name__ == '__main__':
     # notifications = Notifiactions_ui()
     # notifications.setupUi(Form)
     MainWindow.show()
+    #Form.show()
     toast = ToastNotifier()
     sys.exit(app.exec_())
