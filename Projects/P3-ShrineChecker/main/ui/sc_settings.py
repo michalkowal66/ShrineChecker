@@ -21,8 +21,7 @@ class Ui_Dialog(object):
         Dialog.setSizePolicy(sizePolicy)
         Dialog.setMinimumSize(QtCore.QSize(360, 200))
         Dialog.setMaximumSize(QtCore.QSize(360, 200))
-        Dialog.setStyleSheet("\n"
-"QLabel#settings_lbl {\n"
+        Dialog.setStyleSheet("QLabel#settings_lbl {\n"
 "    color: white;\n"
 "    font: 14pt \"Sylfaen\";\n"
 "}\n"
@@ -43,18 +42,21 @@ class Ui_Dialog(object):
 "    background-color:#2F3538;\n"
 "}\n"
 "\n"
-"\n"
 "QPushButton:hover {\n"
 "    color: white;\n"
 "    font: 12pt \"Sylfaen\";\n"
 "    background-color:#404040;\n"
+"}\n"
+"\n"
+"QLabel#bg {\n"
+"    border: 1px solid rgba(255, 255, 255, 0.2);\n"
 "}")
         self.tray_check = QtWidgets.QCheckBox(Dialog)
         self.tray_check.setGeometry(QtCore.QRect(30, 40, 200, 20))
         self.tray_check.setChecked(False)
         self.tray_check.setObjectName("tray_check")
         self.save_btn = QtWidgets.QPushButton(Dialog)
-        self.save_btn.setGeometry(QtCore.QRect(140, 150, 80, 30))
+        self.save_btn.setGeometry(QtCore.QRect(90, 150, 80, 30))
         self.save_btn.setObjectName("save_btn")
         self.settings_lbl = QtWidgets.QLabel(Dialog)
         self.settings_lbl.setGeometry(QtCore.QRect(140, 10, 80, 25))
@@ -71,6 +73,7 @@ class Ui_Dialog(object):
         self.startup_check.setObjectName("startup_check")
         self.bg = QtWidgets.QLabel(Dialog)
         self.bg.setGeometry(QtCore.QRect(0, 0, 360, 200))
+        self.bg.setStyleSheet("")
         self.bg.setText("")
         self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setObjectName("bg")
@@ -78,6 +81,9 @@ class Ui_Dialog(object):
         self.reset_btn.setGeometry(QtCore.QRect(30, 100, 80, 30))
         self.reset_btn.setCheckable(False)
         self.reset_btn.setObjectName("reset_btn")
+        self.close_btn = QtWidgets.QPushButton(Dialog)
+        self.close_btn.setGeometry(QtCore.QRect(190, 150, 80, 30))
+        self.close_btn.setObjectName("close_btn")
         self.bg.raise_()
         self.tray_check.raise_()
         self.save_btn.raise_()
@@ -85,6 +91,7 @@ class Ui_Dialog(object):
         self.reset_lbl.raise_()
         self.startup_check.raise_()
         self.reset_btn.raise_()
+        self.close_btn.raise_()
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -98,6 +105,7 @@ class Ui_Dialog(object):
         self.reset_lbl.setText(_translate("Dialog", "Erase and download all local data."))
         self.startup_check.setText(_translate("Dialog", "Run with startup"))
         self.reset_btn.setText(_translate("Dialog", "Reset"))
+        self.close_btn.setText(_translate("Dialog", "Close"))
 
 
 if __name__ == "__main__":

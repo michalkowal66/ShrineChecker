@@ -32,8 +32,7 @@
    <string>Settings</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-QLabel#settings_lbl {
+   <string notr="true">QLabel#settings_lbl {
 	color: white;
 	font: 14pt &quot;Sylfaen&quot;;
 }
@@ -54,11 +53,14 @@ QPushButton {
 	background-color:#2F3538;
 }
 
-
 QPushButton:hover {
 	color: white;
 	font: 12pt &quot;Sylfaen&quot;;
 	background-color:#404040;
+}
+
+QLabel#bg {
+	border: 1px solid rgba(255, 255, 255, 0.2);
 }</string>
   </property>
   <widget class="QCheckBox" name="tray_check">
@@ -80,7 +82,7 @@ QPushButton:hover {
   <widget class="QPushButton" name="save_btn">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>90</x>
      <y>150</y>
      <width>80</width>
      <height>30</height>
@@ -150,6 +152,9 @@ QPushButton:hover {
      <height>200</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -173,6 +178,19 @@ QPushButton:hover {
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QPushButton" name="close_btn">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>150</y>
+     <width>80</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </widget>
   <zorder>bg</zorder>
   <zorder>tray_check</zorder>
   <zorder>save_btn</zorder>
@@ -180,6 +198,7 @@ QPushButton:hover {
   <zorder>reset_lbl</zorder>
   <zorder>startup_check</zorder>
   <zorder>reset_btn</zorder>
+  <zorder>close_btn</zorder>
  </widget>
  <resources/>
  <connections/>
