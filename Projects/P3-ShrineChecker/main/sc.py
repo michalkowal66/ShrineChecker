@@ -1,21 +1,19 @@
 import csv
-from csv import reader
 import io
 import os
 import shutil
-from bs4 import BeautifulSoup as bs
 import requests
 import time
 from win10toast import ToastNotifier
+from csv import reader
+from bs4 import BeautifulSoup as bs
 from datetime import datetime
 from PyQt5 import QtCore, QtGui, QtWidgets
 from ui.sc_ui import Ui_MainWindow
-from ui.sc_settings import Ui_Dialog
-# from ui.sc_notification import Ui_Form
+from ui.sc_settings import Ui_Dialog as SettingsTemplate
 
 #To do list:
-#Create sleep functionality and notifications
-#Prepare the proper css
+#Prepare proper css
 
 class Worker(QtCore.QRunnable):
     def __init__(self, fn, *args, **kwargs):
@@ -28,10 +26,17 @@ class Worker(QtCore.QRunnable):
     def run(self):
         self.fn(*self.args, **self.kwargs)   
 
-class SC_Ui(Ui_MainWindow):
-    tray_icon = None
-    def __init__(self, parent=None):
-        Ui_MainWindow.__init__(self)
+class Main(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        QtWidgets.QMainWindow.__init__(self)
+        self.ui = Ui_MainWindow()
+        self.initVariables()
+        self.setupUi(self)
+        
+        self.settings_dialog = Settings()
+        
+    def initVariables(self):
+        self.dialog_done = False
         self.current_shrine = []
         self.desired_perks = []
         self.perks = []
@@ -49,7 +54,7 @@ class SC_Ui(Ui_MainWindow):
         self.threadpool = QtCore.QThreadPool()
         
     def setupUi(self, MainWindow):
-        super(SC_Ui, self).setupUi(MainWindow)
+        super().setupUi(self)
         self.iterables = {'img1': self.img1, 'img2': self.img2, 'img3': self.img3,
                         'img4': self.img4, 'perk1_lbl': self.perk1_lbl,
                         'perk2_lbl': self.perk2_lbl, 'perk3_lbl': self.perk3_lbl,
@@ -64,10 +69,10 @@ class SC_Ui(Ui_MainWindow):
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reload_btn.clicked.connect(self.dl_shrine)
         self.settings_btn.clicked.connect(self.open_settings)
-        self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
         self.bg.setScaledContents(True)
-        self.settings_btn.setIcon(QtGui.QIcon('main/rsc/settings.png'))
-        
+        self.settings_btn.setIcon(QtGui.QIcon(f'{self.local_img}\\settings.png'))
+    
     def load_local_data(self):
         if not os.path.exists(self.local_dir):
             os.mkdir(self.local_dir)
@@ -77,7 +82,7 @@ class SC_Ui(Ui_MainWindow):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
             with open(f'{self.local_data}/{self.desired_perks_csv}', 'a'):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
-            ui.data_loader('save', [self.min_to_tray, self.add_to_startup], self.settings_csv)
+            self.data_loader('save', [self.min_to_tray, self.add_to_startup], self.settings_csv)
             self.dl_perks()
             self.dl_shrine()
         else:     
@@ -102,15 +107,15 @@ class SC_Ui(Ui_MainWindow):
             frame = self.iterables[f'frame{_}']
             frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
             frame.setScaledContents(True)
-        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon('main/rsc/icon.ico'), parent=app)
+        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(f'{self.local_img}\\icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
         showAction = menu.addAction('Show')
-        showAction.triggered.connect(MainWindow.show)
+        showAction.triggered.connect(self.show)
         hideAction = menu.addAction('Hide')
         hideAction.triggered.connect(self.hide_ui)
         exitAction = menu.addAction('Exit')
-        exitAction.triggered.connect(MainWindow.close)
+        exitAction.triggered.connect(self.close)
         menu.show()
         tray_icon.setContextMenu(menu)
 
@@ -124,7 +129,7 @@ class SC_Ui(Ui_MainWindow):
             e.setText(self.current_shrine[_])
 
     def check_shrine(self, init=False):
-        if not MainWindow.isHidden() or init == True:
+        if not self.isHidden() or init == True:
             for _ in range(1,5):
                 label = self.iterables[f'perk{_}_lbl']
                 label.setStyleSheet('color:#6e6d6d;')
@@ -140,8 +145,9 @@ class SC_Ui(Ui_MainWindow):
                     frame = self.iterables[f'frame{perk_index}']
                     frame.setHidden(False)
         else:
-            while MainWindow.isHidden():
+            while self.isHidden():
                 time.sleep(60*60*2)
+                toast = ToastNotifier()
                 matches = []
                 print("Shrine checked while hidden")
                 for perk in self.desired_perks:
@@ -153,6 +159,12 @@ class SC_Ui(Ui_MainWindow):
                 toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path='main/rsc/icon.ico')
                 self.dl_shrine()
 
+    def hide_ui(self):
+        self.settings_dialog.close()
+        self.hide()
+        worker = Worker(self.check_shrine)
+        self.threadpool.start(worker)
+        
     def add_perk(self):
         perk = self.perks_combo.currentText()
         items = self.perks_list.findItems(perk, QtCore.Qt.MatchExactly)
@@ -177,16 +189,10 @@ class SC_Ui(Ui_MainWindow):
             return None
 
     def open_settings(self):
-        settings_dialog.tray_check.setChecked(self.min_to_tray)
-        settings_dialog.startup_check.setChecked(self.add_to_startup)
-        Dialog.show()
+        self.settings_dialog.tray_check.setChecked(self.min_to_tray)
+        self.settings_dialog.startup_check.setChecked(self.add_to_startup)
+        self.settings_dialog.show()
 
-    def hide_ui(self):
-        Dialog.close()
-        MainWindow.hide()
-        worker = Worker(self.check_shrine)
-        self.threadpool.start(worker)
-        
     def dl_perks(self):
         perks_url = 'https://deadbydaylight.gamepedia.com/Perks'
         req_perks = requests.get(perks_url)
@@ -269,66 +275,52 @@ class SC_Ui(Ui_MainWindow):
             with open(f'{self.local_data}/{source}', newline='') as f:
                 reader = csv.reader(f)
                 for line in reader:
-                    target.append(line[0])
-
-class Settings_ui(Ui_Dialog):
-    def setupUi(self, Dialog, tray=True, startup=True):
-        super(Settings_ui, self).setupUi(Dialog)
-        self.tray_check.setChecked(tray)
-        self.startup_check.setChecked(startup)
-        self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
-        self.save_btn.clicked.connect(self.save)
-        self.reset_btn.clicked.connect(self.reset)
-
-    def save(self):
-        ui.min_to_tray = 1 if self.tray_check.isChecked() else 0
-        ui.add_to_startup = 1 if self.startup_check.isChecked() else 0
-        ui.data_loader('save', [ui.min_to_tray, ui.add_to_startup], ui.settings_csv)
-
-    def reset(self):
-        shutil.rmtree(ui.local_dir)
-        ui.load_local_data()
-
-# class Notifiactions_ui(Ui_Form):
-#     def setupUi(self, Dialog, tray=bool, startup=bool):
-#         super(Notifiactions_ui, self).setupUi(Form)
-#         self.bg.setPixmap(QtGui.QPixmap('main/rsc/bg.png'))
-        
-class ui_BaseClass(QtWidgets.QMainWindow):
-    def __init__(self, parent=None):
-        QtWidgets.QMainWindow.__init__(self)
-        self.setWindowIcon(QtGui.QIcon('main/rsc/icon.ico'))
-        
+                    target.append(line[0])    
+    
     def closeEvent(self, event):
-        if not ui.min_to_tray or MainWindow.isHidden():
+        if not self.min_to_tray or self.isHidden():
+            self.settings_dialog.close()
             event.accept()
         else:
-            ui.hide_ui()
+            self.settings_dialog.close()
+            self.hide_ui()
             event.ignore()
 
-class settings_BaseClass(QtWidgets.QDialog):
+class Settings(QtWidgets.QDialog, SettingsTemplate):
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self)
-        self.setWindowIcon(QtGui.QIcon('main/rsc/icon.ico'))
+        super().__init__(parent)
+        self.ui = SettingsTemplate()
+        self.initVariables()
+        self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+    
+    def initVariables(self):
+        self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
+        self.local_data = self.local_dir + '\\local'
+        self.local_img = self.local_data + '\\img'
+        
+    def setupUi(self, Dialog, tray=True, startup=True):
+        super().setupUi(self)
+        self.tray_check.setChecked(tray)
+        self.startup_check.setChecked(startup)
+        self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
+        self.save_btn.clicked.connect(self.save)
+        self.reset_btn.clicked.connect(self.reset)
+        self.close_btn.clicked.connect(self.close)
 
-# class notifications_BaseClass(QtWidgets.QWidget):
-#     def __init__(self, parent=None):
-#         QtWidgets.QWidget.__init__(self)
+    def save(self):
+        window.min_to_tray = 1 if self.tray_check.isChecked() else 0
+        window.add_to_startup = 1 if self.startup_check.isChecked() else 0
+        window.data_loader('save', [window.min_to_tray, window.add_to_startup], window.settings_csv)
+
+    def reset(self):
+        shutil.rmtree(window.local_dir)
+        window.load_local_data()   
         
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = ui_BaseClass()
-    Dialog = settings_BaseClass()
-    # Form = notifications_BaseClass()
-    # Form.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-    ui = SC_Ui()
-    ui.setupUi(MainWindow)
-    settings_dialog = Settings_ui()
-    settings_dialog.setupUi(Dialog, ui.min_to_tray, ui.add_to_startup)
-    # notifications = Notifiactions_ui()
-    # notifications.setupUi(Form)
-    MainWindow.show()
-    #Form.show()
-    toast = ToastNotifier()
+    window = Main()
+    s_dialog = Settings()
+    window.show()
     sys.exit(app.exec_())
