@@ -13,6 +13,8 @@ from ui.sc_ui import Ui_MainWindow
 from ui.sc_settings import Ui_Dialog as SettingsTemplate
 
 #To do list:
+#Stop thread after closing main window
+#Remove reset button in ui
 #Prepare proper css
 
 class Worker(QtCore.QRunnable):
@@ -155,8 +157,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         print(f'{perk} is now available in the Shrine of Secrets!')
                         matches.append(perk)
                         if len(matches) == 4:
-                            toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path='main/rsc/icon.ico')
-                toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path='main/rsc/icon.ico')
+                            toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path=f'{self.local_img}\\icon.ico')
+                toast.show_toast('Perks available:', f"{', '.join(matches)}", icon_path=f'{self.local_img}\\icon.ico')
                 self.dl_shrine()
 
     def hide_ui(self):
@@ -293,6 +295,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
     
     def initVariables(self):
         self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
@@ -305,17 +308,14 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         self.startup_check.setChecked(startup)
         self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
         self.save_btn.clicked.connect(self.save)
-        self.reset_btn.clicked.connect(self.reset)
         self.close_btn.clicked.connect(self.close)
 
     def save(self):
         window.min_to_tray = 1 if self.tray_check.isChecked() else 0
         window.add_to_startup = 1 if self.startup_check.isChecked() else 0
-        window.data_loader('save', [window.min_to_tray, window.add_to_startup], window.settings_csv)
-
-    def reset(self):
-        shutil.rmtree(window.local_dir)
-        window.load_local_data()   
+        window.data_loader('save', 
+                           [window.min_to_tray, window.add_to_startup], 
+                           window.settings_csv)
         
 if __name__ == '__main__':
     import sys
