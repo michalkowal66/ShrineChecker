@@ -13,6 +13,9 @@ from ui.sc_ui import Ui_MainWindow
 from ui.sc_settings import Ui_Dialog as SettingsTemplate
 from ui.sc_notification import Ui_Dialog as NotificationTemplate
 
+#TO DO LIST:
+#Implement better threading
+#Proper CSS
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     signal = QtCore.pyqtSignal()
@@ -136,8 +139,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     frame.setHidden(False)
         elif self.isHidden():
             self.signal.emit()
-            print("I'd check the shrine now!")
-            
+            print("I'd check the shrine now!")    
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
@@ -335,7 +337,6 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         self.close_btn.clicked.connect(self.close)
         
     def show_notification(self):
-        time.sleep(10)
         super(Notification, self).exec_()
         self.signal.emit()
         
