@@ -14,7 +14,6 @@ from ui.sc_settings import Ui_Dialog as SettingsTemplate
 
 #To do list:
 #Stop thread after closing main window
-#Remove reset button in ui
 #Prepare proper css
 
 class Worker(QtCore.QRunnable):
@@ -53,6 +52,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.iterables = None
         self.min_to_tray = 1
         self.add_to_startup = 1
+        self.worker = Worker(self.check_shrine)
         self.threadpool = QtCore.QThreadPool()
         
     def setupUi(self, MainWindow):
@@ -148,7 +148,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     frame.setHidden(False)
         else:
             while self.isHidden():
-                time.sleep(60*60*2)
+                time.sleep(5)
                 toast = ToastNotifier()
                 matches = []
                 print("Shrine checked while hidden")
@@ -164,8 +164,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def hide_ui(self):
         self.settings_dialog.close()
         self.hide()
-        worker = Worker(self.check_shrine)
-        self.threadpool.start(worker)
+        self.threadpool.start(self.worker)
         
     def add_perk(self):
         perk = self.perks_combo.currentText()
