@@ -4,7 +4,6 @@ import os
 import shutil
 import requests
 import time
-from threading import Thread
 from csv import reader
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
@@ -14,8 +13,32 @@ from ui.sc_settings import Ui_Dialog as SettingsTemplate
 from ui.sc_notification import Ui_Dialog as NotificationTemplate
 
 #TO DO LIST:
-#Implement better threading
+#Interrupt thread when main window shown
 #Proper CSS
+
+class Thread(QtCore.QThread):
+    found_signal = QtCore.pyqtSignal(list)
+    empty_signal = QtCore.pyqtSignal()
+
+    def __init__(self):
+        QtCore.QThread.__init__(self, parent=app)
+        
+    def check_shrine(self):
+        print('Checking shrine in background')
+        window.dl_shrine()
+        matches = window.check_shrine()
+        if len(matches) > 0:
+            self.found_signal.emit(matches)
+        else:
+            self.empty_signal.emit()
+            
+    @QtCore.pyqtSlot()
+    def run(self):
+        for _ in range(10):
+            if not window.isHidden():
+                return None
+            self.sleep(1)
+        self.check_shrine()
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     signal = QtCore.pyqtSignal()
@@ -25,9 +48,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui = Ui_MainWindow()
         self.initVariables()
         self.setupUi(self)
-        
-        self.settings_dialog = Settings()
-        self.notification_dialog = Notification()
         
     def initVariables(self):
         self.dialog_done = False
@@ -45,6 +65,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.iterables = None
         self.min_to_tray = 1
         self.add_to_startup = 1
+        self.settings_dialog = Settings()
+        self.notification_dialog = Notification()
+        self.notification_dialog.signal.connect(self.start_threading)
+        self.thread = Thread()
+        self.thread.found_signal.connect(self.notify)
+        self.thread.empty_signal.connect(self.start_threading)
         
     def setupUi(self, MainWindow):
         super().setupUi(self)
@@ -53,11 +79,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         'perk2_lbl': self.perk2_lbl, 'perk3_lbl': self.perk3_lbl,
                         'perk4_lbl': self.perk4_lbl, 'frame1': self.frame1,
                         'frame2': self.frame2, 'frame3': self.frame3,
-                        'frame4': self.frame4}        
+                        'frame4': self.frame4} 
         self.load_local_data()
-        self.load_content()
-        self.load_shrine()
-        self.check_shrine(init=True)
+        self.load_content(init=True)
+        self.check_shrine()
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reload_btn.clicked.connect(self.dl_shrine)
@@ -65,6 +90,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
         self.bg.setScaledContents(True)
         self.settings_btn.setIcon(QtGui.QIcon(f'{self.local_img}\\settings.png'))
+        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(f'{self.local_img}\\icon.ico'), parent=app)
+        tray_icon.show()
+        menu = QtWidgets.QMenu()
+        showAction = menu.addAction('Show')
+        showAction.triggered.connect(self.show_ui)
+        hideAction = menu.addAction('Hide')
+        hideAction.triggered.connect(self.start_threading)
+        exitAction = menu.addAction('Exit')
+        exitAction.triggered.connect(self.close)
+        menu.show()
+        tray_icon.setContextMenu(menu)
     
     def load_local_data(self):
         if not os.path.exists(self.local_dir):
@@ -78,7 +114,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.data_loader('save', [self.min_to_tray, self.add_to_startup], self.settings_csv)
             self.dl_perks()
             self.dl_shrine()
-        else:     
+        else:
+            self.dl_shrine()     
             self.data_loader('load', self.desired_perks_csv, self.desired_perks)
             self.data_loader('load', self.perks_csv, self.perks)
             self.data_loader('load', self.shrine_csv, self.current_shrine)
@@ -87,32 +124,35 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for line in reader:
                     self.settings.append(int(line[0]))   
             self.min_to_tray, self.add_to_startup = self.settings
-            if str(datetime.date(datetime.now())) != self.current_shrine[0]:
-                self.dl_shrine()
 
-    def load_content(self):
+    def load_content(self, init=False):
+        self.perks_combo.clear()
         for perk in self.perks:
             self.perks_combo.addItem(perk)
-        if len(self.desired_perks) > 0:
-            for perk in self.desired_perks:
-                self.perks_list.addItem(perk)
-        for _ in range(1,5):
-            frame = self.iterables[f'frame{_}']
-            frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
-            frame.setScaledContents(True)
-        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(f'{self.local_img}\\icon.ico'), parent=app)
-        tray_icon.show()
-        menu = QtWidgets.QMenu()
-        showAction = menu.addAction('Show')
-        showAction.triggered.connect(self.show)
-        hideAction = menu.addAction('Hide')
-        hideAction.triggered.connect(self.start_thread)
-        exitAction = menu.addAction('Exit')
-        exitAction.triggered.connect(self.close)
-        menu.show()
-        tray_icon.setContextMenu(menu)
+        if init==True:
+            for _ in range(1,5):
+                frame = self.iterables[f'frame{_}']
+                frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
+                frame.setScaledContents(True)
+            if len(self.desired_perks) > 0:
+                for perk in self.desired_perks:
+                    self.perks_list.addItem(perk)
+        print('Content loaded.')
+        
+    def show_ui(self):
+        #Interrupt the thread's work here
+        self.dl_shrine()
+        self.check_shrine()
+        self.show()
+    
+    def start_threading(self):
+        self.thread.start()
 
-    def load_shrine(self):
+    def notify(self, matching_perks):
+        self.notification_dialog.setup_notification(matching_perks)
+        self.notification_dialog.show()
+
+    def load_shrine(self, init=False):
         self.date_lbl.setText(self.current_shrine[0])
         for _ in range(1,5):
             d = self.iterables[f'img{_}']
@@ -120,26 +160,30 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             d.setScaledContents(True)
             e = self.iterables[f'perk{_}_lbl']
             e.setText(self.current_shrine[_])
+        print('Shrine loaded.')
+        if not self.isHidden() or init==True:
+            self.check_shrine()
 
-    def check_shrine(self, init=False):
-        if not self.isHidden() or init == True:
-            for _ in range(1,5):
-                label = self.iterables[f'perk{_}_lbl']
-                label.setStyleSheet('color:#6e6d6d;')
-                img = self.iterables[f'img{_}']
-                img.setStyleSheet('border: none;')
-                frame = self.iterables[f'frame{_}']
-                frame.setHidden(True)
-            for perk in self.desired_perks:
-                if perk in self.current_shrine:
-                    perk_index = self.current_shrine.index(perk)
-                    label = self.iterables[f'perk{perk_index}_lbl']
-                    label.setStyleSheet('color:white; font:bold')
-                    frame = self.iterables[f'frame{perk_index}']
-                    frame.setHidden(False)
-        elif self.isHidden():
-            self.signal.emit()
-            print("I'd check the shrine now!")    
+    def check_shrine(self):
+        matches = []
+        for _ in range(1,5):
+            label = self.iterables[f'perk{_}_lbl']
+            label.setStyleSheet('color:#6e6d6d;')
+            img = self.iterables[f'img{_}']
+            img.setStyleSheet('border: none;')
+            frame = self.iterables[f'frame{_}']
+            frame.setHidden(True)
+        for perk in self.desired_perks:
+            if perk in self.current_shrine:
+                matches.append(perk)
+                perk_index = self.current_shrine.index(perk)
+                label = self.iterables[f'perk{perk_index}_lbl']
+                label.setStyleSheet('color:white; font:bold')
+                frame = self.iterables[f'frame{perk_index}']
+                frame.setHidden(False)
+        print('Shrine checked.')
+        if self.isHidden():
+            return matches
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
@@ -168,27 +212,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settings_dialog.tray_check.setChecked(self.min_to_tray)
         self.settings_dialog.startup_check.setChecked(self.add_to_startup)
         self.settings_dialog.show()
-        
-    def start_thread(self):
-        print("Threading started")
-        t = Thread(target=self.show_dialog)
-        t.daemon = True
-        t.start()
-            
-    def show_dialog(self):
-        self.signal.emit()
-        self.wait_for_dialog()
-        
-    def complete_dialog(self):
-        self.dialog_done = True
-        self.show()
-
-    def wait_for_dialog(self):
-        while not self.dialog_done:
-            pass
-        self.dialog_done = False
 
     def dl_perks(self):
+        self.perks.clear()
         perks_url = 'https://deadbydaylight.gamepedia.com/Perks'
         req_perks = requests.get(perks_url)
         soup_perks = bs(req_perks.content, 'lxml')
@@ -248,11 +274,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 elif ':' in perk:
                     perk = perk.replace(':', '')
                 self.current_shrine.append(perk[:-1])
-        self.current_shrine.insert(0, str(datetime.date(datetime.now())))
+        self.current_shrine.insert(0, str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')))
         self.data_loader('save', self.current_shrine, self.shrine_csv)
         print('Shrine downloaded and saved.')
         self.load_shrine()
-        print('Shrine loaded.')
 
     def data_loader(self, action, source, target):
         if action == 'save':
@@ -281,17 +306,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.settings_dialog.close()
             self.hide()
             event.ignore()
-            self.start_thread()
+            self.start_threading()
 
 class Settings(QtWidgets.QDialog, SettingsTemplate):
-    signal = QtCore.pyqtSignal()
-    
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = SettingsTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
     
     def initVariables(self):
         self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
@@ -304,49 +328,74 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         self.startup_check.setChecked(startup)
         self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
         self.save_btn.clicked.connect(self.save)
-        self.reset_btn.clicked.connect(self.reset)
         self.close_btn.clicked.connect(self.close)
+        self.reset_btn.clicked.connect(self.reset)
 
     def save(self):
         window.min_to_tray = 1 if self.tray_check.isChecked() else 0
         window.add_to_startup = 1 if self.startup_check.isChecked() else 0
-        window.data_loader('save', [window.min_to_tray, window.add_to_startup], window.settings_csv)
-
+        window.data_loader('save', 
+                           [window.min_to_tray, window.add_to_startup],
+                            window.settings_csv)
+        
     def reset(self):
-        shutil.rmtree(window.local_dir)
-        window.load_local_data()   
+        window.dl_perks()
+        window.load_content()
             
 class Notification(QtWidgets.QDialog, NotificationTemplate):
     signal = QtCore.pyqtSignal()
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = NotificationTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        
+
     def initVariables(self):
         self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
         self.local_data = self.local_dir + '\\local'
         self.local_img = self.local_data + '\\img'
-        
+
     def setupUi(self, Dialog):
         super().setupUi(self)
+        self.iterables = {'img1': self.img1, 'img2': self.img2, 'img3': self.img3,
+                        'img4': self.img4, 'perk1_lbl': self.perk1_lbl,
+                        'perk2_lbl': self.perk2_lbl, 'perk3_lbl': self.perk3_lbl,
+                        'perk4_lbl': self.perk4_lbl, 'msg1_lbl': self.msg1_lbl,
+                        'msg2_lbl': self.msg2_lbl, 'msg3_lbl': self.msg3_lbl,
+                        'msg4_lbl': self.msg4_lbl, 1: 180, 2: 320, 3: 460,
+                        4: 600}
         self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
-        self.close_btn.clicked.connect(self.close)
+        self.close_btn.clicked.connect(self.start_threading)
+        self.show_btn.clicked.connect(self.show_ui)
+        screen = QtWidgets.QDesktopWidget().screenGeometry()
+        widget = self.geometry()
+        x = screen.width() - widget.width()
+        self.move(x, 40)
+
+    def setup_notification(self, perks):
+        self.resize(350, self.iterables[len(perks)])
+        for _ in range(1, len(perks)+1):
+            d = self.iterables[f'img{_}']
+            d.setPixmap(QtGui.QPixmap(self.local_img+f'\\{perks[_-1]}.png'))
+            d.setScaledContents(True)
+            e = self.iterables[f'perk{_}_lbl']
+            e.setText(perks[_-1])
+            f = self.iterables[f'msg{_}_lbl']
+            f.setText('Is now available!')
         
-    def show_notification(self):
-        super(Notification, self).exec_()
+    def start_threading(self):
+        self.hide()
         self.signal.emit()
+
+    def show_ui(self):
+        window.show()
+        self.hide()
         
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
-    s_dialog = Settings()
-    n_dialog = Notification()
     window.show()
-    window.signal.connect(n_dialog.show_notification)
-    n_dialog.signal.connect(window.complete_dialog)
     sys.exit(app.exec_())
