@@ -25,7 +25,7 @@
   <property name="maximumSize">
    <size>
     <width>360</width>
-    <height>200</height>
+    <height>250</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -111,14 +111,14 @@ QLabel#bg {
   <widget class="QLabel" name="reset_lbl">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>140</x>
      <y>100</y>
-     <width>230</width>
+     <width>200</width>
      <height>30</height>
     </rect>
    </property>
    <property name="text">
-    <string>Erase and download all local data.</string>
+    <string>Reload perks database.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -167,12 +167,12 @@ QLabel#bg {
     <rect>
      <x>30</x>
      <y>100</y>
-     <width>80</width>
+     <width>100</width>
      <height>30</height>
     </rect>
    </property>
    <property name="text">
-    <string>Reset</string>
+    <string>Reload perks</string>
    </property>
    <property name="checkable">
     <bool>false</bool>

@@ -20,7 +20,7 @@ class Ui_Dialog(object):
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
         Dialog.setMinimumSize(QtCore.QSize(360, 200))
-        Dialog.setMaximumSize(QtCore.QSize(360, 200))
+        Dialog.setMaximumSize(QtCore.QSize(360, 250))
         Dialog.setStyleSheet("QLabel#settings_lbl {\n"
 "    color: white;\n"
 "    font: 14pt \"Sylfaen\";\n"
@@ -63,7 +63,7 @@ class Ui_Dialog(object):
         self.settings_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.settings_lbl.setObjectName("settings_lbl")
         self.reset_lbl = QtWidgets.QLabel(Dialog)
-        self.reset_lbl.setGeometry(QtCore.QRect(120, 100, 230, 30))
+        self.reset_lbl.setGeometry(QtCore.QRect(140, 100, 200, 30))
         self.reset_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.reset_lbl.setWordWrap(True)
         self.reset_lbl.setObjectName("reset_lbl")
@@ -78,7 +78,7 @@ class Ui_Dialog(object):
         self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setObjectName("bg")
         self.reset_btn = QtWidgets.QPushButton(Dialog)
-        self.reset_btn.setGeometry(QtCore.QRect(30, 100, 80, 30))
+        self.reset_btn.setGeometry(QtCore.QRect(30, 100, 100, 30))
         self.reset_btn.setCheckable(False)
         self.reset_btn.setObjectName("reset_btn")
         self.close_btn = QtWidgets.QPushButton(Dialog)
@@ -102,9 +102,9 @@ class Ui_Dialog(object):
         self.tray_check.setText(_translate("Dialog", "Minimize to tray on exit"))
         self.save_btn.setText(_translate("Dialog", "Save"))
         self.settings_lbl.setText(_translate("Dialog", "Settings"))
-        self.reset_lbl.setText(_translate("Dialog", "Erase and download all local data."))
+        self.reset_lbl.setText(_translate("Dialog", "Reload perks database."))
         self.startup_check.setText(_translate("Dialog", "Run with startup"))
-        self.reset_btn.setText(_translate("Dialog", "Reset"))
+        self.reset_btn.setText(_translate("Dialog", "Reload perks"))
         self.close_btn.setText(_translate("Dialog", "Close"))
 
 

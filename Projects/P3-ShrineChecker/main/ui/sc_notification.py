@@ -13,14 +13,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(350, 560)
+        Dialog.resize(350, 600)
         Dialog.setMinimumSize(QtCore.QSize(350, 140))
-        Dialog.setMaximumSize(QtCore.QSize(350, 560))
+        Dialog.setMaximumSize(QtCore.QSize(350, 600))
         Dialog.setStyleSheet("font: 12pt \"Sylfaen\";\n"
 "color: rgb(255, 255, 255);\n"
+"\n"
+"\n"
 "")
         self.msg4_lbl = QtWidgets.QLabel(Dialog)
-        self.msg4_lbl.setGeometry(QtCore.QRect(140, 480, 200, 60))
+        self.msg4_lbl.setGeometry(QtCore.QRect(140, 520, 200, 60))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -31,7 +33,7 @@ class Ui_Dialog(object):
         self.msg4_lbl.setWordWrap(True)
         self.msg4_lbl.setObjectName("msg4_lbl")
         self.img1 = QtWidgets.QLabel(Dialog)
-        self.img1.setGeometry(QtCore.QRect(20, 20, 100, 100))
+        self.img1.setGeometry(QtCore.QRect(20, 60, 100, 100))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -47,19 +49,19 @@ class Ui_Dialog(object):
         self.img1.setAlignment(QtCore.Qt.AlignCenter)
         self.img1.setObjectName("img1")
         self.perk3_lbl = QtWidgets.QLabel(Dialog)
-        self.perk3_lbl.setGeometry(QtCore.QRect(130, 300, 200, 35))
+        self.perk3_lbl.setGeometry(QtCore.QRect(130, 340, 200, 35))
         self.perk3_lbl.setStyleSheet("font: 14pt \"Sylfaen\";\n"
 "background-color: rgba(0, 0, 0, 0);")
         self.perk3_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.perk3_lbl.setObjectName("perk3_lbl")
         self.perk1_lbl = QtWidgets.QLabel(Dialog)
-        self.perk1_lbl.setGeometry(QtCore.QRect(130, 20, 200, 35))
+        self.perk1_lbl.setGeometry(QtCore.QRect(130, 60, 200, 35))
         self.perk1_lbl.setStyleSheet("font: 14pt \"Sylfaen\";\n"
 "background-color: rgba(0, 0, 0, 0);")
         self.perk1_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.perk1_lbl.setObjectName("perk1_lbl")
         self.img3 = QtWidgets.QLabel(Dialog)
-        self.img3.setGeometry(QtCore.QRect(20, 300, 100, 100))
+        self.img3.setGeometry(QtCore.QRect(20, 340, 100, 100))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -75,7 +77,7 @@ class Ui_Dialog(object):
         self.img3.setAlignment(QtCore.Qt.AlignCenter)
         self.img3.setObjectName("img3")
         self.msg3_lbl = QtWidgets.QLabel(Dialog)
-        self.msg3_lbl.setGeometry(QtCore.QRect(140, 340, 200, 60))
+        self.msg3_lbl.setGeometry(QtCore.QRect(140, 380, 200, 60))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -86,7 +88,7 @@ class Ui_Dialog(object):
         self.msg3_lbl.setWordWrap(True)
         self.msg3_lbl.setObjectName("msg3_lbl")
         self.msg2_lbl = QtWidgets.QLabel(Dialog)
-        self.msg2_lbl.setGeometry(QtCore.QRect(140, 200, 200, 60))
+        self.msg2_lbl.setGeometry(QtCore.QRect(140, 240, 200, 60))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -97,7 +99,7 @@ class Ui_Dialog(object):
         self.msg2_lbl.setWordWrap(True)
         self.msg2_lbl.setObjectName("msg2_lbl")
         self.img4 = QtWidgets.QLabel(Dialog)
-        self.img4.setGeometry(QtCore.QRect(20, 440, 100, 100))
+        self.img4.setGeometry(QtCore.QRect(20, 480, 100, 100))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -113,7 +115,7 @@ class Ui_Dialog(object):
         self.img4.setAlignment(QtCore.Qt.AlignCenter)
         self.img4.setObjectName("img4")
         self.img2 = QtWidgets.QLabel(Dialog)
-        self.img2.setGeometry(QtCore.QRect(20, 160, 100, 100))
+        self.img2.setGeometry(QtCore.QRect(20, 200, 100, 100))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -129,7 +131,7 @@ class Ui_Dialog(object):
         self.img2.setAlignment(QtCore.Qt.AlignCenter)
         self.img2.setObjectName("img2")
         self.perk4_lbl = QtWidgets.QLabel(Dialog)
-        self.perk4_lbl.setGeometry(QtCore.QRect(130, 440, 200, 35))
+        self.perk4_lbl.setGeometry(QtCore.QRect(130, 480, 200, 35))
         self.perk4_lbl.setStyleSheet("font: 14pt \"Sylfaen\";\n"
 "background-color: rgba(0, 0, 0, 0);")
         self.perk4_lbl.setAlignment(QtCore.Qt.AlignCenter)
@@ -147,7 +149,7 @@ class Ui_Dialog(object):
         self.bg.setScaledContents(True)
         self.bg.setObjectName("bg")
         self.msg1_lbl = QtWidgets.QLabel(Dialog)
-        self.msg1_lbl.setGeometry(QtCore.QRect(140, 60, 200, 60))
+        self.msg1_lbl.setGeometry(QtCore.QRect(140, 100, 200, 60))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -158,13 +160,32 @@ class Ui_Dialog(object):
         self.msg1_lbl.setWordWrap(True)
         self.msg1_lbl.setObjectName("msg1_lbl")
         self.perk2_lbl = QtWidgets.QLabel(Dialog)
-        self.perk2_lbl.setGeometry(QtCore.QRect(130, 160, 200, 35))
+        self.perk2_lbl.setGeometry(QtCore.QRect(130, 200, 200, 35))
         self.perk2_lbl.setStyleSheet("font: 14pt \"Sylfaen\";\n"
 "background-color: rgba(0, 0, 0, 0);")
         self.perk2_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.perk2_lbl.setObjectName("perk2_lbl")
+        self.show_btn = QtWidgets.QPushButton(Dialog)
+        self.show_btn.setGeometry(QtCore.QRect(90, 10, 80, 25))
+        self.show_btn.setStyleSheet("QPushButton {\n"
+"    background-color:#2F3538;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color:#404040;\n"
+"}\n"
+"")
+        self.show_btn.setObjectName("show_btn")
         self.close_btn = QtWidgets.QPushButton(Dialog)
-        self.close_btn.setGeometry(QtCore.QRect(260, 20, 75, 23))
+        self.close_btn.setGeometry(QtCore.QRect(180, 10, 80, 25))
+        self.close_btn.setStyleSheet("QPushButton {\n"
+"    background-color:#2F3538;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color:#404040;\n"
+"}\n"
+"")
         self.close_btn.setObjectName("close_btn")
         self.bg.raise_()
         self.msg4_lbl.raise_()
@@ -179,6 +200,7 @@ class Ui_Dialog(object):
         self.perk4_lbl.raise_()
         self.msg1_lbl.raise_()
         self.perk2_lbl.raise_()
+        self.show_btn.raise_()
         self.close_btn.raise_()
 
         self.retranslateUi(Dialog)
@@ -195,7 +217,8 @@ class Ui_Dialog(object):
         self.perk4_lbl.setText(_translate("Dialog", "Perk"))
         self.msg1_lbl.setText(_translate("Dialog", "message"))
         self.perk2_lbl.setText(_translate("Dialog", "Perk"))
-        self.close_btn.setText(_translate("Dialog", "CLOSE"))
+        self.show_btn.setText(_translate("Dialog", "Show"))
+        self.close_btn.setText(_translate("Dialog", "Close"))
 
 
 if __name__ == "__main__":
