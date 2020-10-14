@@ -14,6 +14,8 @@ from ui.sc_notification import Ui_Dialog as NotificationTemplate
 
 #TO DO LIST:
 #Interrupt thread when main window shown
+#Make try/except for no internet connection case
+#Make progress bar dialog for perks loading and initial download
 #Proper CSS
 
 class Thread(QtCore.QThread):
@@ -39,6 +41,7 @@ class Thread(QtCore.QThread):
                 return None
             self.sleep(1)
         self.check_shrine()
+        print('Thread finished')
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     signal = QtCore.pyqtSignal()
@@ -141,11 +144,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         
     def show_ui(self):
         #Interrupt the thread's work here
-        self.dl_shrine()
-        self.check_shrine()
-        self.show()
+        if self.isHidden():
+            self.dl_shrine()
+            self.check_shrine()
+            self.show()
+        else:
+            return None
     
     def start_threading(self):
+        print('Starting threading')
         self.thread.start()
 
     def notify(self, matching_perks):
@@ -182,8 +189,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 frame = self.iterables[f'frame{perk_index}']
                 frame.setHidden(False)
         print('Shrine checked.')
-        if self.isHidden():
-            return matches
+        return matches
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
@@ -365,7 +371,9 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         'perk4_lbl': self.perk4_lbl, 'msg1_lbl': self.msg1_lbl,
                         'msg2_lbl': self.msg2_lbl, 'msg3_lbl': self.msg3_lbl,
                         'msg4_lbl': self.msg4_lbl, 1: 180, 2: 320, 3: 460,
-                        4: 600}
+                        4: 600, 'frame1': self.frame1,
+                        'frame2': self.frame2, 'frame3': self.frame3,
+                        'frame4': self.frame4}
         self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
@@ -373,7 +381,11 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         widget = self.geometry()
         x = screen.width() - widget.width()
         self.move(x, 40)
-
+        for _ in range(1,5):
+                frame = self.iterables[f'frame{_}']
+                frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
+                frame.setScaledContents(True)
+        
     def setup_notification(self, perks):
         self.resize(350, self.iterables[len(perks)])
         for _ in range(1, len(perks)+1):
