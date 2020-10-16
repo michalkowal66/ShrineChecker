@@ -356,6 +356,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
                             window.settings_csv)
         
     def reset(self):
+        pass
         #Send threading signal here
         #window.progress_bar.show()
         # window.dl_perks()
