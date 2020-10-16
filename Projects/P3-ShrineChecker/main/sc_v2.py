@@ -16,10 +16,11 @@ from ui.sc_progress import Ui_Dialog as ProgressBarTemplate
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
 #Make try/except for no internet connection case
-#Implement progress bar dialog for perks loading and initial download
+#Implement add to startup function 
+#Repair the button on progress bar to be disabled form settings dialog
 #Better CSS - font, buttons
 
-class Thread(QtCore.QThread):
+class Notifier(QtCore.QThread):
     found_signal = QtCore.pyqtSignal(list)
     empty_signal = QtCore.pyqtSignal()
 
@@ -37,25 +38,39 @@ class Thread(QtCore.QThread):
             
     @QtCore.pyqtSlot()
     def run(self):
-        for _ in range(5):
+        # for _ in range(window.refr_notif*60*60):
+        for _ in range(10):
             if not window.isHidden():
                 return None
             self.sleep(1)
         self.check_shrine()
         print('Thread finished')
 
+class Loader(QtCore.QThread):
+    finished_signal = QtCore.pyqtSignal(float, float, str) 
+    def __init__(self, init=False, parent=None):
+        super().__init__(parent)
+        self.init = init
+    
+    @QtCore.pyqtSlot()
+    def run(self):
+        if self.init:
+            window.load_local_data()
+            window.load_content(init=True)
+            window.check_shrine()
+            self.finished_signal.emit(1.0, 1.0, "Finished work.")
+        else:
+            print("Second case")
+            window.dl_perks()
+            self.finished_signal.emit(1.0, 1.0, "Finished work.")
+
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
+    progress_signal = QtCore.pyqtSignal(float, float, str)
+    
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.initVariables()
-        self.settings_dialog = Settings()
-        self.notification_dialog = Notification()
-        self.notification_dialog.signal.connect(self.start_threading)
-        self.thread = Thread()
-        self.thread.found_signal.connect(self.notify)
-        self.thread.empty_signal.connect(self.start_threading)
-        self.progress_bar = ProgressBar()
         self.setupUi(self)
         
     def initVariables(self):
@@ -77,7 +92,30 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.refr_notif = 2
         self.refr_ui = 2
         self.refr_intervals = [2, 4, 6, 8]
+        self.total_tasks = 1.0
         
+    def initDialogs(self):
+        self.progress_bar = ProgressBar()
+        self.settings_dialog = Settings()
+        self.notification_dialog = Notification()
+        self.notification_dialog.signal.connect(self.start_threading)
+        self.loader_thread = Loader()
+        self.loader_thread.finished_signal.connect(self.loading_finished)
+        self.notifier_thread = Notifier()
+        self.notifier_thread.found_signal.connect(self.notify)
+        self.notifier_thread.empty_signal.connect(self.start_threading)
+        
+    def initData(self):
+        if not os.path.exists(self.local_dir):
+            self.progress_bar.show()
+            self.loader_thread.init = True
+            self.loader_thread.start()
+        else:
+            self.load_local_data()
+            self.load_content(init=True)
+            self.check_shrine()
+            self.show()
+            
     def setupUi(self, MainWindow):
         super().setupUi(self)
         self.iterables = {'img1': self.img1, 'img2': self.img2, 'img3': self.img3,
@@ -86,17 +124,14 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         'perk4_lbl': self.perk4_lbl, 'frame1': self.frame1,
                         'frame2': self.frame2, 'frame3': self.frame3,
                         'frame4': self.frame4} 
-        self.load_local_data()
-        self.load_content(init=True)
-        self.check_shrine()
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reload_btn.clicked.connect(self.dl_shrine)
         self.settings_btn.clicked.connect(self.open_settings)
-        self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
         self.bg.setScaledContents(True)
-        self.settings_btn.setIcon(QtGui.QIcon(f'{self.local_img}\\settings.png'))
-        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(f'{self.local_img}\\icon.ico'), parent=app)
+        self.settings_btn.setIcon(QtGui.QIcon(f'{test_dir}\\settings.png'))
+        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(f'{test_dir}\\icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
         showAction = menu.addAction('Show')
@@ -108,8 +143,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         menu.show()
         tray_icon.setContextMenu(menu)
     
+    def loading_finished(self, total_tasks, task, message):
+        self.progress_bar.updateProgress(total_tasks, task, message)
+        if self.isHidden():
+            self.show()
+        self.progress_bar.close_btn.setEnabled(True)
+    
     def load_local_data(self):
         if not os.path.exists(self.local_dir):
+            self.progress_signal.emit(self.total_tasks, 0.0, "Preparing local directory.")
             os.mkdir(self.local_dir)
             os.mkdir(self.local_data)
             os.mkdir(self.local_data + '\\img')
@@ -121,6 +163,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                              [self.min_to_tray, self.add_to_startup, 
                               self.refr_notif, self.refr_ui], 
                              self.settings_csv)
+            self.progress_signal.emit(self.total_tasks, 1.0, "Prepared local directory.")
             self.dl_perks()
             self.dl_shrine()
         else:
@@ -159,7 +202,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def start_threading(self):
         print('Starting threading')
-        self.thread.start()
+        self.notifier_thread.start()
 
     def notify(self, matching_perks):
         self.notification_dialog.setup_notification(matching_perks)
@@ -234,16 +277,23 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         soup_perks = bs(req_perks.content, 'lxml')
         surv_perks_table_raw, killer_perks_table_raw = soup_perks.find_all('table',{'class':'wikitable sortable'})
         surv_perks_table, killer_perks_table = surv_perks_table_raw.find('tbody').find_all('tr'), killer_perks_table_raw.find('tbody').find_all('tr')
+        surv_perks_count_raw = surv_perks_table_raw.find_previous_sibling()
+        surv_perks_count = float(surv_perks_count_raw.find('span')['id'][-3:-1])
+        killer_perks_count_raw = killer_perks_table_raw.find_previous_sibling()
+        killer_perks_count = float(killer_perks_count_raw.find('span')['id'][-3:-1])
+        current_task = 0.0
+        total_tasks = surv_perks_count + killer_perks_count - 26.0
 
         for row in surv_perks_table:
             cells = row.find_all('th')
+            if cells[2].find('a') is None:
+                continue
             raw_perk = cells[1].get_text()
             if raw_perk.startswith('Name'):
                 continue
             perk = raw_perk[:-1]
-            if perk == 'Déjà Vu':
-                    perk = 'Deja Vu'
             print(f'\nDownloading: {perk}')
+            self.progress_signal.emit(total_tasks, current_task, f'Downloading: {perk}')
             img_tag = cells[0].find('a')
             if img_tag is not None:
                 img_url = img_tag.find('img')['src']
@@ -251,15 +301,20 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     img = requests.get(img_url)
                     f.write(img.content)
             self.perks.append(perk)
+            current_task += 1.0
+            self.progress_signal.emit(total_tasks, current_task, f'{perk} downloaded!')
             print(f'{perk} downloaded!')
 
         for row in killer_perks_table:
             cells = row.find_all('th')
+            if cells[2].find('a') is None:
+                continue
             raw_perk = cells[1].get_text()
             if raw_perk.startswith('Name'):
                 continue
             perk = raw_perk[:-1]
             print(f'\nDownloading: {perk}')
+            self.progress_signal.emit(total_tasks, current_task, f'Downloading: {perk}')
             img_tag = cells[0].find('a')
             if img_tag is not None:
                 img_url = img_tag.find('img')['src']
@@ -269,7 +324,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     img = requests.get(img_url)
                     f.write(img.content)
             self.perks.append(perk)
+            current_task += 1.0
+            self.progress_signal.emit(total_tasks, current_task, f'{perk} downloaded!')
             print(f'{perk} downloaded!')
+        self.progress_signal.emit(total_tasks, current_task, f'Finishing...')
         self.data_loader('save', self.perks, self.perks_csv)
         print('Perks downloaded and saved.')
     
@@ -340,7 +398,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         super().setupUi(self)
         self.tray_check.setChecked(tray)
         self.startup_check.setChecked(startup)
-        self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
         self.reset_btn.clicked.connect(self.reset)
@@ -356,11 +414,9 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
                             window.settings_csv)
         
     def reset(self):
-        pass
-        #Send threading signal here
-        #window.progress_bar.show()
-        # window.dl_perks()
-        # window.load_content()
+        window.progress_bar.show()
+        window.loader_thread.init = False
+        window.loader_thread.start()
             
 class Notification(QtWidgets.QDialog, NotificationTemplate):
     signal = QtCore.pyqtSignal()
@@ -388,7 +444,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         4: 600, 'frame1': self.frame1,
                         'frame2': self.frame2, 'frame3': self.frame3,
                         'frame4': self.frame4}
-        self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
         screen = QtWidgets.QDesktopWidget().screenGeometry()
@@ -397,7 +453,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         self.move(x, 40)
         for _ in range(1,5):
                 frame = self.iterables[f'frame{_}']
-                frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
+                frame.setPixmap(QtGui.QPixmap(test_dir+f'/frame1.png'))
                 frame.setScaledContents(True)
         
     def setup_notification(self, perks):
@@ -427,7 +483,7 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.total_tasks = None
+        window.progress_signal.connect(self.updateProgress)
     
     def initVariables(self):
         self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
@@ -436,15 +492,21 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         
     def setupUi(self, Dialog):
         super().setupUi(self)
-        self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
+        self.progress_bar.setValue(0)
+        self.msg_lbl.setText('Starting work...')
+        self.close_btn.clicked.connect(self.close)
+        self.close_btn.setEnabled(False)
     
-    def updateProgress(self, current_task, message):
-        self.progress_bar.setValue(100*current_task/self.total_tasks)
+    def updateProgress(self, total_tasks, current_task, message):
+        self.progress_bar.setValue(100.0*current_task/total_tasks)
         self.msg_lbl.setText(message)
 
 if __name__ == '__main__':
+    test_dir = os.path.expanduser('~') + '\\Documents'
     import sys
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
-    window.show()
+    window.initDialogs()
+    window.initData()
     sys.exit(app.exec_())
