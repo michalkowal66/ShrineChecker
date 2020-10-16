@@ -13,14 +13,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(360, 200)
+        Dialog.resize(360, 300)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
-        Dialog.setMinimumSize(QtCore.QSize(360, 200))
-        Dialog.setMaximumSize(QtCore.QSize(360, 250))
+        Dialog.setMinimumSize(QtCore.QSize(360, 300))
+        Dialog.setMaximumSize(QtCore.QSize(360, 300))
         Dialog.setStyleSheet("QLabel#settings_lbl {\n"
 "    color: white;\n"
 "    font: 14pt \"Sylfaen\";\n"
@@ -50,20 +50,41 @@ class Ui_Dialog(object):
 "\n"
 "QLabel#bg {\n"
 "    border: 1px solid rgba(255, 255, 255, 0.2);\n"
+"}\n"
+"\n"
+"QComboBox {\n"
+"    color: white;\n"
+"    font: 12pt \"Sylfaen\";\n"
+"    background-color:#2F3538;\n"
+"    selection-background-color:#2F3538;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    color: white;\n"
+"    font: 12pt \"Sylfaen\";\n"
+"    background-color:#2F3538;\n"
+"    selection-background-color: #404040;\n"
+"    outline: 0;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {    \n"
+"    color: white;\n"
+"    font: 12pt \"Sylfaen\";\n"
+"    background:#404040;\n"
 "}")
         self.tray_check = QtWidgets.QCheckBox(Dialog)
         self.tray_check.setGeometry(QtCore.QRect(30, 40, 200, 20))
         self.tray_check.setChecked(False)
         self.tray_check.setObjectName("tray_check")
         self.save_btn = QtWidgets.QPushButton(Dialog)
-        self.save_btn.setGeometry(QtCore.QRect(90, 150, 80, 30))
+        self.save_btn.setGeometry(QtCore.QRect(90, 250, 80, 30))
         self.save_btn.setObjectName("save_btn")
         self.settings_lbl = QtWidgets.QLabel(Dialog)
         self.settings_lbl.setGeometry(QtCore.QRect(140, 10, 80, 25))
         self.settings_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.settings_lbl.setObjectName("settings_lbl")
         self.reset_lbl = QtWidgets.QLabel(Dialog)
-        self.reset_lbl.setGeometry(QtCore.QRect(140, 100, 200, 30))
+        self.reset_lbl.setGeometry(QtCore.QRect(140, 200, 200, 40))
         self.reset_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.reset_lbl.setWordWrap(True)
         self.reset_lbl.setObjectName("reset_lbl")
@@ -72,18 +93,44 @@ class Ui_Dialog(object):
         self.startup_check.setChecked(False)
         self.startup_check.setObjectName("startup_check")
         self.bg = QtWidgets.QLabel(Dialog)
-        self.bg.setGeometry(QtCore.QRect(0, 0, 360, 200))
+        self.bg.setGeometry(QtCore.QRect(0, 0, 360, 300))
         self.bg.setStyleSheet("")
         self.bg.setText("")
         self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setObjectName("bg")
         self.reset_btn = QtWidgets.QPushButton(Dialog)
-        self.reset_btn.setGeometry(QtCore.QRect(30, 100, 100, 30))
+        self.reset_btn.setGeometry(QtCore.QRect(30, 205, 100, 30))
         self.reset_btn.setCheckable(False)
         self.reset_btn.setObjectName("reset_btn")
         self.close_btn = QtWidgets.QPushButton(Dialog)
-        self.close_btn.setGeometry(QtCore.QRect(190, 150, 80, 30))
+        self.close_btn.setGeometry(QtCore.QRect(190, 250, 80, 30))
         self.close_btn.setObjectName("close_btn")
+        self.notif_combo = QtWidgets.QComboBox(Dialog)
+        self.notif_combo.setGeometry(QtCore.QRect(30, 100, 50, 30))
+        self.notif_combo.setStyleSheet("")
+        self.notif_combo.setObjectName("notif_combo")
+        self.notif_combo.addItem("")
+        self.notif_combo.addItem("")
+        self.notif_combo.addItem("")
+        self.notif_combo.addItem("")
+        self.refr_combo = QtWidgets.QComboBox(Dialog)
+        self.refr_combo.setGeometry(QtCore.QRect(30, 150, 50, 30))
+        self.refr_combo.setStyleSheet("")
+        self.refr_combo.setObjectName("refr_combo")
+        self.refr_combo.addItem("")
+        self.refr_combo.addItem("")
+        self.refr_combo.addItem("")
+        self.refr_combo.addItem("")
+        self.notif_lbl = QtWidgets.QLabel(Dialog)
+        self.notif_lbl.setGeometry(QtCore.QRect(90, 100, 200, 30))
+        self.notif_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.notif_lbl.setWordWrap(True)
+        self.notif_lbl.setObjectName("notif_lbl")
+        self.refr_lbl = QtWidgets.QLabel(Dialog)
+        self.refr_lbl.setGeometry(QtCore.QRect(90, 150, 200, 30))
+        self.refr_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.refr_lbl.setWordWrap(True)
+        self.refr_lbl.setObjectName("refr_lbl")
         self.bg.raise_()
         self.tray_check.raise_()
         self.save_btn.raise_()
@@ -92,6 +139,10 @@ class Ui_Dialog(object):
         self.startup_check.raise_()
         self.reset_btn.raise_()
         self.close_btn.raise_()
+        self.notif_combo.raise_()
+        self.refr_combo.raise_()
+        self.notif_lbl.raise_()
+        self.refr_lbl.raise_()
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -102,10 +153,20 @@ class Ui_Dialog(object):
         self.tray_check.setText(_translate("Dialog", "Minimize to tray on exit"))
         self.save_btn.setText(_translate("Dialog", "Save"))
         self.settings_lbl.setText(_translate("Dialog", "Settings"))
-        self.reset_lbl.setText(_translate("Dialog", "Reload perks database."))
+        self.reset_lbl.setText(_translate("Dialog", "Redownload local database of available perks"))
         self.startup_check.setText(_translate("Dialog", "Run with startup"))
         self.reset_btn.setText(_translate("Dialog", "Reload perks"))
         self.close_btn.setText(_translate("Dialog", "Close"))
+        self.notif_combo.setItemText(0, _translate("Dialog", "2"))
+        self.notif_combo.setItemText(1, _translate("Dialog", "4"))
+        self.notif_combo.setItemText(2, _translate("Dialog", "6"))
+        self.notif_combo.setItemText(3, _translate("Dialog", "8"))
+        self.refr_combo.setItemText(0, _translate("Dialog", "2"))
+        self.refr_combo.setItemText(1, _translate("Dialog", "4"))
+        self.refr_combo.setItemText(2, _translate("Dialog", "6"))
+        self.refr_combo.setItemText(3, _translate("Dialog", "8"))
+        self.notif_lbl.setText(_translate("Dialog", "Notification interval (hours)"))
+        self.refr_lbl.setText(_translate("Dialog", "Auto-refresh interval (hours)"))
 
 
 if __name__ == "__main__":
