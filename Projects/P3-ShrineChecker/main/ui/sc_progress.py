@@ -42,7 +42,23 @@ class Ui_Dialog(object):
 "}\n"
 "QProgressBar::chunk {\n"
 "background-color: white;\n"
-"}  ")
+"}  \n"
+"\n"
+"QPushButton {\n"
+"    color: white;\n"
+"    font: 12pt \"Sylfaen\";\n"
+"    background-color:#2F3538;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color:#404040;\n"
+"}\n"
+"\n"
+"QPushButton:disabled {\n"
+"    color: black;\n"
+"    background-color:#141718;\n"
+"}\n"
+"")
         self.bg = QtWidgets.QLabel(Dialog)
         self.bg.setGeometry(QtCore.QRect(0, 0, 360, 150))
         self.bg.setStyleSheet("")
@@ -50,19 +66,23 @@ class Ui_Dialog(object):
         self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setObjectName("bg")
         self.progress_bar = QtWidgets.QProgressBar(Dialog)
-        self.progress_bar.setGeometry(QtCore.QRect(20, 110, 320, 30))
+        self.progress_bar.setGeometry(QtCore.QRect(20, 65, 320, 30))
         self.progress_bar.setProperty("value", 24)
         self.progress_bar.setAlignment(QtCore.Qt.AlignCenter)
         self.progress_bar.setObjectName("progress_bar")
         self.wait_lbl = QtWidgets.QLabel(Dialog)
-        self.wait_lbl.setGeometry(QtCore.QRect(0, 10, 360, 30))
+        self.wait_lbl.setGeometry(QtCore.QRect(0, 5, 360, 20))
         self.wait_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.wait_lbl.setObjectName("wait_lbl")
         self.msg_lbl = QtWidgets.QLabel(Dialog)
-        self.msg_lbl.setGeometry(QtCore.QRect(20, 50, 320, 50))
+        self.msg_lbl.setGeometry(QtCore.QRect(20, 30, 320, 25))
         self.msg_lbl.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignHCenter)
         self.msg_lbl.setWordWrap(True)
         self.msg_lbl.setObjectName("msg_lbl")
+        self.close_btn = QtWidgets.QPushButton(Dialog)
+        self.close_btn.setGeometry(QtCore.QRect(140, 105, 80, 30))
+        self.close_btn.setStyleSheet("")
+        self.close_btn.setObjectName("close_btn")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -72,6 +92,7 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.wait_lbl.setText(_translate("Dialog", "Please wait..."))
         self.msg_lbl.setText(_translate("Dialog", "Progress message"))
+        self.close_btn.setText(_translate("Dialog", "Done"))
 
 
 if __name__ == "__main__":
