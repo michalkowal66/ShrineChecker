@@ -11,19 +11,20 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from ui.sc_ui import Ui_MainWindow
 from ui.sc_settings import Ui_Dialog as SettingsTemplate
 from ui.sc_notification import Ui_Dialog as NotificationTemplate
+from ui.sc_progress import Ui_Dialog as ProgressBarTemplate
 
 #TO DO LIST:
-#Interrupt thread when main window shown
+#Interrupt thread when main window shown (if needed)
 #Make try/except for no internet connection case
-#Make progress bar dialog for perks loading and initial download
-#Proper CSS
+#Implement progress bar dialog for perks loading and initial download
+#Better CSS - font, buttons
 
 class Thread(QtCore.QThread):
     found_signal = QtCore.pyqtSignal(list)
     empty_signal = QtCore.pyqtSignal()
 
-    def __init__(self):
-        QtCore.QThread.__init__(self, parent=app)
+    def __init__(self, parent=None):
+        super().__init__(parent)
         
     def check_shrine(self):
         print('Checking shrine in background')
@@ -36,7 +37,7 @@ class Thread(QtCore.QThread):
             
     @QtCore.pyqtSlot()
     def run(self):
-        for _ in range(10):
+        for _ in range(5):
             if not window.isHidden():
                 return None
             self.sleep(1)
@@ -44,20 +45,20 @@ class Thread(QtCore.QThread):
         print('Thread finished')
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
-    signal = QtCore.pyqtSignal()
-    
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self)
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.initVariables()
+        self.settings_dialog = Settings()
+        self.notification_dialog = Notification()
+        self.notification_dialog.signal.connect(self.start_threading)
+        self.thread = Thread()
+        self.thread.found_signal.connect(self.notify)
+        self.thread.empty_signal.connect(self.start_threading)
+        self.progress_bar = ProgressBar()
         self.setupUi(self)
         
     def initVariables(self):
-        self.dialog_done = False
-        self.current_shrine = []
-        self.desired_perks = []
-        self.perks = []
-        self.settings = []
         self.perks_csv = 'perks.csv'
         self.shrine_csv = 'shrine.csv'
         self.desired_perks_csv = 'desired_perks.csv'
@@ -65,15 +66,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
         self.local_data = self.local_dir + '\\local'
         self.local_img = self.local_data + '\\img'
+        self.dialog_done = False
+        self.current_shrine = []
+        self.desired_perks = []
+        self.perks = []
+        self.settings = []
         self.iterables = None
         self.min_to_tray = 1
         self.add_to_startup = 1
-        self.settings_dialog = Settings()
-        self.notification_dialog = Notification()
-        self.notification_dialog.signal.connect(self.start_threading)
-        self.thread = Thread()
-        self.thread.found_signal.connect(self.notify)
-        self.thread.empty_signal.connect(self.start_threading)
+        self.refr_notif = 2
+        self.refr_ui = 2
+        self.refr_intervals = [2, 4, 6, 8]
         
     def setupUi(self, MainWindow):
         super().setupUi(self)
@@ -114,7 +117,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
             with open(f'{self.local_data}/{self.desired_perks_csv}', 'a'):
                 os.utime(f'{self.local_data}/{self.desired_perks_csv}', None)
-            self.data_loader('save', [self.min_to_tray, self.add_to_startup], self.settings_csv)
+            self.data_loader('save', 
+                             [self.min_to_tray, self.add_to_startup, 
+                              self.refr_notif, self.refr_ui], 
+                             self.settings_csv)
             self.dl_perks()
             self.dl_shrine()
         else:
@@ -126,7 +132,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 reader = csv.reader(f)
                 for line in reader:
                     self.settings.append(int(line[0]))   
-            self.min_to_tray, self.add_to_startup = self.settings
+            self.min_to_tray, self.add_to_startup, self.refr_notif, self.refr_ui = self.settings
 
     def load_content(self, init=False):
         self.perks_combo.clear()
@@ -217,6 +223,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def open_settings(self):
         self.settings_dialog.tray_check.setChecked(self.min_to_tray)
         self.settings_dialog.startup_check.setChecked(self.add_to_startup)
+        self.settings_dialog.notif_combo.setCurrentIndex(self.refr_intervals.index(self.refr_notif))
+        self.settings_dialog.refr_combo.setCurrentIndex(self.refr_intervals.index(self.refr_ui))
         self.settings_dialog.show()
 
     def dl_perks(self):
@@ -340,13 +348,18 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
     def save(self):
         window.min_to_tray = 1 if self.tray_check.isChecked() else 0
         window.add_to_startup = 1 if self.startup_check.isChecked() else 0
+        window.refr_notif = int(self.notif_combo.currentText())
+        window.refr_ui = int(self.refr_combo.currentText())
         window.data_loader('save', 
-                           [window.min_to_tray, window.add_to_startup],
+                           [window.min_to_tray, window.add_to_startup,
+                            window.refr_notif, window.refr_ui],
                             window.settings_csv)
         
     def reset(self):
-        window.dl_perks()
-        window.load_content()
+        #Send threading signal here
+        #window.progress_bar.show()
+        # window.dl_perks()
+        # window.load_content()
             
 class Notification(QtWidgets.QDialog, NotificationTemplate):
     signal = QtCore.pyqtSignal()
@@ -405,6 +418,29 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         window.show()
         self.hide()
         
+class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = ProgressBarTemplate()
+        self.initVariables()
+        self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.total_tasks = None
+    
+    def initVariables(self):
+        self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
+        self.local_data = self.local_dir + '\\local'
+        self.local_img = self.local_data + '\\img'
+        
+    def setupUi(self, Dialog):
+        super().setupUi(self)
+        self.bg.setPixmap(QtGui.QPixmap(f'{self.local_img}\\bg.png'))
+    
+    def updateProgress(self, current_task, message):
+        self.progress_bar.setValue(100*current_task/self.total_tasks)
+        self.msg_lbl.setText(message)
+
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
