@@ -1,7 +1,7 @@
 import csv
 import io
 import os
-import shutil
+import send2trash
 import requests
 import time
 from csv import reader
@@ -16,26 +16,31 @@ from ui.sc_error import Ui_Dialog as ErrorTemplate
 
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
-#Make try/except for no internet connection case
-#Implement add to startup function 
+#Implement add to startup function
+#Decide whether to keep the auto-refresh combobox
+#Scrape the date of shrine refresh and put in ui(?)
 #Find a way to add icons and background to the script
 #Better CSS - font, buttons
 
 class Notifier(QtCore.QThread):
     found_signal = QtCore.pyqtSignal(list)
     empty_signal = QtCore.pyqtSignal()
+    error_signal = QtCore.pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         
     def check_shrine(self):
         print('Checking shrine in background')
-        window.dl_shrine()
-        matches = window.check_shrine()
-        if len(matches) > 0:
-            self.found_signal.emit(matches)
-        else:
+        if window.dl_shrine() == 'Error':
+            self.error_signal.emit('Data_download')
             self.empty_signal.emit()
+        else:
+            matches = window.check_shrine()
+            if len(matches) > 0:
+                self.found_signal.emit(matches)
+            else:
+                self.empty_signal.emit()
             
     @QtCore.pyqtSlot()
     def run(self):
@@ -48,7 +53,8 @@ class Notifier(QtCore.QThread):
         print('Thread finished')
 
 class Loader(QtCore.QThread):
-    finished_signal = QtCore.pyqtSignal(float, float, str) 
+    finished_signal = QtCore.pyqtSignal(bool, float, float, str)
+    error_signal = QtCore.pyqtSignal(str)
 
     def __init__(self, init=False, parent=None):
         super().__init__(parent)
@@ -58,12 +64,26 @@ class Loader(QtCore.QThread):
     def run(self):
         if self.init:
             window.load_local_data()
-            window.load_content(init=True)
-            window.check_shrine()
-            self.finished_signal.emit(1.0, 1.0, "Finished work.")
+            try:
+                window.dl_perks()
+                window.dl_shrine()
+            except:
+                self.error_signal.emit('Data_download')
+                self.finished_signal.emit(False, 1.0, 0.0, 'An error occured during download.')
+                send2trash.send2trash(window.local_dir)
+            else:
+                window.load_content(init=True)
+                window.load_shrine(init=True)
+                self.finished_signal.emit(True, 1.0, 1.0, 'Finished work.')
         else:
-            window.dl_perks()
-            self.finished_signal.emit(1.0, 1.0, "Finished work.")
+            try:
+                window.dl_perks()
+            except:
+                self.error_signal.emit('Data_download')
+                self.finished_signal.emit(False, 1.0, 0.0, 'An error occured during download.')
+                
+            else:
+                self.finished_signal.emit(True, 1.0, 1.0, 'Finished work.')
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     progress_signal = QtCore.pyqtSignal(float, float, str)
@@ -102,9 +122,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.notification_dialog.signal.connect(self.start_threading)
         self.loader_thread = Loader()
         self.loader_thread.finished_signal.connect(self.loading_finished)
+        self.loader_thread.error_signal.connect(self.connectionError)
         self.notifier_thread = Notifier()
         self.notifier_thread.found_signal.connect(self.notify)
         self.notifier_thread.empty_signal.connect(self.start_threading)
+        self.notifier_thread.error_signal.connect(self.connectionError)
         self.error_dialog = ErrorDialog()
         
     def initData(self):
@@ -115,12 +137,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.loader_thread.start()
         else:
             try:
-                self.load_local_data()
-                self.load_content(init=True)
-                self.check_shrine()
+                self.dl_shrine()  
             except:
                 self.connectionError('Data_download')
-            else:
+            finally:
+                self.load_local_data()
+                self.load_content(init=True)
+                self.load_shrine(init=True)
                 self.show()
             
     def setupUi(self, MainWindow):
@@ -150,9 +173,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         menu.show()
         tray_icon.setContextMenu(menu)
     
-    def loading_finished(self, total_tasks, task, message):
+    def loading_finished(self, status, total_tasks, task, message):
         self.progress_bar.updateProgress(total_tasks, task, message)
-        if self.isHidden():
+        if self.isHidden() and status:
             self.show()
         self.progress_bar.close_btn.setEnabled(True)
     
@@ -171,10 +194,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                               self.refr_notif, self.refr_ui], 
                              self.settings_csv)
             self.progress_signal.emit(self.total_tasks, 1.0, "Prepared local directory.")
-            self.dl_perks()
-            self.dl_shrine()
-        else:
-            self.dl_shrine()     
+        else:   
             self.data_loader('load', self.desired_perks_csv, self.desired_perks)
             self.data_loader('load', self.perks_csv, self.perks)
             self.data_loader('load', self.shrine_csv, self.current_shrine)
@@ -213,9 +233,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def show_ui(self):
         #Interrupt the thread's work here
         if self.isHidden():
-            self.dl_shrine()
-            self.check_shrine()
-            self.show()
+            try:
+                self.dl_shrine()
+                self.check_shrine()
+            except:
+                self.connectionError('Data_download')
+            finally:
+                self.show()
         else:
             return None
     
@@ -278,7 +302,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settings_dialog.show()
 
     def dl_perks(self):
-        self.perks.clear()
         perks_url = 'https://deadbydaylight.gamepedia.com/Perks'
         req_perks = requests.get(perks_url)
         soup_perks = bs(req_perks.content, 'lxml')
@@ -290,7 +313,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         killer_perks_count = float(killer_perks_count_raw.find('span')['id'][-3:-1])
         current_task = 0.0
         total_tasks = surv_perks_count + killer_perks_count - 26.0
-
+        self.perks.clear()
         for row in surv_perks_table:
             cells = row.find_all('th')
             if cells[2].find('a') is None:
@@ -337,26 +360,31 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.progress_signal.emit(total_tasks, current_task, f'Finishing...')
         self.data_loader('save', self.perks, self.perks_csv)
         print('Perks downloaded and saved.')
-    
+         
     def dl_shrine(self):
-        self.current_shrine.clear()
         shrine_url = 'https://deadbydaylight.gamepedia.com/Shrine_of_Secrets#Current_Shrine_of_Secrets'
-        req_shrine = requests.get(shrine_url)
-        soup_shrine = bs(req_shrine.content, 'lxml')    
-        curr_shrine_table = soup_shrine.find('table',{'class':'wikitable'}).find('tbody').find_all('tr')
-        for row in curr_shrine_table:
-            cell = row.find('td')
-            if cell is not None:
-                perk = cell.get_text()
-                if perk == 'Déjà Vu':
-                    perk = 'Deja Vu'
-                elif ':' in perk:
-                    perk = perk.replace(':', '')
-                self.current_shrine.append(perk[:-1])
-        self.current_shrine.insert(0, str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')))
-        self.data_loader('save', self.current_shrine, self.shrine_csv)
-        print('Shrine downloaded and saved.')
-        self.load_shrine()
+        try:
+            req_shrine = requests.get(shrine_url)
+        except:
+            self.connectionError('Data_download')
+            return 'Error'
+        else:
+            self.current_shrine.clear()
+            soup_shrine = bs(req_shrine.content, 'lxml')    
+            curr_shrine_table = soup_shrine.find('table',{'class':'wikitable'}).find('tbody').find_all('tr')
+            for row in curr_shrine_table:
+                cell = row.find('td')
+                if cell is not None:
+                    perk = cell.get_text()
+                    if perk == 'Déjà Vu':
+                        perk = 'Deja Vu'
+                    elif ':' in perk:
+                        perk = perk.replace(':', '')
+                    self.current_shrine.append(perk[:-1])
+            self.current_shrine.insert(0, str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')))
+            self.data_loader('save', self.current_shrine, self.shrine_csv)
+            print('Shrine downloaded and saved.')
+            self.load_shrine()
 
     def data_loader(self, action, source, target):
         if action == 'save':
@@ -525,7 +553,6 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
 class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = ProgressBarTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -539,7 +566,7 @@ class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
     def setupUi(self, Dialog):
         super().setupUi(self)
         self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
-        self.close_btn.clicked.connect(self.close)
+        self.close_btn.clicked.connect(self.hide)
         
     def error_message(self, source):
         if source == 'Notification':
@@ -547,7 +574,7 @@ class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
         elif source == 'Init_loading':
             self.msg_lbl.setText("Wasn't able to download the necessary data. Check the internet connection and start program again.")
         elif source == 'Data_download':
-            self.msg_lbl.setText("Wasn't able to download daata. Check the internet connection and try again (interruption may damage existing files, remember to rerun the program after resolving problems).")
+            self.msg_lbl.setText("Wasn't able to download data. Check the internet connection and try again (interruption may damage existing files, remember to rerun the program after resolving problems).")
         elif source == 'Shrine_update':
             self.msg_lbl.setText("Wasn't able to download the Shrine. Check the internet connection and try again.")
         
