@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>360</width>
+    <height>200</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>360</width>
+    <height>200</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>360</width>
+    <height>200</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QLabel#bg {
+	border: 1px solid white;
+}
+
+QLabel#wait_lbl{
+	color: white;
+	font: 14pt &quot;Sylfaen&quot;;
+}
+QLabel {
+	color: white;
+	font: 12pt &quot;Sylfaen&quot;;
+}
+
+QProgressBar{
+border: solid black;
+border-radius: 2px;
+color: black;
+background-color: #404040;
+}
+QProgressBar::chunk {
+background-color: white;
+}  
+
+QPushButton {
+	color: white;
+	font: 12pt &quot;Sylfaen&quot;;
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	background-color:#404040;
+}
+
+QPushButton:disabled {
+	color: black;
+	background-color:#141718;
+}
+</string>
+  </property>
+  <widget class="QLabel" name="bg">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>360</width>
+     <height>200</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../rsc/bg.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="wait_lbl">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>5</y>
+     <width>360</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Oops, something went wrong!</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="msg_lbl">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>320</width>
+     <height>120</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Error message</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="close_btn">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>155</y>
+     <width>80</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Ok</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
