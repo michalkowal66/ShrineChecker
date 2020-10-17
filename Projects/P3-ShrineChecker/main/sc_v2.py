@@ -12,12 +12,13 @@ from ui.sc_ui import Ui_MainWindow
 from ui.sc_settings import Ui_Dialog as SettingsTemplate
 from ui.sc_notification import Ui_Dialog as NotificationTemplate
 from ui.sc_progress import Ui_Dialog as ProgressBarTemplate
+from ui.sc_error import Ui_Dialog as ErrorTemplate
 
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
 #Make try/except for no internet connection case
 #Implement add to startup function 
-#Repair the button on progress bar to be disabled form settings dialog
+#Find a way to add icons and background to the script
 #Better CSS - font, buttons
 
 class Notifier(QtCore.QThread):
@@ -48,10 +49,11 @@ class Notifier(QtCore.QThread):
 
 class Loader(QtCore.QThread):
     finished_signal = QtCore.pyqtSignal(float, float, str) 
+
     def __init__(self, init=False, parent=None):
         super().__init__(parent)
         self.init = init
-    
+
     @QtCore.pyqtSlot()
     def run(self):
         if self.init:
@@ -60,7 +62,6 @@ class Loader(QtCore.QThread):
             window.check_shrine()
             self.finished_signal.emit(1.0, 1.0, "Finished work.")
         else:
-            print("Second case")
             window.dl_perks()
             self.finished_signal.emit(1.0, 1.0, "Finished work.")
 
@@ -69,7 +70,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = Ui_MainWindow()
+        # self.ui = Ui_MainWindow()
         self.initVariables()
         self.setupUi(self)
         
@@ -104,17 +105,23 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.notifier_thread = Notifier()
         self.notifier_thread.found_signal.connect(self.notify)
         self.notifier_thread.empty_signal.connect(self.start_threading)
+        self.error_dialog = ErrorDialog()
         
     def initData(self):
         if not os.path.exists(self.local_dir):
+            self.progress_bar.prepareUi()
             self.progress_bar.show()
             self.loader_thread.init = True
             self.loader_thread.start()
         else:
-            self.load_local_data()
-            self.load_content(init=True)
-            self.check_shrine()
-            self.show()
+            try:
+                self.load_local_data()
+                self.load_content(init=True)
+                self.check_shrine()
+            except:
+                self.connectionError('Data_download')
+            else:
+                self.show()
             
     def setupUi(self, MainWindow):
         super().setupUi(self)
@@ -184,12 +191,24 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if init==True:
             for _ in range(1,5):
                 frame = self.iterables[f'frame{_}']
-                frame.setPixmap(QtGui.QPixmap(self.local_img+f'/frame1.png'))
+                frame.setPixmap(QtGui.QPixmap(test_dir+f'/frame1.png'))
                 frame.setScaledContents(True)
             if len(self.desired_perks) > 0:
                 for perk in self.desired_perks:
                     self.perks_list.addItem(perk)
         print('Content loaded.')
+        
+    def load_shrine(self, init=False):
+        self.date_lbl.setText(self.current_shrine[0])
+        for _ in range(1,5):
+            d = self.iterables[f'img{_}']
+            d.setPixmap(QtGui.QPixmap(self.local_img+f'\\{self.current_shrine[_]}.png'))
+            d.setScaledContents(True)
+            e = self.iterables[f'perk{_}_lbl']
+            e.setText(self.current_shrine[_])
+        print('Shrine loaded.')
+        if not self.isHidden() or init==True:
+            self.check_shrine()        
         
     def show_ui(self):
         #Interrupt the thread's work here
@@ -207,18 +226,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def notify(self, matching_perks):
         self.notification_dialog.setup_notification(matching_perks)
         self.notification_dialog.show()
-
-    def load_shrine(self, init=False):
-        self.date_lbl.setText(self.current_shrine[0])
-        for _ in range(1,5):
-            d = self.iterables[f'img{_}']
-            d.setPixmap(QtGui.QPixmap(self.local_img+f'\\{self.current_shrine[_]}.png'))
-            d.setScaledContents(True)
-            e = self.iterables[f'perk{_}_lbl']
-            e.setText(self.current_shrine[_])
-        print('Shrine loaded.')
-        if not self.isHidden() or init==True:
-            self.check_shrine()
 
     def check_shrine(self):
         matches = []
@@ -369,6 +376,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for line in reader:
                     target.append(line[0])    
     
+    def connectionError(self, source):
+        self.error_dialog.error_message(source)
+        self.error_dialog.show()
+    
     def closeEvent(self, event):
         if not self.min_to_tray or self.isHidden():
             self.settings_dialog.close()
@@ -414,6 +425,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
                             window.settings_csv)
         
     def reset(self):
+        window.progress_bar.prepareUi()
         window.progress_bar.show()
         window.loader_thread.init = False
         window.loader_thread.start()
@@ -502,6 +514,43 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         self.progress_bar.setValue(100.0*current_task/total_tasks)
         self.msg_lbl.setText(message)
 
+    def prepareUi(self):
+        self.progress_bar.setValue(0)
+        self.msg_lbl.setText('Starting work...')
+
+    def closeEvent(self, event):
+        self.close_btn.setEnabled(False)
+        event.accept()
+
+class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = ProgressBarTemplate()
+        self.initVariables()
+        self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
+    
+    def initVariables(self):
+        self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
+        self.local_data = self.local_dir + '\\local'
+        self.local_img = self.local_data + '\\img'
+        
+    def setupUi(self, Dialog):
+        super().setupUi(self)
+        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
+        self.close_btn.clicked.connect(self.close)
+        
+    def error_message(self, source):
+        if source == 'Notification':
+            self.msg_lbl.setText("Wasn't able to download the Shrine of Secrets in background. Check internet connection or ignore this message.")
+        elif source == 'Init_loading':
+            self.msg_lbl.setText("Wasn't able to download the necessary data. Check the internet connection and start program again.")
+        elif source == 'Data_download':
+            self.msg_lbl.setText("Wasn't able to download daata. Check the internet connection and try again (interruption may damage existing files, remember to rerun the program after resolving problems).")
+        elif source == 'Shrine_update':
+            self.msg_lbl.setText("Wasn't able to download the Shrine. Check the internet connection and try again.")
+        
 if __name__ == '__main__':
     test_dir = os.path.expanduser('~') + '\\Documents'
     import sys
