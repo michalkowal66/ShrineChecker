@@ -6,7 +6,7 @@ import requests
 import time
 from csv import reader
 from bs4 import BeautifulSoup as bs
-from datetime import datetime
+from datetime import datetime, timedelta
 from PyQt5 import QtCore, QtGui, QtWidgets
 from ui.sc_ui import Ui_MainWindow
 from ui.sc_settings import Ui_Dialog as SettingsTemplate
@@ -17,8 +17,6 @@ from ui.sc_error import Ui_Dialog as ErrorTemplate
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
 #Implement add to startup function
-#Decide whether to keep the auto-refresh combobox
-#Scrape the date of shrine refresh and put in ui(?)
 #Find a way to add icons and background to the script
 #Better CSS - font, buttons
 
@@ -66,7 +64,7 @@ class Loader(QtCore.QThread):
             window.load_local_data()
             try:
                 window.dl_perks()
-                window.dl_shrine()
+                window.dl_shrine(init=True)
             except:
                 self.error_signal.emit('Data_download')
                 self.finished_signal.emit(False, 1.0, 0.0, 'An error occured during download.')
@@ -84,6 +82,32 @@ class Loader(QtCore.QThread):
                 
             else:
                 self.finished_signal.emit(True, 1.0, 1.0, 'Finished work.')
+
+class Refresher(QtCore.QThread):
+    finished_signal = QtCore.pyqtSignal()
+    error_signal = QtCore.pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+    def refresh_ui(self):
+        print('Refreshing ui')
+        if window.dl_shrine() == 'Error':
+            self.error_signal.emit('Data_download')
+            self.empty_signal.emit()
+        else:
+            window.check_shrine()
+            self.finished_signal.emit()
+            
+    @QtCore.pyqtSlot()
+    def run(self):
+        # for _ in range(window.refr_ui*60*60):
+        for _ in range(10):
+            if window.isHidden():
+                return None
+            self.sleep(1)
+        self.refresh_ui()
+        print('Thread finished')
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     progress_signal = QtCore.pyqtSignal(float, float, str)
@@ -103,7 +127,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.local_data = self.local_dir + '\\local'
         self.local_img = self.local_data + '\\img'
         self.dialog_done = False
-        self.current_shrine = []
+        self.current_shrine = [None for n in range(5)]
         self.desired_perks = []
         self.perks = []
         self.settings = []
@@ -114,6 +138,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.refr_ui = 2
         self.refr_intervals = [2, 4, 6, 8]
         self.total_tasks = 1.0
+        self.now = datetime.utcnow().date()
+        self.next_refr = self.now + timedelta(days=-self.now.weekday()+3,  weeks=1)
         
     def initDialogs(self):
         self.progress_bar = ProgressBar()
@@ -127,6 +153,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.notifier_thread.found_signal.connect(self.notify)
         self.notifier_thread.empty_signal.connect(self.start_threading)
         self.notifier_thread.error_signal.connect(self.connectionError)
+        self.refresher_thread = Refresher()
+        self.refresher_thread.finished_signal.connect(self.refresh_ui)
+        self.refresher_thread.error_signal.connect(self.connectionError)
         self.error_dialog = ErrorDialog()
         
     def initData(self):
@@ -136,15 +165,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.loader_thread.init = True
             self.loader_thread.start()
         else:
+            self.load_local_data()
             try:
                 self.dl_shrine()  
             except:
                 self.connectionError('Data_download')
             finally:
-                self.load_local_data()
                 self.load_content(init=True)
                 self.load_shrine(init=True)
                 self.show()
+                self.refresh_ui()
             
     def setupUi(self, MainWindow):
         super().setupUi(self)
@@ -156,7 +186,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         'frame4': self.frame4} 
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
-        self.reload_btn.clicked.connect(self.dl_shrine)
         self.settings_btn.clicked.connect(self.open_settings)
         self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
         self.bg.setScaledContents(True)
@@ -177,6 +206,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.progress_bar.updateProgress(total_tasks, task, message)
         if self.isHidden() and status:
             self.show()
+            self.refresh_ui()
         self.progress_bar.close_btn.setEnabled(True)
     
     def load_local_data(self):
@@ -219,7 +249,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Content loaded.')
         
     def load_shrine(self, init=False):
-        self.date_lbl.setText(self.current_shrine[0])
+        real_refr_date = self.next_refr - timedelta(days=1)
+        self.date_lbl.setText(f'Shrine refreshes on: {real_refr_date.strftime("%d/%m/%y")} GMT+0')
         for _ in range(1,5):
             d = self.iterables[f'img{_}']
             d.setPixmap(QtGui.QPixmap(self.local_img+f'\\{self.current_shrine[_]}.png'))
@@ -240,6 +271,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.connectionError('Data_download')
             finally:
                 self.show()
+                self.refresh_ui()
         else:
             return None
     
@@ -301,6 +333,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settings_dialog.refr_combo.setCurrentIndex(self.refr_intervals.index(self.refr_ui))
         self.settings_dialog.show()
 
+    def refresh_ui(self):
+        print('Starting threading')
+        self.refresher_thread.start()        
+        
     def dl_perks(self):
         perks_url = 'https://deadbydaylight.gamepedia.com/Perks'
         req_perks = requests.get(perks_url)
@@ -361,7 +397,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data_loader('save', self.perks, self.perks_csv)
         print('Perks downloaded and saved.')
          
-    def dl_shrine(self):
+    def dl_shrine(self, init=False, force=False):
+        if init or force:
+            pass
+        else:
+            self.next_refr = datetime.utcnow().date() + timedelta(days=-datetime.utcnow().weekday()+3, weeks=1)
+            shrine_dwnl_date = datetime.strptime(self.current_shrine[0], '%d/%m/%Y %H:%M').date()
+            time_since_refr = ((self.next_refr - shrine_dwnl_date).total_seconds())/86400
+            if shrine_dwnl_date < self.next_refr and time_since_refr <= 7.0:
+                print('No need to download shrine')
+                return None
+         
         shrine_url = 'https://deadbydaylight.gamepedia.com/Shrine_of_Secrets#Current_Shrine_of_Secrets'
         try:
             req_shrine = requests.get(shrine_url)
@@ -381,7 +427,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     elif ':' in perk:
                         perk = perk.replace(':', '')
                     self.current_shrine.append(perk[:-1])
-            self.current_shrine.insert(0, str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')))
+            self.current_shrine.insert(0, str(datetime.utcnow().strftime('%d/%m/%Y %H:%M')))
             self.data_loader('save', self.current_shrine, self.shrine_csv)
             print('Shrine downloaded and saved.')
             self.load_shrine()
@@ -441,6 +487,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
         self.reset_btn.clicked.connect(self.reset)
+        self.reload_btn.clicked.connect(self.reload)
 
     def save(self):
         window.min_to_tray = 1 if self.tray_check.isChecked() else 0
@@ -457,6 +504,9 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         window.progress_bar.show()
         window.loader_thread.init = False
         window.loader_thread.start()
+            
+    def reload(self):
+        window.dl_shrine(force=True)        
             
 class Notification(QtWidgets.QDialog, NotificationTemplate):
     signal = QtCore.pyqtSignal()
