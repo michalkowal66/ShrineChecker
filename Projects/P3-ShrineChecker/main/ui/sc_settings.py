@@ -13,13 +13,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(360, 300)
+        Dialog.resize(360, 360)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
-        Dialog.setMinimumSize(QtCore.QSize(360, 300))
+        Dialog.setMinimumSize(QtCore.QSize(360, 360))
         Dialog.setMaximumSize(QtCore.QSize(360, 300))
         Dialog.setStyleSheet("QLabel#settings_lbl {\n"
 "    color: white;\n"
@@ -77,7 +77,7 @@ class Ui_Dialog(object):
         self.tray_check.setChecked(False)
         self.tray_check.setObjectName("tray_check")
         self.save_btn = QtWidgets.QPushButton(Dialog)
-        self.save_btn.setGeometry(QtCore.QRect(90, 250, 80, 30))
+        self.save_btn.setGeometry(QtCore.QRect(90, 310, 80, 30))
         self.save_btn.setObjectName("save_btn")
         self.settings_lbl = QtWidgets.QLabel(Dialog)
         self.settings_lbl.setGeometry(QtCore.QRect(140, 10, 80, 25))
@@ -93,7 +93,7 @@ class Ui_Dialog(object):
         self.startup_check.setChecked(False)
         self.startup_check.setObjectName("startup_check")
         self.bg = QtWidgets.QLabel(Dialog)
-        self.bg.setGeometry(QtCore.QRect(0, 0, 360, 300))
+        self.bg.setGeometry(QtCore.QRect(0, 0, 360, 360))
         self.bg.setStyleSheet("")
         self.bg.setText("")
         self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
@@ -103,7 +103,7 @@ class Ui_Dialog(object):
         self.reset_btn.setCheckable(False)
         self.reset_btn.setObjectName("reset_btn")
         self.close_btn = QtWidgets.QPushButton(Dialog)
-        self.close_btn.setGeometry(QtCore.QRect(190, 250, 80, 30))
+        self.close_btn.setGeometry(QtCore.QRect(190, 310, 80, 30))
         self.close_btn.setObjectName("close_btn")
         self.notif_combo = QtWidgets.QComboBox(Dialog)
         self.notif_combo.setGeometry(QtCore.QRect(30, 100, 50, 30))
@@ -131,6 +131,15 @@ class Ui_Dialog(object):
         self.refr_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.refr_lbl.setWordWrap(True)
         self.refr_lbl.setObjectName("refr_lbl")
+        self.reload_lbl = QtWidgets.QLabel(Dialog)
+        self.reload_lbl.setGeometry(QtCore.QRect(140, 250, 200, 40))
+        self.reload_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.reload_lbl.setWordWrap(True)
+        self.reload_lbl.setObjectName("reload_lbl")
+        self.reload_btn = QtWidgets.QPushButton(Dialog)
+        self.reload_btn.setGeometry(QtCore.QRect(30, 255, 100, 30))
+        self.reload_btn.setCheckable(False)
+        self.reload_btn.setObjectName("reload_btn")
         self.bg.raise_()
         self.tray_check.raise_()
         self.save_btn.raise_()
@@ -143,6 +152,8 @@ class Ui_Dialog(object):
         self.refr_combo.raise_()
         self.notif_lbl.raise_()
         self.refr_lbl.raise_()
+        self.reload_lbl.raise_()
+        self.reload_btn.raise_()
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -167,6 +178,8 @@ class Ui_Dialog(object):
         self.refr_combo.setItemText(3, _translate("Dialog", "8"))
         self.notif_lbl.setText(_translate("Dialog", "Notification interval (hours)"))
         self.refr_lbl.setText(_translate("Dialog", "Auto-refresh interval (hours)"))
+        self.reload_lbl.setText(_translate("Dialog", "Force shrine redownload"))
+        self.reload_btn.setText(_translate("Dialog", "Reload shrine"))
 
 
 if __name__ == "__main__":
