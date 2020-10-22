@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="Background">
+    <file>bg.png</file>
+  </qresource>
+  <qresource prefix="Icon">
+    <file>icon.ico</file>
+  </qresource>
+  <qresource prefix="Decorations">
+    <file>frame1.png</file>
+    <file>settings.png</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,1 @@
+pyrcc5 -o rsc.py rsc.qrc
