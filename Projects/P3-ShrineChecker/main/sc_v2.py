@@ -13,11 +13,17 @@ from ui.sc_settings import Ui_Dialog as SettingsTemplate
 from ui.sc_notification import Ui_Dialog as NotificationTemplate
 from ui.sc_progress import Ui_Dialog as ProgressBarTemplate
 from ui.sc_error import Ui_Dialog as ErrorTemplate
+from rsc import rsc
 
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
 #Implement add to startup function
 #Find a way to add icons and background to the script
+#Window bar - alternatives?
+#Bottom text to the right with gray color
+#Info button - about me, contact etc.
+#Check periodically whether number of perks changed
+#Icon for dialog boxes
 #Better CSS - font, buttons
 
 class Notifier(QtCore.QThread):
@@ -103,7 +109,7 @@ class Refresher(QtCore.QThread):
     def run(self):
         # for _ in range(window.refr_ui*60*60):
         for _ in range(10):
-            if window.isHidden():
+            if window.isHidden() or not window.settings_dialog.isHidden():
                 return None
             self.sleep(1)
         self.refresh_ui()
@@ -187,10 +193,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.settings_btn.clicked.connect(self.open_settings)
-        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.bg.setScaledContents(True)
-        self.settings_btn.setIcon(QtGui.QIcon(f'{test_dir}\\settings.png'))
-        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(f'{test_dir}\\icon.ico'), parent=app)
+        self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/settings.png'))
+        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/Icon/icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
         showAction = menu.addAction('Show')
@@ -241,7 +247,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if init==True:
             for _ in range(1,5):
                 frame = self.iterables[f'frame{_}']
-                frame.setPixmap(QtGui.QPixmap(test_dir+f'/frame1.png'))
+                frame.setPixmap(QtGui.QPixmap(':/Decorations/frame1.png'))
                 frame.setScaledContents(True)
             if len(self.desired_perks) > 0:
                 for perk in self.desired_perks:
@@ -483,7 +489,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         super().setupUi(self)
         self.tray_check.setChecked(tray)
         self.startup_check.setChecked(startup)
-        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
         self.reset_btn.clicked.connect(self.reset)
@@ -507,6 +513,9 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
             
     def reload(self):
         window.dl_shrine(force=True)        
+            
+    def closeEvent(self, event):
+        window.refresh_ui()       
             
 class Notification(QtWidgets.QDialog, NotificationTemplate):
     signal = QtCore.pyqtSignal()
@@ -534,7 +543,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         4: 600, 'frame1': self.frame1,
                         'frame2': self.frame2, 'frame3': self.frame3,
                         'frame4': self.frame4}
-        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
         screen = QtWidgets.QDesktopWidget().screenGeometry()
@@ -543,7 +552,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         self.move(x, 40)
         for _ in range(1,5):
                 frame = self.iterables[f'frame{_}']
-                frame.setPixmap(QtGui.QPixmap(test_dir+f'/frame1.png'))
+                frame.setPixmap(QtGui.QPixmap(':/Decorations/frame1.png'))
                 frame.setScaledContents(True)
         
     def setup_notification(self, perks):
@@ -582,7 +591,7 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         
     def setupUi(self, Dialog):
         super().setupUi(self)
-        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.progress_bar.setValue(0)
         self.msg_lbl.setText('Starting work...')
         self.close_btn.clicked.connect(self.close)
@@ -615,7 +624,7 @@ class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
         
     def setupUi(self, Dialog):
         super().setupUi(self)
-        self.bg.setPixmap(QtGui.QPixmap(f'{test_dir}\\bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.close_btn.clicked.connect(self.hide)
         
     def error_message(self, source):
@@ -629,7 +638,6 @@ class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
             self.msg_lbl.setText("Wasn't able to download the Shrine. Check the internet connection and try again.")
         
 if __name__ == '__main__':
-    test_dir = os.path.expanduser('~') + '\\Documents'
     import sys
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
