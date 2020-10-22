@@ -21,6 +21,9 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QtCore.QSize(900, 600))
         MainWindow.setMaximumSize(QtCore.QSize(900, 600))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Icon/icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet("font: 12pt \"Sylfaen\";\n"
 "color: rgb(255, 255, 255);\n"
 "\n"
@@ -232,7 +235,6 @@ class Ui_MainWindow(object):
         self.bg.setGeometry(QtCore.QRect(0, 0, 900, 600))
         self.bg.setStyleSheet("")
         self.bg.setText("")
-        self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setScaledContents(True)
         self.bg.setObjectName("bg")
         self.settings_btn = QtWidgets.QPushButton(self.centralwidget)
