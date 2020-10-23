@@ -12,19 +12,15 @@ from ui.sc_ui import Ui_MainWindow
 from ui.sc_settings import Ui_Dialog as SettingsTemplate
 from ui.sc_notification import Ui_Dialog as NotificationTemplate
 from ui.sc_progress import Ui_Dialog as ProgressBarTemplate
-from ui.sc_error import Ui_Dialog as ErrorTemplate
+from ui.sc_message import Ui_Dialog as MessageTemplate
 from rsc import rsc
 
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
 #Implement add to startup function
-#Find a way to add icons and background to the script
 #Window bar - alternatives?
-#Bottom text to the right with gray color
-#Info button - about me, contact etc.
 #Check periodically whether number of perks changed
-#Icon for dialog boxes
-#Better CSS - font, buttons
+#Better CSS - font type/size, buttons - UX rules
 
 class Notifier(QtCore.QThread):
     found_signal = QtCore.pyqtSignal(list)
@@ -51,6 +47,7 @@ class Notifier(QtCore.QThread):
         # for _ in range(window.refr_notif*60*60):
         for _ in range(10):
             if not window.isHidden():
+                print('Thread interrupted')
                 return None
             self.sleep(1)
         self.check_shrine()
@@ -154,15 +151,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.notification_dialog.signal.connect(self.start_threading)
         self.loader_thread = Loader()
         self.loader_thread.finished_signal.connect(self.loading_finished)
-        self.loader_thread.error_signal.connect(self.connectionError)
+        self.loader_thread.error_signal.connect(self.showError)
         self.notifier_thread = Notifier()
         self.notifier_thread.found_signal.connect(self.notify)
         self.notifier_thread.empty_signal.connect(self.start_threading)
-        self.notifier_thread.error_signal.connect(self.connectionError)
+        self.notifier_thread.error_signal.connect(self.showError)
         self.refresher_thread = Refresher()
         self.refresher_thread.finished_signal.connect(self.refresh_ui)
-        self.refresher_thread.error_signal.connect(self.connectionError)
-        self.error_dialog = ErrorDialog()
+        self.refresher_thread.error_signal.connect(self.showError)
+        self.error_dialog = MessageDialog(dialog_type='Error')
+        self.info_dialog = MessageDialog(dialog_type='Message')
         
     def initData(self):
         if not os.path.exists(self.local_dir):
@@ -175,7 +173,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.dl_shrine()  
             except:
-                self.connectionError('Data_download')
+                self.showError('Data_download')
             finally:
                 self.load_content(init=True)
                 self.load_shrine(init=True)
@@ -196,6 +194,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.bg.setScaledContents(True)
         self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/settings.png'))
+        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/Icon/icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
@@ -274,7 +273,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.dl_shrine()
                 self.check_shrine()
             except:
-                self.connectionError('Data_download')
+                self.showError('Data_download')
             finally:
                 self.show()
                 self.refresh_ui()
@@ -418,7 +417,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             req_shrine = requests.get(shrine_url)
         except:
-            self.connectionError('Data_download')
+            self.showError('Data_download')
             return 'Error'
         else:
             self.current_shrine.clear()
@@ -456,8 +455,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for line in reader:
                     target.append(line[0])    
     
-    def connectionError(self, source):
-        self.error_dialog.error_message(source)
+    def showError(self, source):
+        self.error_dialog.dialog_message(source)
         self.error_dialog.show()
     
     def closeEvent(self, event):
@@ -489,11 +488,13 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         super().setupUi(self)
         self.tray_check.setChecked(tray)
         self.startup_check.setChecked(startup)
+        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
         self.reset_btn.clicked.connect(self.reset)
         self.reload_btn.clicked.connect(self.reload)
+        self.about_btn.clicked.connect(self.info_dialog)
 
     def save(self):
         window.min_to_tray = 1 if self.tray_check.isChecked() else 0
@@ -514,6 +515,9 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
     def reload(self):
         window.dl_shrine(force=True)        
             
+    def info_dialog(self):
+        window.info_dialog.show()
+                   
     def closeEvent(self, event):
         window.refresh_ui()       
             
@@ -543,6 +547,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         4: 600, 'frame1': self.frame1,
                         'frame2': self.frame2, 'frame3': self.frame3,
                         'frame4': self.frame4}
+        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
@@ -591,6 +596,7 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         
     def setupUi(self, Dialog):
         super().setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.progress_bar.setValue(0)
         self.msg_lbl.setText('Starting work...')
@@ -609,9 +615,10 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         self.close_btn.setEnabled(False)
         event.accept()
 
-class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
-    def __init__(self, parent=None):
+class MessageDialog(QtWidgets.QDialog, MessageTemplate):
+    def __init__(self, parent=None, dialog_type = 'Message' or 'Error'):
         super().__init__(parent)
+        self.dialog_type = dialog_type
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -624,19 +631,20 @@ class ErrorDialog(QtWidgets.QDialog, ErrorTemplate):
         
     def setupUi(self, Dialog):
         super().setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.close_btn.clicked.connect(self.hide)
-        
-    def error_message(self, source):
-        if source == 'Notification':
-            self.msg_lbl.setText("Wasn't able to download the Shrine of Secrets in background. Check internet connection or ignore this message.")
-        elif source == 'Init_loading':
-            self.msg_lbl.setText("Wasn't able to download the necessary data. Check the internet connection and start program again.")
-        elif source == 'Data_download':
+        if self.dialog_type == 'Message':
+            self.title_lbl.setStyleSheet('font: 16pt "Sylfaen" bold;')
+            self.title_lbl.setText('About me:')
+            self.msg_lbl.setText('Author: Michal Kowal\n\ne-mail: kow.michal.66@gmail.com')
+        elif self.dialog_type == 'Error':
+            self.title_lbl.setText('Oops, something went wrong!')    
+           
+    def dialog_message(self, source):
+        if source == 'Data_download':
             self.msg_lbl.setText("Wasn't able to download data. Check the internet connection and try again (interruption may damage existing files, remember to rerun the program after resolving problems).")
-        elif source == 'Shrine_update':
-            self.msg_lbl.setText("Wasn't able to download the Shrine. Check the internet connection and try again.")
-        
+            
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
