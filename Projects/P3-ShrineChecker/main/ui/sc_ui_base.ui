@@ -92,6 +92,12 @@ QLabel#perk4_lbl {
 	background-color: rgba(0, 0, 0, 0);
 }
 
+QLabel#date_lbl {
+	font: 12pt &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
 QListWidget{
 	color: white;
 	background-color: rgba(0, 0, 0, 0);
@@ -474,9 +480,9 @@ background-color: rgba(0, 0, 0, 0);</string>
    <widget class="QLabel" name="date_lbl">
     <property name="geometry">
      <rect>
-      <x>25</x>
+      <x>565</x>
       <y>565</y>
-      <width>280</width>
+      <width>330</width>
       <height>30</height>
      </rect>
     </property>
@@ -490,10 +496,10 @@ background-color: rgba(0, 0, 0, 0);</string>
      <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>YYYY-MM-DD</string>
+     <string>Shrine refreshes on DD/MM/YY GMT+0</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
     </property>
    </widget>
    <widget class="QLabel" name="bg">

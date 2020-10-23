@@ -381,9 +381,6 @@ background-color: rgba(0, 0, 0, 0);</string>
    <property name="text">
     <string/>
    </property>
-   <property name="pixmap">
-    <pixmap>../rsc/bg.png</pixmap>
-   </property>
    <property name="scaledContents">
     <bool>true</bool>
    </property>
@@ -439,7 +436,7 @@ background-color: rgba(0, 0, 0, 0);</string>
   <widget class="QPushButton" name="show_btn">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>95</x>
      <y>10</y>
      <width>80</width>
      <height>30</height>
@@ -462,7 +459,7 @@ QPushButton:hover {
   <widget class="QPushButton" name="close_btn">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>185</x>
      <y>10</y>
      <width>80</width>
      <height>30</height>

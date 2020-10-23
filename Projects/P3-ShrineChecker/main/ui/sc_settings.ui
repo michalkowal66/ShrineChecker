@@ -25,7 +25,7 @@
   <property name="maximumSize">
    <size>
     <width>360</width>
-    <height>300</height>
+    <height>360</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -87,7 +87,7 @@ QScrollBar:vertical {
   <widget class="QCheckBox" name="tray_check">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>10</x>
      <y>40</y>
      <width>200</width>
      <height>20</height>
@@ -132,14 +132,14 @@ QScrollBar:vertical {
   <widget class="QLabel" name="reset_lbl">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>200</y>
-     <width>200</width>
-     <height>40</height>
+     <x>160</x>
+     <y>190</y>
+     <width>190</width>
+     <height>50</height>
     </rect>
    </property>
    <property name="text">
-    <string>Redownload local database of available perks</string>
+    <string>Redownload local database of perks</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -151,7 +151,7 @@ QScrollBar:vertical {
   <widget class="QCheckBox" name="startup_check">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>10</x>
      <y>70</y>
      <width>200</width>
      <height>20</height>
@@ -179,16 +179,13 @@ QScrollBar:vertical {
    <property name="text">
     <string/>
    </property>
-   <property name="pixmap">
-    <pixmap>../rsc/bg.png</pixmap>
-   </property>
   </widget>
   <widget class="QPushButton" name="reset_btn">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>205</y>
-     <width>100</width>
+     <x>10</x>
+     <y>200</y>
+     <width>140</width>
      <height>30</height>
     </rect>
    </property>
@@ -215,7 +212,7 @@ QScrollBar:vertical {
   <widget class="QComboBox" name="notif_combo">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>10</x>
      <y>100</y>
      <width>50</width>
      <height>30</height>
@@ -248,7 +245,7 @@ QScrollBar:vertical {
   <widget class="QComboBox" name="refr_combo">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>10</x>
      <y>150</y>
      <width>50</width>
      <height>30</height>
@@ -281,10 +278,10 @@ QScrollBar:vertical {
   <widget class="QLabel" name="notif_lbl">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>100</y>
-     <width>200</width>
-     <height>30</height>
+     <x>70</x>
+     <y>90</y>
+     <width>280</width>
+     <height>50</height>
     </rect>
    </property>
    <property name="text">
@@ -300,10 +297,10 @@ QScrollBar:vertical {
   <widget class="QLabel" name="refr_lbl">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>150</y>
-     <width>200</width>
-     <height>30</height>
+     <x>70</x>
+     <y>140</y>
+     <width>280</width>
+     <height>50</height>
     </rect>
    </property>
    <property name="text">
@@ -319,14 +316,14 @@ QScrollBar:vertical {
   <widget class="QLabel" name="reload_lbl">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>250</y>
-     <width>200</width>
-     <height>40</height>
+     <x>160</x>
+     <y>240</y>
+     <width>190</width>
+     <height>50</height>
     </rect>
    </property>
    <property name="text">
-    <string>Force shrine redownload</string>
+    <string>Force shrine reload</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -338,9 +335,9 @@ QScrollBar:vertical {
   <widget class="QPushButton" name="reload_btn">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>255</y>
-     <width>100</width>
+     <x>10</x>
+     <y>250</y>
+     <width>140</width>
      <height>30</height>
     </rect>
    </property>
@@ -349,6 +346,22 @@ QScrollBar:vertical {
    </property>
    <property name="checkable">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="about_btn">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>10</y>
+     <width>30</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>?</string>
    </property>
   </widget>
   <zorder>bg</zorder>
@@ -365,6 +378,7 @@ QScrollBar:vertical {
   <zorder>refr_lbl</zorder>
   <zorder>reload_lbl</zorder>
   <zorder>reload_btn</zorder>
+  <zorder>about_btn</zorder>
  </widget>
  <resources/>
  <connections/>

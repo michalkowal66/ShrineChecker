@@ -78,6 +78,12 @@ class Ui_MainWindow(object):
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "\n"
+"QLabel#date_lbl {\n"
+"    font: 12pt \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"\n"
 "QListWidget{\n"
 "    color: white;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
@@ -222,14 +228,14 @@ class Ui_MainWindow(object):
         self.lbl1_2.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl1_2.setObjectName("lbl1_2")
         self.date_lbl = QtWidgets.QLabel(self.centralwidget)
-        self.date_lbl.setGeometry(QtCore.QRect(25, 565, 280, 30))
+        self.date_lbl.setGeometry(QtCore.QRect(565, 565, 330, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.date_lbl.sizePolicy().hasHeightForWidth())
         self.date_lbl.setSizePolicy(sizePolicy)
         self.date_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
-        self.date_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.date_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
         self.date_lbl.setObjectName("date_lbl")
         self.bg = QtWidgets.QLabel(self.centralwidget)
         self.bg.setGeometry(QtCore.QRect(0, 0, 900, 600))
@@ -346,7 +352,7 @@ class Ui_MainWindow(object):
         self.perk3_lbl.setText(_translate("MainWindow", "TextLabel"))
         self.perk4_lbl.setText(_translate("MainWindow", "TextLabel"))
         self.lbl1_2.setText(_translate("MainWindow", "Shrine of Secrets"))
-        self.date_lbl.setText(_translate("MainWindow", "YYYY-MM-DD"))
+        self.date_lbl.setText(_translate("MainWindow", "Shrine refreshes on DD/MM/YY GMT+0"))
 
 
 if __name__ == "__main__":

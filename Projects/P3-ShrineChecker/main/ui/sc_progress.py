@@ -63,7 +63,6 @@ class Ui_Dialog(object):
         self.bg.setGeometry(QtCore.QRect(0, 0, 360, 150))
         self.bg.setStyleSheet("")
         self.bg.setText("")
-        self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setObjectName("bg")
         self.progress_bar = QtWidgets.QProgressBar(Dialog)
         self.progress_bar.setGeometry(QtCore.QRect(20, 65, 320, 30))

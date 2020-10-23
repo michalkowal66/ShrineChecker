@@ -145,7 +145,6 @@ class Ui_Dialog(object):
         self.bg.setSizePolicy(sizePolicy)
         self.bg.setStyleSheet("")
         self.bg.setText("")
-        self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setScaledContents(True)
         self.bg.setObjectName("bg")
         self.msg1_lbl = QtWidgets.QLabel(Dialog)
@@ -166,7 +165,7 @@ class Ui_Dialog(object):
         self.perk2_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.perk2_lbl.setObjectName("perk2_lbl")
         self.show_btn = QtWidgets.QPushButton(Dialog)
-        self.show_btn.setGeometry(QtCore.QRect(170, 10, 80, 30))
+        self.show_btn.setGeometry(QtCore.QRect(95, 10, 80, 30))
         self.show_btn.setStyleSheet("QPushButton {\n"
 "    background-color:#2F3538;\n"
 "}\n"
@@ -177,7 +176,7 @@ class Ui_Dialog(object):
 "")
         self.show_btn.setObjectName("show_btn")
         self.close_btn = QtWidgets.QPushButton(Dialog)
-        self.close_btn.setGeometry(QtCore.QRect(260, 10, 80, 30))
+        self.close_btn.setGeometry(QtCore.QRect(185, 10, 80, 30))
         self.close_btn.setStyleSheet("QPushButton {\n"
 "    background-color:#2F3538;\n"
 "}\n"
