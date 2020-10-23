@@ -80,21 +80,21 @@ QPushButton:disabled {
    <property name="text">
     <string/>
    </property>
-   <property name="pixmap">
-    <pixmap>../rsc/bg.png</pixmap>
-   </property>
   </widget>
-  <widget class="QLabel" name="wait_lbl">
+  <widget class="QLabel" name="title_lbl">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>5</y>
+     <y>10</y>
      <width>360</width>
-     <height>25</height>
+     <height>30</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
-    <string>Oops, something went wrong!</string>
+    <string>Title</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -110,7 +110,7 @@ QPushButton:disabled {
     </rect>
    </property>
    <property name="text">
-    <string>Error message</string>
+    <string>Message</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'sc_error.ui'
+# Form implementation generated from reading ui file 'sc_message.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.2
 #
@@ -58,12 +58,12 @@ class Ui_Dialog(object):
         self.bg.setGeometry(QtCore.QRect(0, 0, 360, 200))
         self.bg.setStyleSheet("")
         self.bg.setText("")
-        self.bg.setPixmap(QtGui.QPixmap("../rsc/bg.png"))
         self.bg.setObjectName("bg")
-        self.wait_lbl = QtWidgets.QLabel(Dialog)
-        self.wait_lbl.setGeometry(QtCore.QRect(0, 5, 360, 25))
-        self.wait_lbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.wait_lbl.setObjectName("wait_lbl")
+        self.title_lbl = QtWidgets.QLabel(Dialog)
+        self.title_lbl.setGeometry(QtCore.QRect(0, 10, 360, 30))
+        self.title_lbl.setStyleSheet("")
+        self.title_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.title_lbl.setObjectName("title_lbl")
         self.msg_lbl = QtWidgets.QLabel(Dialog)
         self.msg_lbl.setGeometry(QtCore.QRect(20, 30, 320, 120))
         self.msg_lbl.setAlignment(QtCore.Qt.AlignCenter)
@@ -80,8 +80,8 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.wait_lbl.setText(_translate("Dialog", "Oops, something went wrong!"))
-        self.msg_lbl.setText(_translate("Dialog", "Error message"))
+        self.title_lbl.setText(_translate("Dialog", "Title"))
+        self.msg_lbl.setText(_translate("Dialog", "Message"))
         self.close_btn.setText(_translate("Dialog", "Ok"))
 
 
