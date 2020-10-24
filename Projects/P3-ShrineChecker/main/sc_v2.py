@@ -4,6 +4,10 @@ import os
 import send2trash
 import requests
 import time
+import winshell
+import sys
+import win32com.client
+import pythoncom
 from csv import reader
 from bs4 import BeautifulSoup as bs
 from datetime import datetime, timedelta
@@ -17,7 +21,7 @@ from rsc import rsc
 
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
-#Implement add to startup function
+#Doubled threading from exit
 #Window bar - alternatives?
 #Check periodically whether number of perks changed
 #Better CSS - font type/size, buttons - UX rules
@@ -47,7 +51,7 @@ class Notifier(QtCore.QThread):
         # for _ in range(window.refr_notif*60*60):
         for _ in range(10):
             if not window.isHidden():
-                print('Thread interrupted')
+                print('Notifier thread interrupted')
                 return None
             self.sleep(1)
         self.check_shrine()
@@ -107,6 +111,7 @@ class Refresher(QtCore.QThread):
         # for _ in range(window.refr_ui*60*60):
         for _ in range(10):
             if window.isHidden() or not window.settings_dialog.isHidden():
+                print('Refresher thread interrupted')
                 return None
             self.sleep(1)
         self.refresh_ui()
@@ -133,6 +138,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.current_shrine = [None for n in range(5)]
         self.desired_perks = []
         self.perks = []
+        self.matching_perks = []
         self.settings = []
         self.iterables = None
         self.min_to_tray = 1
@@ -228,6 +234,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                              [self.min_to_tray, self.add_to_startup, 
                               self.refr_notif, self.refr_ui], 
                              self.settings_csv)
+            self.enable_disable_autostart()
             self.progress_signal.emit(self.total_tasks, 1.0, "Prepared local directory.")
         else:   
             self.data_loader('load', self.desired_perks_csv, self.desired_perks)
@@ -238,6 +245,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for line in reader:
                     self.settings.append(int(line[0]))   
             self.min_to_tray, self.add_to_startup, self.refr_notif, self.refr_ui = self.settings
+            self.enable_disable_autostart()
 
     def load_content(self, init=False):
         self.perks_combo.clear()
@@ -281,7 +289,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return None
     
     def start_threading(self):
-        print('Starting threading')
+        print('Starting threading - notifier')
         self.notifier_thread.start()
 
     def notify(self, matching_perks):
@@ -289,24 +297,26 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.notification_dialog.show()
 
     def check_shrine(self):
-        matches = []
-        for _ in range(1,5):
-            label = self.iterables[f'perk{_}_lbl']
-            label.setStyleSheet('color:#6e6d6d;')
-            img = self.iterables[f'img{_}']
-            img.setStyleSheet('border: none;')
-            frame = self.iterables[f'frame{_}']
-            frame.setHidden(True)
-        for perk in self.desired_perks:
-            if perk in self.current_shrine:
-                matches.append(perk)
-                perk_index = self.current_shrine.index(perk)
+        self.matching_perks.clear()
+        for perk in self.current_shrine:
+            if perk in self.desired_perks:
+                self.matching_perks.append(perk)
+        for perk in self.current_shrine[1:]:
+            perk_index = self.current_shrine.index(perk)
+            if perk in self.matching_perks:
                 label = self.iterables[f'perk{perk_index}_lbl']
                 label.setStyleSheet('color:white; font:bold')
                 frame = self.iterables[f'frame{perk_index}']
-                frame.setHidden(False)
+                frame.setHidden(False)     
+            else:
+                label = self.iterables[f'perk{perk_index}_lbl']
+                label.setStyleSheet('color:#6e6d6d;')
+                img = self.iterables[f'img{perk_index}']
+                img.setStyleSheet('border: none;')
+                frame = self.iterables[f'frame{perk_index}']
+                frame.setHidden(True)
         print('Shrine checked.')
-        return matches
+        return self.matching_perks
 
     def add_perk(self):
         perk = self.perks_combo.currentText()
@@ -317,7 +327,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.perks_list.addItem(perk)
             self.desired_perks.append(perk)
             self.data_loader('save', perk, self.desired_perks_csv)
-        self.check_shrine()
+            self.check_shrine()
     
     def remove_perk(self):
         try:
@@ -339,7 +349,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settings_dialog.show()
 
     def refresh_ui(self):
-        print('Starting threading')
+        print('Starting threading - ui refresher')
         self.refresher_thread.start()        
         
     def dl_perks(self):
@@ -459,6 +469,21 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.error_dialog.dialog_message(source)
         self.error_dialog.show()
     
+    def enable_disable_autostart(self):
+        pythoncom.CoInitialize()
+        startup = winshell.startup()
+        path = os.path.join(startup, 'SC.lnk')
+        if self.add_to_startup:
+            target = sys.argv[0]
+            shell = win32com.client.Dispatch("WScript.Shell")
+            shortcut = shell.CreateShortCut(path)
+            shortcut.Targetpath = target
+            shortcut.WindowStyle = 7
+            shortcut.save()
+        else:
+            if os.path.isfile(path):
+                send2trash.send2trash(path)
+    
     def closeEvent(self, event):
         if not self.min_to_tray or self.isHidden():
             self.settings_dialog.close()
@@ -499,6 +524,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
     def save(self):
         window.min_to_tray = 1 if self.tray_check.isChecked() else 0
         window.add_to_startup = 1 if self.startup_check.isChecked() else 0
+        window.enable_disable_autostart()
         window.refr_notif = int(self.notif_combo.currentText())
         window.refr_ui = int(self.refr_combo.currentText())
         window.data_loader('save', 
@@ -576,8 +602,9 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         self.signal.emit()
 
     def show_ui(self):
-        window.show()
         self.hide()
+        window.show()
+        window.refresh_ui()
         
 class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
     def __init__(self, parent=None):
