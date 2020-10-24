@@ -48,8 +48,7 @@ class Notifier(QtCore.QThread):
             
     @QtCore.pyqtSlot()
     def run(self):
-        # for _ in range(window.refr_notif*60*60):
-        for _ in range(10):
+        for _ in range(window.refr_notif*60*60):
             if not window.isHidden():
                 print('Notifier thread interrupted')
                 return None
@@ -108,8 +107,7 @@ class Refresher(QtCore.QThread):
             
     @QtCore.pyqtSlot()
     def run(self):
-        # for _ in range(window.refr_ui*60*60):
-        for _ in range(10):
+        for _ in range(window.refr_ui*60*60):
             if window.isHidden() or not window.settings_dialog.isHidden():
                 print('Refresher thread interrupted')
                 return None
@@ -122,7 +120,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.ui = Ui_MainWindow()
         self.initVariables()
         self.setupUi(self)
         
@@ -275,7 +272,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.check_shrine()        
         
     def show_ui(self):
-        #Interrupt the thread's work here
         if self.isHidden():
             try:
                 self.dl_shrine()
@@ -552,7 +548,6 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = NotificationTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -609,7 +604,6 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
 class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = ProgressBarTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
