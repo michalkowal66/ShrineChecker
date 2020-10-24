@@ -22,6 +22,7 @@ from rsc import rsc
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
 #Doubled threading from exit
+#Load stylesheet from file
 #Window bar - alternatives?
 #Check periodically whether number of perks changed
 #Better CSS - font type/size, buttons - UX rules
