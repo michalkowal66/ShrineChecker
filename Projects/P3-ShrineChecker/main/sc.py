@@ -657,8 +657,8 @@ class MessageDialog(QtWidgets.QDialog, MessageTemplate):
         self.close_btn.clicked.connect(self.hide)
         if self.dialog_type == 'Message':
             self.title_lbl.setStyleSheet('font: 16pt "Sylfaen" bold;')
-            self.title_lbl.setText('About me:')
-            self.msg_lbl.setText('Author: Michal Kowal\n\ne-mail: kow.michal.66@gmail.com')
+            self.title_lbl.setText('About us:')
+            self.msg_lbl.setText('Program author: Michal Kowal\nE-mail: kow.michal.66@gmail.com\nReddit: u/virtozenho\n\nArt designer: Urszula Kowal\nInstagram: _kowalowna_')
         elif self.dialog_type == 'Error':
             self.title_lbl.setText('Oops, something went wrong!')    
            
