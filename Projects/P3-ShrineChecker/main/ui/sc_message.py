@@ -13,9 +13,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(360, 200)
-        Dialog.setMinimumSize(QtCore.QSize(360, 200))
-        Dialog.setMaximumSize(QtCore.QSize(360, 200))
+        Dialog.resize(360, 250)
+        Dialog.setMinimumSize(QtCore.QSize(360, 250))
+        Dialog.setMaximumSize(QtCore.QSize(360, 250))
         Dialog.setStyleSheet("QLabel#bg {\n"
 "    border: 1px solid white;\n"
 "}\n"
@@ -55,7 +55,7 @@ class Ui_Dialog(object):
 "}\n"
 "")
         self.bg = QtWidgets.QLabel(Dialog)
-        self.bg.setGeometry(QtCore.QRect(0, 0, 360, 200))
+        self.bg.setGeometry(QtCore.QRect(0, 0, 360, 250))
         self.bg.setStyleSheet("")
         self.bg.setText("")
         self.bg.setObjectName("bg")
@@ -65,12 +65,12 @@ class Ui_Dialog(object):
         self.title_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.title_lbl.setObjectName("title_lbl")
         self.msg_lbl = QtWidgets.QLabel(Dialog)
-        self.msg_lbl.setGeometry(QtCore.QRect(20, 30, 320, 120))
+        self.msg_lbl.setGeometry(QtCore.QRect(20, 40, 320, 160))
         self.msg_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.msg_lbl.setWordWrap(True)
         self.msg_lbl.setObjectName("msg_lbl")
         self.close_btn = QtWidgets.QPushButton(Dialog)
-        self.close_btn.setGeometry(QtCore.QRect(140, 155, 80, 30))
+        self.close_btn.setGeometry(QtCore.QRect(140, 205, 80, 30))
         self.close_btn.setStyleSheet("")
         self.close_btn.setObjectName("close_btn")
 

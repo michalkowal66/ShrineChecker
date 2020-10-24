@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>360</width>
-    <height>200</height>
+    <height>250</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>360</width>
-    <height>200</height>
+    <height>250</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>360</width>
-    <height>200</height>
+    <height>250</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -71,7 +71,7 @@ QPushButton:disabled {
      <x>0</x>
      <y>0</y>
      <width>360</width>
-     <height>200</height>
+     <height>250</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -104,9 +104,9 @@ QPushButton:disabled {
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>30</y>
+     <y>40</y>
      <width>320</width>
-     <height>120</height>
+     <height>160</height>
     </rect>
    </property>
    <property name="text">
@@ -123,7 +123,7 @@ QPushButton:disabled {
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>155</y>
+     <y>205</y>
      <width>80</width>
      <height>30</height>
     </rect>
