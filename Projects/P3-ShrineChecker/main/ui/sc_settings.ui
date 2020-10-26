@@ -34,28 +34,28 @@
   <property name="styleSheet">
    <string notr="true">QLabel#settings_lbl {
 	color: white;
-	font: 14pt &quot;Sylfaen&quot;;
+	font: 24px &quot;Sylfaen&quot;;
 }
 
 QCheckBox {
 	color: white;
-	font: 12pt &quot;Sylfaen&quot;;
+	font: 18px &quot;Sylfaen&quot;;
 }
 
 QLabel {
 	color: white;
-	font: 12pt &quot;Sylfaen&quot;;
+	font: 18px &quot;Sylfaen&quot;;
 }
 
 QPushButton {
 	color: white;
-	font: 12pt &quot;Sylfaen&quot;;
+	font: 18px &quot;Sylfaen&quot;;
 	background-color:#2F3538;
 }
 
 QPushButton:hover {
 	color: white;
-	font: 12pt &quot;Sylfaen&quot;;
+	font: 18px &quot;Sylfaen&quot;;
 	background-color:#404040;
 }
 
@@ -65,14 +65,14 @@ QLabel#bg {
 
 QComboBox {
 	color: white;
-	font: 12pt &quot;Sylfaen&quot;;
+	font: 18px &quot;Sylfaen&quot;;
 	background-color:#2F3538;
 	selection-background-color:#2F3538;
 }
 
 QComboBox QAbstractItemView {
 	color: white;
-	font: 12pt &quot;Sylfaen&quot;;
+	font: 18px &quot;Sylfaen&quot;;
     background-color:#2F3538;
 	selection-background-color: #404040;
 	outline: 0;
@@ -80,7 +80,7 @@ QComboBox QAbstractItemView {
 
 QScrollBar:vertical {    
 	color: white;
-	font: 12pt &quot;Sylfaen&quot;;
+	font: 18px &quot;Sylfaen&quot;;
 	background:#404040;
 }</string>
   </property>

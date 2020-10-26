@@ -24,67 +24,88 @@ class Ui_MainWindow(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/Icon/icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet("font: 12pt \"Sylfaen\";\n"
-"color: rgb(255, 255, 255);\n"
-"\n"
-"")
+        MainWindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setStyleSheet("\n"
+        self.centralwidget.setStyleSheet("QLabel#lbl1{\n"
+"    font: 24px \"Sylfaen\";\n"
+"    color: white;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"\n"
+"QLabel#lbl1_2{\n"
+"    font: 30px \"Sylfaen\";\n"
+"    color: white;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"\n"
 "QPushButton {\n"
+"    font: 18px \"Sylfaen\";\n"
+"    color: white;\n"
 "    background-color:#2F3538;\n"
 "}\n"
 "\n"
 "QPushButton:hover {\n"
+"    font: 18px \"Sylfaen\";\n"
+"    color: white;\n"
 "    background-color:#404040;\n"
 "}\n"
 "\n"
 "QComboBox {\n"
+"    font: 18px \"Sylfaen\";\n"
+"    color: white;\n"
 "    background-color:#2F3538;\n"
 "    selection-background-color:#2F3538;\n"
 "}\n"
 "\n"
 "QComboBox QAbstractItemView {\n"
+"    font: 18px \"Sylfaen\";\n"
+"    color: white;\n"
 "    background-color:#2F3538;\n"
 "    selection-background-color: #404040;\n"
 "    outline: 0;\n"
 "}\n"
 "\n"
-"QScrollBar:vertical {    \n"
+"QScrollBar:vertical {\n"
+"    font: 18px \"Sylfaen\";\n"
+"    color: white;\n"
 "    background:#404040;\n"
 "}\n"
 "\n"
 "QPushButton#settings_btn{\n"
+"    font: 18px \"Sylfaen\";\n"
+"    color: white;\n"
 "    qproperty-iconSize: 30px;\n"
 "}\n"
 "\n"
 "QLabel#perk1_lbl {\n"
-"    font: 14pt \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: #6e6d6d;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "QLabel#perk2_lbl {\n"
-"    font: 14pt \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: #6e6d6d;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "QLabel#perk3_lbl {\n"
-"    font: 14pt \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: #6e6d6d;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "QLabel#perk4_lbl {\n"
-"    font: 14pt \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: #6e6d6d;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "\n"
 "QLabel#date_lbl {\n"
-"    font: 12pt \"Sylfaen\";\n"
+"    font: 16px \"Sylfaen\";\n"
 "    color: #6e6d6d;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "\n"
 "QListWidget{\n"
+"    font: 18px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "    border: 1px solid rgba(255, 255, 255, 0.3);\n"
@@ -92,11 +113,13 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QListWidget::item:hover {\n"
+"    font: 18px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color: rgba(47, 53, 56, 0.3);\n"
 "}\n"
 "\n"
 "QListWidget::item:selected {\n"
+"    font: 18px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color: rgba(64, 64, 64, 0.3);\n"
 "}\n"
@@ -112,8 +135,7 @@ class Ui_MainWindow(object):
         self.perks_list.setObjectName("perks_list")
         self.lbl1 = QtWidgets.QLabel(self.centralwidget)
         self.lbl1.setGeometry(QtCore.QRect(25, 40, 250, 30))
-        self.lbl1.setStyleSheet("font: 14pt \"Sylfaen\";\n"
-"background-color: rgba(0, 0, 0, 0);")
+        self.lbl1.setStyleSheet("")
         self.lbl1.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.lbl1.setObjectName("lbl1")
         self.add_btn = QtWidgets.QPushButton(self.centralwidget)
@@ -182,7 +204,7 @@ class Ui_MainWindow(object):
         self.img4.setAlignment(QtCore.Qt.AlignCenter)
         self.img4.setObjectName("img4")
         self.perk1_lbl = QtWidgets.QLabel(self.centralwidget)
-        self.perk1_lbl.setGeometry(QtCore.QRect(520, 210, 200, 30))
+        self.perk1_lbl.setGeometry(QtCore.QRect(480, 210, 280, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -192,7 +214,7 @@ class Ui_MainWindow(object):
         self.perk1_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk1_lbl.setObjectName("perk1_lbl")
         self.perk2_lbl = QtWidgets.QLabel(self.centralwidget)
-        self.perk2_lbl.setGeometry(QtCore.QRect(370, 360, 200, 30))
+        self.perk2_lbl.setGeometry(QtCore.QRect(330, 360, 280, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -202,7 +224,7 @@ class Ui_MainWindow(object):
         self.perk2_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk2_lbl.setObjectName("perk2_lbl")
         self.perk3_lbl = QtWidgets.QLabel(self.centralwidget)
-        self.perk3_lbl.setGeometry(QtCore.QRect(670, 360, 200, 30))
+        self.perk3_lbl.setGeometry(QtCore.QRect(630, 360, 280, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -212,7 +234,7 @@ class Ui_MainWindow(object):
         self.perk3_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk3_lbl.setObjectName("perk3_lbl")
         self.perk4_lbl = QtWidgets.QLabel(self.centralwidget)
-        self.perk4_lbl.setGeometry(QtCore.QRect(520, 510, 200, 30))
+        self.perk4_lbl.setGeometry(QtCore.QRect(480, 510, 280, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -223,8 +245,7 @@ class Ui_MainWindow(object):
         self.perk4_lbl.setObjectName("perk4_lbl")
         self.lbl1_2 = QtWidgets.QLabel(self.centralwidget)
         self.lbl1_2.setGeometry(QtCore.QRect(470, 10, 300, 35))
-        self.lbl1_2.setStyleSheet("font: 24pt \"Sylfaen\";\n"
-"background-color: rgba(0, 0, 0, 0);")
+        self.lbl1_2.setStyleSheet("")
         self.lbl1_2.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl1_2.setObjectName("lbl1_2")
         self.date_lbl = QtWidgets.QLabel(self.centralwidget)
@@ -234,7 +255,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.date_lbl.sizePolicy().hasHeightForWidth())
         self.date_lbl.setSizePolicy(sizePolicy)
-        self.date_lbl.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
+        self.date_lbl.setStyleSheet("")
         self.date_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
         self.date_lbl.setObjectName("date_lbl")
         self.bg = QtWidgets.QLabel(self.centralwidget)
