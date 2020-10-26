@@ -8,6 +8,7 @@ import winshell
 import sys
 import win32com.client
 import pythoncom
+import dateutil.relativedelta as REL
 from csv import reader
 from bs4 import BeautifulSoup as bs
 from datetime import datetime, timedelta
@@ -145,8 +146,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.refr_ui = 2
         self.refr_intervals = [2, 4, 6, 8]
         self.total_tasks = 1.0
-        self.now = datetime.utcnow().date()
-        self.next_refr = self.now + timedelta(days=-self.now.weekday()+3,  weeks=1)
+        self.today = None
+        self.next_refr = None
+        self.real_refr_date = None
         
     def initDialogs(self):
         self.progress_bar = ProgressBar()
@@ -260,8 +262,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Content loaded.')
         
     def load_shrine(self, init=False):
-        real_refr_date = self.next_refr - timedelta(days=1)
-        self.date_lbl.setText(f'Shrine refreshes on: {real_refr_date.strftime("%d/%m/%y")} GMT+0')
+        self.real_refr_date = self.next_refr - timedelta(days=1)
+        self.date_lbl.setText(f'Shrine refreshes on: {self.real_refr_date.strftime("%d/%m/%y")} GMT+0')
         for _ in range(1,5):
             d = self.iterables[f'img{_}']
             d.setPixmap(QtGui.QPixmap(self.local_img+f'\\{self.current_shrine[_]}.png'))
@@ -413,10 +415,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if init or force:
             pass
         else:
-            self.next_refr = datetime.utcnow().date() + timedelta(days=-datetime.utcnow().weekday()+3, weeks=1)
+            self.today = datetime.utcnow().date()
+            rd = REL.relativedelta(days=1, weekday=REL.TH)
+            self.next_refr = self.today + rd
             shrine_dwnl_date = datetime.strptime(self.current_shrine[0], '%d/%m/%Y %H:%M').date()
-            time_since_refr = ((self.next_refr - shrine_dwnl_date).total_seconds())/86400
-            if shrine_dwnl_date < self.next_refr and time_since_refr <= 7.0:
+            time_to_refr = ((self.next_refr - self.today).total_seconds())/86400
+            if shrine_dwnl_date < self.next_refr and time_to_refr in range(1,8):
+                if self.real_refr_date != self.next_refr - timedelta(days=1):
+                    self.real_refr_date = self.next_refr - timedelta(days=1)
+                    self.date_lbl.setText(f'Shrine refreshes on: {self.real_refr_date.strftime("%d/%m/%y")} GMT+0')
                 print('No need to download shrine')
                 return None
          
@@ -657,7 +664,7 @@ class MessageDialog(QtWidgets.QDialog, MessageTemplate):
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
         self.close_btn.clicked.connect(self.hide)
         if self.dialog_type == 'Message':
-            self.title_lbl.setStyleSheet('font: 16pt "Sylfaen" bold;')
+            self.title_lbl.setStyleSheet('font: 20px "Sylfaen" bold;')
             self.title_lbl.setText('About us:')
             self.msg_lbl.setText('Program author: Michal Kowal\nE-mail: kow.michal.66@gmail.com\nReddit: u/virtozenho\n\nArt designer: Urszula Kowal\nInstagram: _kowalowna_')
         elif self.dialog_type == 'Error':
