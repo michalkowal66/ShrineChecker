@@ -23,7 +23,6 @@ from rsc import rsc
 #TO DO LIST:
 #Interrupt thread when main window shown (if needed)
 #Doubled threading from exit
-#Load stylesheet from file
 #Window bar - alternatives?
 #Check periodically whether number of perks changed
 #Better CSS - font type/size, buttons - UX rules
@@ -201,6 +200,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg.setScaledContents(True)
         self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/settings.png'))
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
+        stylesheet = "rsc/ui_stylesheet.qss"
+        with open(stylesheet,"r") as ss:
+            self.setStyleSheet(ss.read())
         tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/Icon/icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
@@ -519,6 +521,9 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         self.startup_check.setChecked(startup)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        stylesheet = "rsc/settings_stylesheet.qss"
+        with open(stylesheet,"r") as ss:
+            self.setStyleSheet(ss.read())
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
         self.reset_btn.clicked.connect(self.reset)
@@ -578,6 +583,9 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         'frame4': self.frame4}
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        stylesheet = "rsc/notification_stylesheet.qss"
+        with open(stylesheet,"r") as ss:
+            self.setStyleSheet(ss.read())
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
         screen = QtWidgets.QDesktopWidget().screenGeometry()
@@ -627,6 +635,9 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         super().setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        stylesheet = "rsc/progress_stylesheet.qss"
+        with open(stylesheet,"r") as ss:
+            self.setStyleSheet(ss.read())
         self.progress_bar.setValue(0)
         self.msg_lbl.setText('Starting work...')
         self.close_btn.clicked.connect(self.close)
@@ -662,6 +673,9 @@ class MessageDialog(QtWidgets.QDialog, MessageTemplate):
         super().setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        stylesheet = "rsc/message_stylesheet.qss"
+        with open(stylesheet,"r") as ss:
+            self.setStyleSheet(ss.read())
         self.close_btn.clicked.connect(self.hide)
         if self.dialog_type == 'Message':
             self.title_lbl.setStyleSheet('font: 20px "Sylfaen" bold;')
