@@ -1,0 +1,38 @@
+QLabel#bg {
+	border: 1px solid white;
+}
+
+QLabel#wait_lbl{
+	color: white;
+	font: 20px "Sylfaen";
+}
+QLabel#msg_lbl {
+	color: white;
+	font: 16px "Sylfaen";
+}
+
+QProgressBar{
+	border: solid black;
+	border-radius: 2px;
+	color: black;
+	background-color: #404040;
+}
+
+QProgressBar::chunk {
+background-color: white;
+}  
+
+QPushButton {
+	color: white;
+	font: 18px"Sylfaen";
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	background-color:#404040;
+}
+
+QPushButton:disabled {
+	color: black;
+	background-color:#141718;
+}

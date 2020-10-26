@@ -1,0 +1,51 @@
+QLabel#settings_lbl {
+	color: white;
+	font: 24px "Sylfaen";
+}
+
+QCheckBox {
+	color: white;
+	font: 18px "Sylfaen";
+}
+
+QLabel {
+	color: white;
+	font: 18px "Sylfaen";
+}
+
+QPushButton {
+	color: white;
+	font: 18px "Sylfaen";
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	color: white;
+	font: 18px "Sylfaen";
+	background-color:#404040;
+}
+
+QLabel#bg {
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+QComboBox {
+	color: white;
+	font: 18px "Sylfaen";
+	background-color:#2F3538;
+	selection-background-color:#2F3538;
+}
+
+QComboBox QAbstractItemView {
+	color: white;
+	font: 18px "Sylfaen";
+    background-color:#2F3538;
+	selection-background-color: #404040;
+	outline: 0;
+}
+
+QScrollBar:vertical {    
+	color: white;
+	font: 18px "Sylfaen";
+	background:#404040;
+}

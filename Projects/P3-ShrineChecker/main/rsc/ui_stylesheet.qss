@@ -1,0 +1,97 @@
+QLabel#lbl1{
+	font: 24px "Sylfaen";
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QLabel#lbl1_2{
+	font: 30px "Sylfaen";
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QPushButton {
+	font: 18px "Sylfaen";
+	color: white;
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	font: 18px "Sylfaen";
+	color: white;
+	background-color:#404040;
+}
+
+QComboBox {
+	font: 18px "Sylfaen";
+	color: white;
+	background-color:#2F3538;
+	selection-background-color:#2F3538;
+}
+
+QComboBox QAbstractItemView {
+	font: 18px "Sylfaen";
+	color: white;
+    background-color:#2F3538;
+	selection-background-color: #404040;
+	outline: 0;
+}
+
+QScrollBar:vertical {
+	font: 18px "Sylfaen";
+	color: white;
+	background:#404040;
+}
+
+QPushButton#settings_btn{
+	font: 18px "Sylfaen";
+	color: white;
+	qproperty-iconSize: 30px;
+}
+
+QLabel#perk1_lbl {
+	font: 20px "Sylfaen";
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk2_lbl {
+	font: 20px "Sylfaen";
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk3_lbl {
+	font: 20px "Sylfaen";
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk4_lbl {
+	font: 20px "Sylfaen";
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QLabel#date_lbl {
+	font: 16px "Sylfaen";
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QListWidget{
+	font: 18px "Sylfaen";
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	outline: 0;
+}
+
+QListWidget::item:hover {
+	font: 18px "Sylfaen";
+	color: white;
+    background-color: rgba(47, 53, 56, 0.3);
+}
+
+QListWidget::item:selected {
+	font: 18px "Sylfaen";
+	color: white;
+	background-color: rgba(64, 64, 64, 0.3);
+}

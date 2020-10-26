@@ -1,0 +1,51 @@
+QLabel#perk1_lbl {
+	font: 20px "Sylfaen";
+	color: white;
+}
+
+QLabel#msg1_lbl {
+	font: 16px "Sylfaen";
+	color: white;
+}
+
+QLabel#perk2_lbl {
+	font: 20px "Sylfaen";
+	color: white;
+}
+
+QLabel#msg2_lbl {
+	font: 16px "Sylfaen";
+	color: white;
+}
+
+QLabel#perk3_lbl {
+	font: 20px "Sylfaen";
+	color: white;
+}
+
+QLabel#msg3_lbl {
+	font: 16px "Sylfaen";
+	color: white;
+}
+
+QLabel#perk4_lbl {
+	font: 20px "Sylfaen";
+	color: white;
+}
+
+QLabel#msg4_lbl {
+	font: 16px "Sylfaen";
+	color: white;
+}
+
+QPushButton {
+	font: 18px "Sylfaen";
+	background-color:#2F3538;
+	color: white;
+}
+
+QPushButton:hover {
+	font: 18px "Sylfaen";
+	background-color:#404040;
+	color: white;
+}

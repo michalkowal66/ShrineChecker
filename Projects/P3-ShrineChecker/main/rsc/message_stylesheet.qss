@@ -1,0 +1,27 @@
+QLabel#bg {
+	border: 1px solid white;
+}
+
+QLabel#msg_lbl{
+	color: white;
+	font: 16px "Sylfaen";
+}
+QLabel#title_lbl {
+	color: white;
+	font: 20px "Sylfaen";
+}
+
+QPushButton {
+	color: white;
+	font: 18px "Sylfaen";
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	background-color:#404040;
+}
+
+QPushButton:disabled {
+	color: black;
+	background-color:#141718;
+}
