@@ -25,60 +25,6 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QLabel#perk1_lbl {
-	font: 20px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QLabel#msg1_lbl {
-	font: 16px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QLabel#perk2_lbl {
-	font: 20px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QLabel#msg2_lbl {
-	font: 16px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QLabel#perk3_lbl {
-	font: 20px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QLabel#msg3_lbl {
-	font: 16px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QLabel#perk4_lbl {
-	font: 20px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QLabel#msg4_lbl {
-	font: 16px &quot;Sylfaen&quot;;
-	color: white;
-}
-
-QPushButton {
-	font: 18px &quot;Sylfaen&quot;;
-	background-color:#2F3538;
-	color: white;
-}
-
-QPushButton:hover {
-	font: 18px &quot;Sylfaen&quot;;
-	background-color:#404040;
-	color: white;
-}
-</string>
-  </property>
   <widget class="QLabel" name="msg4_lbl">
    <property name="geometry">
     <rect>

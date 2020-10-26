@@ -25,36 +25,6 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QLabel#bg {
-	border: 1px solid white;
-}
-
-QLabel#msg_lbl{
-	color: white;
-	font: 16px &quot;Sylfaen&quot;;
-}
-QLabel#title_lbl {
-	color: white;
-	font: 20px &quot;Sylfaen&quot;;
-}
-
-QPushButton {
-	color: white;
-	font: 18px &quot;Sylfaen&quot;;
-	background-color:#2F3538;
-}
-
-QPushButton:hover {
-	background-color:#404040;
-}
-
-QPushButton:disabled {
-	color: black;
-	background-color:#141718;
-}
-</string>
-  </property>
   <widget class="QLabel" name="bg">
    <property name="geometry">
     <rect>

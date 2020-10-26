@@ -16,34 +16,6 @@ class Ui_Dialog(object):
         Dialog.resize(360, 250)
         Dialog.setMinimumSize(QtCore.QSize(360, 250))
         Dialog.setMaximumSize(QtCore.QSize(360, 250))
-        Dialog.setStyleSheet("QLabel#bg {\n"
-"    border: 1px solid white;\n"
-"}\n"
-"\n"
-"QLabel#msg_lbl{\n"
-"    color: white;\n"
-"    font: 16px \"Sylfaen\";\n"
-"}\n"
-"QLabel#title_lbl {\n"
-"    color: white;\n"
-"    font: 20px \"Sylfaen\";\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
-"    background-color:#2F3538;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color:#404040;\n"
-"}\n"
-"\n"
-"QPushButton:disabled {\n"
-"    color: black;\n"
-"    background-color:#141718;\n"
-"}\n"
-"")
         self.bg = QtWidgets.QLabel(Dialog)
         self.bg.setGeometry(QtCore.QRect(0, 0, 360, 250))
         self.bg.setStyleSheet("")
