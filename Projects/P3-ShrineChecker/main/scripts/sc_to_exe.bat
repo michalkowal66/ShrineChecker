@@ -1,1 +1,1 @@
-pyinstaller.exe --onefile -w --icon=rsc/icon.ico ..\sc.py
+pyinstaller.exe --onefile -w --icon=../rsc/icon.ico -n ShrineChecker ../sc.py
