@@ -14,12 +14,12 @@ from bs4 import BeautifulSoup as bs
 from datetime import datetime, timedelta
 from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
-from templates.sc_settings import Ui_Dialog as SettingsTemplate
-from templates.sc_notification import Ui_Dialog as NotificationTemplate
-from templates.sc_progress import Ui_Dialog as ProgressBarTemplate
-from templates.sc_message import Ui_Dialog as MessageTemplate
+from templates.sc_settings import Ui_SettingsTemplate
+from templates.sc_notification import Ui_NotificationTemplate
+from templates.sc_progress import Ui_ProgressBarTemplate
+from templates.sc_message import Ui_MessageTemplate
 from rsc import rsc
-from styles import stylesheets
+from rsc import stylesheets
 
 #TO DO LIST:
 #Window bar - alternatives?
@@ -195,12 +195,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.settings_btn.clicked.connect(self.open_settings)
-        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg.png'))
         self.bg.setScaledContents(True)
-        self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/settings.png'))
-        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
+        self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/img/settings.png'))
+        self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
         self.setStyleSheet(stylesheets.ui_stylesheet)
-        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/Icon/icon.ico'), parent=app)
+        tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/Icon/img/icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
         showAction = menu.addAction('Show')
@@ -253,7 +253,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if init==True:
             for _ in range(1,5):
                 frame = self.iterables[f'frame{_}']
-                frame.setPixmap(QtGui.QPixmap(':/Decorations/frame1.png'))
+                frame.setPixmap(QtGui.QPixmap(':/Decorations/img/frame1.png'))
                 frame.setScaledContents(True)
             if len(self.desired_perks) > 0:
                 for perk in self.desired_perks:
@@ -498,10 +498,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             event.ignore()
             self.start_threading()
 
-class Settings(QtWidgets.QDialog, SettingsTemplate):
+class Settings(QtWidgets.QDialog, Ui_SettingsTemplate):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = SettingsTemplate()
+        self.ui = Ui_SettingsTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -516,8 +516,8 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         super().setupUi(self)
         self.tray_check.setChecked(tray)
         self.startup_check.setChecked(startup)
-        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
-        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg.png'))
         self.setStyleSheet(stylesheets.settings_stylesheet)
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
@@ -552,7 +552,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         if not self.isHidden():
             window.refresh_ui()      
             
-class Notification(QtWidgets.QDialog, NotificationTemplate):
+class Notification(QtWidgets.QDialog, Ui_NotificationTemplate):
     signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
@@ -577,8 +577,8 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         4: 600, 'frame1': self.frame1,
                         'frame2': self.frame2, 'frame3': self.frame3,
                         'frame4': self.frame4}
-        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
-        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg.png'))
         self.setStyleSheet(stylesheets.notification_stylesheet)
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
@@ -588,7 +588,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         self.move(x, 40)
         for _ in range(1,5):
                 frame = self.iterables[f'frame{_}']
-                frame.setPixmap(QtGui.QPixmap(':/Decorations/frame1.png'))
+                frame.setPixmap(QtGui.QPixmap(':/Decorations/img/frame1.png'))
                 frame.setScaledContents(True)
         
     def setup_notification(self, perks):
@@ -611,7 +611,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
         window.show()
         window.refresh_ui()
         
-class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
+class ProgressBar(QtWidgets.QDialog, Ui_ProgressBarTemplate):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initVariables()
@@ -627,8 +627,8 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         
     def setupUi(self, Dialog):
         super().setupUi(self)
-        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
-        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg.png'))
         self.setStyleSheet(stylesheets.progress_stylesheet)
         self.progress_bar.setValue(0)
         self.msg_lbl.setText('Starting work...')
@@ -647,7 +647,7 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         self.close_btn.setEnabled(False)
         event.accept()
 
-class MessageDialog(QtWidgets.QDialog, MessageTemplate):
+class MessageDialog(QtWidgets.QDialog, Ui_MessageTemplate):
     def __init__(self, parent=None, dialog_type = 'Message' or 'Error'):
         super().__init__(parent)
         self.dialog_type = dialog_type
@@ -663,8 +663,8 @@ class MessageDialog(QtWidgets.QDialog, MessageTemplate):
         
     def setupUi(self, Dialog):
         super().setupUi(self)
-        self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
-        self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg.png'))
         self.setStyleSheet(stylesheets.message_stylesheet)
         self.close_btn.clicked.connect(self.hide)
         if self.dialog_type == 'Message':
