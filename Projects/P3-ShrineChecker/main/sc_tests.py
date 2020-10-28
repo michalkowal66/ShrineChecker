@@ -8,20 +8,20 @@ import winshell
 import sys
 import win32com.client
 import pythoncom
+import dateutil.relativedelta as REL
 from csv import reader
 from bs4 import BeautifulSoup as bs
 from datetime import datetime, timedelta
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ui.sc_ui import Ui_MainWindow
-from ui.sc_settings import Ui_Dialog as SettingsTemplate
-from ui.sc_notification import Ui_Dialog as NotificationTemplate
-from ui.sc_progress import Ui_Dialog as ProgressBarTemplate
-from ui.sc_message import Ui_Dialog as MessageTemplate
+from templates.sc_ui import Ui_MainWindow
+from templates.sc_settings import Ui_Dialog as SettingsTemplate
+from templates.sc_notification import Ui_Dialog as NotificationTemplate
+from templates.sc_progress import Ui_Dialog as ProgressBarTemplate
+from templates.sc_message import Ui_Dialog as MessageTemplate
 from rsc import rsc
+from styles import stylesheets
 
 #TO DO LIST:
-#Interrupt thread when main window shown (if needed)
-#Doubled threading from exit
 #Window bar - alternatives?
 #Check periodically whether number of perks changed
 #Better CSS - font type/size, buttons - UX rules
@@ -48,7 +48,6 @@ class Notifier(QtCore.QThread):
             
     @QtCore.pyqtSlot()
     def run(self):
-        # for _ in range(window.refr_notif*60*60):
         for _ in range(10):
             if not window.isHidden():
                 print('Notifier thread interrupted')
@@ -108,7 +107,6 @@ class Refresher(QtCore.QThread):
             
     @QtCore.pyqtSlot()
     def run(self):
-        # for _ in range(window.refr_ui*60*60):
         for _ in range(10):
             if window.isHidden() or not window.settings_dialog.isHidden():
                 print('Refresher thread interrupted')
@@ -122,7 +120,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.ui = Ui_MainWindow()
         self.initVariables()
         self.setupUi(self)
         
@@ -147,8 +144,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.refr_ui = 2
         self.refr_intervals = [2, 4, 6, 8]
         self.total_tasks = 1.0
-        self.now = datetime.utcnow().date()
-        self.next_refr = self.now + timedelta(days=-self.now.weekday()+3,  weeks=1)
+        self.today = None
+        self.next_refr = None
+        self.real_refr_date = None
         
     def initDialogs(self):
         self.progress_bar = ProgressBar()
@@ -201,6 +199,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg.setScaledContents(True)
         self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/settings.png'))
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
+        self.setStyleSheet(stylesheets.ui_stylesheet)
         tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/Icon/icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
@@ -262,8 +261,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Content loaded.')
         
     def load_shrine(self, init=False):
-        real_refr_date = self.next_refr - timedelta(days=1)
-        self.date_lbl.setText(f'Shrine refreshes on: {real_refr_date.strftime("%d/%m/%y")} GMT+0')
+        self.real_refr_date = self.next_refr - timedelta(days=1)
+        self.date_lbl.setText(f'Shrine refreshes on: {self.real_refr_date.strftime("%d/%m/%y")} GMT+0')
         for _ in range(1,5):
             d = self.iterables[f'img{_}']
             d.setPixmap(QtGui.QPixmap(self.local_img+f'\\{self.current_shrine[_]}.png'))
@@ -275,7 +274,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.check_shrine()        
         
     def show_ui(self):
-        #Interrupt the thread's work here
         if self.isHidden():
             try:
                 self.dl_shrine()
@@ -413,13 +411,18 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Perks downloaded and saved.')
          
     def dl_shrine(self, init=False, force=False):
+        self.today = datetime.utcnow().date()
+        rd = REL.relativedelta(days=1, weekday=REL.TH)
+        self.next_refr = self.today + rd
         if init or force:
             pass
         else:
-            self.next_refr = datetime.utcnow().date() + timedelta(days=-datetime.utcnow().weekday()+3, weeks=1)
             shrine_dwnl_date = datetime.strptime(self.current_shrine[0], '%d/%m/%Y %H:%M').date()
-            time_since_refr = ((self.next_refr - shrine_dwnl_date).total_seconds())/86400
-            if shrine_dwnl_date < self.next_refr and time_since_refr <= 7.0:
+            time_to_refr = ((self.next_refr - self.today).total_seconds())/86400
+            if shrine_dwnl_date < self.next_refr and time_to_refr in range(1,8):
+                if self.real_refr_date != self.next_refr - timedelta(days=1):
+                    self.real_refr_date = self.next_refr - timedelta(days=1)
+                    self.date_lbl.setText(f'Shrine refreshes on: {self.real_refr_date.strftime("%d/%m/%y")} GMT+0')
                 print('No need to download shrine')
                 return None
          
@@ -515,6 +518,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         self.startup_check.setChecked(startup)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setStyleSheet(stylesheets.settings_stylesheet)
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
         self.reset_btn.clicked.connect(self.reset)
@@ -545,14 +549,14 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         window.info_dialog.show()
                    
     def closeEvent(self, event):
-        window.refresh_ui()       
+        if not self.isHidden():
+            window.refresh_ui()      
             
 class Notification(QtWidgets.QDialog, NotificationTemplate):
     signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = NotificationTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -575,6 +579,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         'frame4': self.frame4}
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setStyleSheet(stylesheets.notification_stylesheet)
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
         screen = QtWidgets.QDesktopWidget().screenGeometry()
@@ -609,7 +614,6 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
 class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = ProgressBarTemplate()
         self.initVariables()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -625,6 +629,7 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         super().setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setStyleSheet(stylesheets.progress_stylesheet)
         self.progress_bar.setValue(0)
         self.msg_lbl.setText('Starting work...')
         self.close_btn.clicked.connect(self.close)
@@ -660,11 +665,12 @@ class MessageDialog(QtWidgets.QDialog, MessageTemplate):
         super().setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
+        self.setStyleSheet(stylesheets.message_stylesheet)
         self.close_btn.clicked.connect(self.hide)
         if self.dialog_type == 'Message':
-            self.title_lbl.setStyleSheet('font: 16pt "Sylfaen" bold;')
-            self.title_lbl.setText('About me:')
-            self.msg_lbl.setText('Author: Michal Kowal\n\ne-mail: kow.michal.66@gmail.com')
+            self.title_lbl.setStyleSheet('font: 20px "Sylfaen" bold;')
+            self.title_lbl.setText('About us:')
+            self.msg_lbl.setText('Program author: Michal Kowal\nE-mail: kow.michal.66@gmail.com\nReddit: u/virtozenho\n\nArt designer: Urszula Kowal\nInstagram: _kowalowna_')
         elif self.dialog_type == 'Error':
             self.title_lbl.setText('Oops, something went wrong!')    
            
