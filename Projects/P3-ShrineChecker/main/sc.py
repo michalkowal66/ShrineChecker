@@ -13,16 +13,15 @@ from csv import reader
 from bs4 import BeautifulSoup as bs
 from datetime import datetime, timedelta
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ui.sc_ui import Ui_MainWindow
-from ui.sc_settings import Ui_Dialog as SettingsTemplate
-from ui.sc_notification import Ui_Dialog as NotificationTemplate
-from ui.sc_progress import Ui_Dialog as ProgressBarTemplate
-from ui.sc_message import Ui_Dialog as MessageTemplate
+from templates.sc_ui import Ui_MainWindow
+from templates.sc_settings import Ui_Dialog as SettingsTemplate
+from templates.sc_notification import Ui_Dialog as NotificationTemplate
+from templates.sc_progress import Ui_Dialog as ProgressBarTemplate
+from templates.sc_message import Ui_Dialog as MessageTemplate
 from rsc import rsc
+from styles import stylesheets
 
 #TO DO LIST:
-#Interrupt thread when main window shown (if needed)
-#Doubled threading from exit
 #Window bar - alternatives?
 #Check periodically whether number of perks changed
 #Better CSS - font type/size, buttons - UX rules
@@ -200,9 +199,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg.setScaledContents(True)
         self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/settings.png'))
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
-        stylesheet = "rsc/ui_stylesheet.qss"
-        with open(stylesheet,"r") as ss:
-            self.setStyleSheet(ss.read())
+        self.setStyleSheet(stylesheets.ui_stylesheet)
         tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/Icon/icon.ico'), parent=app)
         tray_icon.show()
         menu = QtWidgets.QMenu()
@@ -414,12 +411,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Perks downloaded and saved.')
          
     def dl_shrine(self, init=False, force=False):
+        self.today = datetime.utcnow().date()
+        rd = REL.relativedelta(days=1, weekday=REL.TH)
+        self.next_refr = self.today + rd
         if init or force:
             pass
         else:
-            self.today = datetime.utcnow().date()
-            rd = REL.relativedelta(days=1, weekday=REL.TH)
-            self.next_refr = self.today + rd
             shrine_dwnl_date = datetime.strptime(self.current_shrine[0], '%d/%m/%Y %H:%M').date()
             time_to_refr = ((self.next_refr - self.today).total_seconds())/86400
             if shrine_dwnl_date < self.next_refr and time_to_refr in range(1,8):
@@ -521,9 +518,7 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         self.startup_check.setChecked(startup)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
-        stylesheet = "rsc/settings_stylesheet.qss"
-        with open(stylesheet,"r") as ss:
-            self.setStyleSheet(ss.read())
+        self.setStyleSheet(stylesheets.settings_stylesheet)
         self.save_btn.clicked.connect(self.save)
         self.close_btn.clicked.connect(self.close)
         self.reset_btn.clicked.connect(self.reset)
@@ -554,7 +549,8 @@ class Settings(QtWidgets.QDialog, SettingsTemplate):
         window.info_dialog.show()
                    
     def closeEvent(self, event):
-        window.refresh_ui()       
+        if not self.isHidden():
+            window.refresh_ui()      
             
 class Notification(QtWidgets.QDialog, NotificationTemplate):
     signal = QtCore.pyqtSignal()
@@ -583,9 +579,7 @@ class Notification(QtWidgets.QDialog, NotificationTemplate):
                         'frame4': self.frame4}
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
-        stylesheet = "rsc/notification_stylesheet.qss"
-        with open(stylesheet,"r") as ss:
-            self.setStyleSheet(ss.read())
+        self.setStyleSheet(stylesheets.notification_stylesheet)
         self.close_btn.clicked.connect(self.start_threading)
         self.show_btn.clicked.connect(self.show_ui)
         screen = QtWidgets.QDesktopWidget().screenGeometry()
@@ -635,9 +629,7 @@ class ProgressBar(QtWidgets.QDialog, ProgressBarTemplate):
         super().setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
-        stylesheet = "rsc/progress_stylesheet.qss"
-        with open(stylesheet,"r") as ss:
-            self.setStyleSheet(ss.read())
+        self.setStyleSheet(stylesheets.progress_stylesheet)
         self.progress_bar.setValue(0)
         self.msg_lbl.setText('Starting work...')
         self.close_btn.clicked.connect(self.close)
@@ -673,9 +665,7 @@ class MessageDialog(QtWidgets.QDialog, MessageTemplate):
         super().setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/Icon/icon.ico'))
         self.bg.setPixmap(QtGui.QPixmap(':/Background/bg.png'))
-        stylesheet = "rsc/message_stylesheet.qss"
-        with open(stylesheet,"r") as ss:
-            self.setStyleSheet(ss.read())
+        self.setStyleSheet(stylesheets.message_stylesheet)
         self.close_btn.clicked.connect(self.hide)
         if self.dialog_type == 'Message':
             self.title_lbl.setStyleSheet('font: 20px "Sylfaen" bold;')
