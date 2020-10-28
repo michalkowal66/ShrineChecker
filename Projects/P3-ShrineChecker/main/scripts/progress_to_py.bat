@@ -1,0 +1,1 @@
+pyuic5.exe ..\designer\sc_progress.ui -o ..\templates\sc_progress.py -x

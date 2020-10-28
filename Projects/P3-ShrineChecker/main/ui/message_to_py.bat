@@ -1,1 +1,0 @@
-pyuic5.exe sc_message.ui -o sc_message.py -x

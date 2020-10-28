@@ -1,0 +1,1 @@
+pyuic5.exe ..\designer\sc_ui_base.ui -o ..\templates\sc_ui.py -x

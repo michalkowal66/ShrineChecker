@@ -1,0 +1,1 @@
+pyuic5.exe ..\designer\sc_message.ui -o ..\templates\sc_message.py -x
