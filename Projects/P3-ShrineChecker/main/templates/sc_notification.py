@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'sc_notification.ui'
+# Form implementation generated from reading ui file '..\designer\sc_notification.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.2
 #
