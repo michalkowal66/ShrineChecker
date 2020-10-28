@@ -1,12 +1,19 @@
 <RCC>
   <qresource prefix="Background">
-    <file>bg.png</file>
+    <file>img/bg.png</file>
   </qresource>
   <qresource prefix="Icon">
-    <file>icon.ico</file>
+    <file>img/icon.ico</file>
   </qresource>
   <qresource prefix="Decorations">
-    <file>frame1.png</file>
-    <file>settings.png</file>
+    <file>img/frame1.png</file>
+    <file>img/settings.png</file>
+  </qresource>
+  <qresource prefix="Stylesheets">
+    <file>styles/ui_stylesheet.qss</file>
+	  <file>styles/message_stylesheet.qss</file>
+    <file>styles/notification_stylesheet.qss</file>
+	  <file>styles/progress_stylesheet.qss</file>
+	  <file>styles/settings_stylesheet.qss</file>
   </qresource>
 </RCC>
