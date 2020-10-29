@@ -418,8 +418,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             pass
         else:
             shrine_dwnl_date = datetime.strptime(self.current_shrine[0], '%d/%m/%Y %H:%M').date()
+            current_shrine_refr = shrine_dwnl_date + rd
             time_to_refr = ((self.next_refr - self.today).total_seconds())/86400
-            if shrine_dwnl_date < self.next_refr and time_to_refr in range(2,8):
+            if current_shrine_refr == self.next_refr and time_to_refr in range(2,8):
                 if self.real_refr_date != self.next_refr - timedelta(days=1):
                     self.real_refr_date = self.next_refr - timedelta(days=1)
                     self.date_lbl.setText(f'Shrine refreshes on: {self.real_refr_date.strftime("%d/%m/%y")} GMT+0')
