@@ -29,7 +29,7 @@ class Ui_SettingsTemplate(object):
         self.save_btn.setGeometry(QtCore.QRect(90, 310, 80, 30))
         self.save_btn.setObjectName("save_btn")
         self.settings_lbl = QtWidgets.QLabel(SettingsTemplate)
-        self.settings_lbl.setGeometry(QtCore.QRect(140, 10, 80, 25))
+        self.settings_lbl.setGeometry(QtCore.QRect(140, 5, 80, 35))
         self.settings_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.settings_lbl.setObjectName("settings_lbl")
         self.reset_lbl = QtWidgets.QLabel(SettingsTemplate)
