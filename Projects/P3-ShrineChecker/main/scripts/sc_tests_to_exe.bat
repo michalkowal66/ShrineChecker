@@ -1,1 +1,0 @@
-pyinstaller.exe --onefile -c --icon=../rsc/icon.ico -n SC_Test ../sc_tests.py
