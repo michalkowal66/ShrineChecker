@@ -439,7 +439,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.showError('Data_download')
             return 'Error'
         else:
-            self.current_shrine.clear()
+            temp_shrine = []
             soup_shrine = bs(req_shrine.content, 'lxml')
             curr_shrine_table = soup_shrine.find('table', {'class': 'wikitable'}).find('tbody').find_all('tr')
             for row in curr_shrine_table:
@@ -450,8 +450,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         perk = 'Deja Vu'
                     elif ':' in perk:
                         perk = perk.replace(':', '')
-                    self.current_shrine.append(perk[:-1])
-            self.current_shrine.insert(0, str(datetime.utcnow().strftime('%d/%m/%Y %H:%M')))
+                    temp_shrine.append(perk[:-1])
+            temp_shrine.insert(0, str(datetime.utcnow().strftime('%d/%m/%Y %H:%M')))
+            self.current_shrine = temp_shrine
             self.data_loader('save', self.current_shrine, self.shrine_csv)
             print('Shrine downloaded and saved.')
             self.load_shrine()
