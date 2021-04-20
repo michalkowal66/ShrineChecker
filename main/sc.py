@@ -470,7 +470,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     writer.writerow([source])
         elif action == 'load':
             target.clear()
-            with open(f'{self.local_data}/{source}', newline='') as f:
+            with open(f'{self.local_data}/{source}', newline='', encoding='utf-8') as f:
                 reader = csv.reader(f)
                 for line in reader:
                     target.append(line[0])
