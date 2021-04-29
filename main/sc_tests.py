@@ -441,9 +441,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 cell = row.find('td')
                 if cell is not None:
                     perk = cell.get_text()
-                    if perk == 'Déjà Vu':
-                        perk = 'Deja Vu'
-                    elif ':' in perk:
+                    if ':' in perk:
                         perk = perk.replace(':', '')
                     self.current_shrine.append(perk[:-1])
             self.current_shrine.insert(0, str(datetime.utcnow().strftime('%d/%m/%Y %H:%M')))
