@@ -1,12 +1,14 @@
 <RCC>
   <qresource prefix="Background">
-    <file>img/bg.png</file>
+    <file>img/bg_0.png</file>
+	<file>img/bg_1.png</file>
+	<file>img/bg_2.png</file>
   </qresource>
   <qresource prefix="Icon">
     <file>img/icon.ico</file>
   </qresource>
   <qresource prefix="Decorations">
-    <file>img/frame1.png</file>
+    <file>img/frame.png</file>
     <file>img/settings.png</file>
   </qresource>
 </RCC>
