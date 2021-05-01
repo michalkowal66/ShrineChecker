@@ -55,6 +55,47 @@
      <number>1</number>
     </property>
     <widget class="QWidget" name="loading">
+     <property name="styleSheet">
+      <string notr="true">QLabel#bg_loading {
+	border: 1px solid white;
+}
+
+QLabel#wait_lbl{
+	color: white;
+	font: 20px &quot;Sylfaen&quot;;
+}
+QLabel#msg_lbl {
+	color: white;
+	font: 16px &quot;Sylfaen&quot;;
+}
+
+QProgressBar{
+	border: solid black;
+	border-radius: 2px;
+	color: black;
+	background-color: #404040;
+}
+
+QProgressBar::chunk {
+background-color: white;
+}  
+
+QPushButton {
+	color: white;
+	font: 18px&quot;Sylfaen&quot;;
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	background-color:#404040;
+}
+
+QPushButton:disabled {
+	color: black;
+	background-color:#141718;
+}
+</string>
+     </property>
      <widget class="QLabel" name="msg_lbl">
       <property name="geometry">
        <rect>
@@ -140,6 +181,106 @@
      </widget>
     </widget>
     <widget class="QWidget" name="main">
+     <property name="styleSheet">
+      <string notr="true">QLabel#info_lbl{
+	font: 24px &quot;Sylfaen&quot;;
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QLabel#title_lbl{
+	font: 30px &quot;Sylfaen&quot;;
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QPushButton {
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+	background-color:#404040;
+}
+
+QComboBox {
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+	background-color:#2F3538;
+	selection-background-color:#2F3538;
+}
+
+QComboBox QAbstractItemView {
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+    background-color:#2F3538;
+	selection-background-color: #404040;
+	outline: 0;
+}
+
+QScrollBar:vertical {
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+	background:#404040;
+}
+
+QPushButton#settings_btn{
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+	qproperty-iconSize: 30px;
+}
+
+QLabel#perk1_lbl {
+	font: 20px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk2_lbl {
+	font: 20px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk3_lbl {
+	font: 20px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+QLabel#perk4_lbl {
+	font: 20px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QLabel#date_lbl {
+	font: 16px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QListWidget{
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	outline: 0;
+}
+
+QListWidget::item:hover {
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+    background-color: rgba(47, 53, 56, 0.3);
+}
+
+QListWidget::item:selected {
+	font: 18px &quot;Sylfaen&quot;;
+	color: white;
+	background-color: rgba(64, 64, 64, 0.3);
+}
+</string>
+     </property>
      <widget class="QLabel" name="perk1_frame">
       <property name="geometry">
        <rect>
@@ -745,6 +886,64 @@
      </widget>
     </widget>
     <widget class="QWidget" name="settings">
+     <property name="styleSheet">
+      <string notr="true">QLabel#settings_lbl {
+	color: white;
+	font: 24px &quot;Sylfaen&quot;;
+}
+
+QLabel#authors_lbl {
+	color: white;
+	font: 24px &quot;Sylfaen&quot;;
+}
+
+QCheckBox {
+	color: white;
+	font: 18px &quot;Sylfaen&quot;;
+}
+
+QLabel {
+	color: white;
+	font: 18px &quot;Sylfaen&quot;;
+}
+
+QPushButton {
+	color: white;
+	font: 18px &quot;Sylfaen&quot;;
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	color: white;
+	font: 18px &quot;Sylfaen&quot;;
+	background-color:#404040;
+}
+
+QLabel#bg_2 {
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+QComboBox {
+	color: white;
+	font: 18px &quot;Sylfaen&quot;;
+	background-color:#2F3538;
+	selection-background-color:#2F3538;
+}
+
+QComboBox QAbstractItemView {
+	color: white;
+	font: 18px &quot;Sylfaen&quot;;
+    background-color:#2F3538;
+	selection-background-color: #404040;
+	outline: 0;
+}
+
+QScrollBar:vertical {    
+	color: white;
+	font: 18px &quot;Sylfaen&quot;;
+	background:#404040;
+}</string>
+     </property>
      <widget class="QCheckBox" name="startup_check">
       <property name="geometry">
        <rect>
