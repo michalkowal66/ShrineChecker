@@ -131,7 +131,7 @@ QPushButton:disabled {
        <string>Done</string>
       </property>
      </widget>
-     <widget class="QLabel" name="bg_loading">
+     <widget class="QLabel" name="bg_0">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -145,6 +145,9 @@ QPushButton:disabled {
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QProgressBar" name="progress_bar">
@@ -179,7 +182,7 @@ QPushButton:disabled {
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <zorder>bg_loading</zorder>
+     <zorder>bg_0</zorder>
      <zorder>msg_lbl</zorder>
      <zorder>done_btn</zorder>
      <zorder>progress_bar</zorder>
@@ -427,7 +430,7 @@ QListWidget::item:selected {
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="bg">
+     <widget class="QLabel" name="bg_1">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -889,7 +892,7 @@ QListWidget::item:selected {
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <zorder>bg</zorder>
+     <zorder>bg_1</zorder>
      <zorder>perk1_frame</zorder>
      <zorder>perk1_lbl</zorder>
      <zorder>perks_combo</zorder>
@@ -1035,6 +1038,9 @@ QScrollBar:vertical {
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QCheckBox" name="tray_check">
