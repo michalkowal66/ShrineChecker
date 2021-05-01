@@ -10,7 +10,14 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def setupUi(self, MainWindow):
         super().setupUi(self)
-        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg.png'))
+
+        self.bg_0.setPixmap(QtGui.QPixmap(':/Background/img/bg_0.png'))
+        self.bg_1.setPixmap(QtGui.QPixmap(':/Background/img/bg_1.png'))
+        self.bg_2.setPixmap(QtGui.QPixmap(':/Background/img/bg_2.png'))
+
+        self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/img/settings.png'))
+
+        self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
 
 
 if __name__ == "__main__":
