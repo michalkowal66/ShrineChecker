@@ -179,6 +179,11 @@ QPushButton:disabled {
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
+     <zorder>bg_loading</zorder>
+     <zorder>msg_lbl</zorder>
+     <zorder>done_btn</zorder>
+     <zorder>progress_bar</zorder>
+     <zorder>wait_lbl</zorder>
     </widget>
     <widget class="QWidget" name="main">
      <property name="styleSheet">
@@ -884,6 +889,27 @@ QListWidget::item:selected {
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
+     <zorder>bg</zorder>
+     <zorder>perk1_frame</zorder>
+     <zorder>perk1_lbl</zorder>
+     <zorder>perks_combo</zorder>
+     <zorder>perk2_lbl</zorder>
+     <zorder>perks_list</zorder>
+     <zorder>info_lbl</zorder>
+     <zorder>settings_btn</zorder>
+     <zorder>perk3_img</zorder>
+     <zorder>perk4_lbl</zorder>
+     <zorder>perk3_frame</zorder>
+     <zorder>perk4_img</zorder>
+     <zorder>perk4_frame</zorder>
+     <zorder>perk3_lbl</zorder>
+     <zorder>date_lbl</zorder>
+     <zorder>remove_btn</zorder>
+     <zorder>perk1_img</zorder>
+     <zorder>add_btn</zorder>
+     <zorder>perk2_frame</zorder>
+     <zorder>title_lbl</zorder>
+     <zorder>perk2_img</zorder>
     </widget>
     <widget class="QWidget" name="settings">
      <property name="styleSheet">
@@ -1262,6 +1288,23 @@ QScrollBar:vertical {
        <bool>true</bool>
       </property>
      </widget>
+     <zorder>bg_2</zorder>
+     <zorder>startup_check</zorder>
+     <zorder>reset_lbl</zorder>
+     <zorder>reload_btn</zorder>
+     <zorder>tray_check</zorder>
+     <zorder>save_btn</zorder>
+     <zorder>settings_lbl</zorder>
+     <zorder>notif_combo</zorder>
+     <zorder>back_btn</zorder>
+     <zorder>reload_lbl</zorder>
+     <zorder>reset_btn</zorder>
+     <zorder>refr_combo</zorder>
+     <zorder>notif_lbl</zorder>
+     <zorder>refr_lbl</zorder>
+     <zorder>authors_lbl</zorder>
+     <zorder>author_lbl</zorder>
+     <zorder>designer_lbl</zorder>
     </widget>
    </widget>
   </widget>
