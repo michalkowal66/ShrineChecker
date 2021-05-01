@@ -39,11 +39,11 @@ class Ui_MainWindow(object):
 "\n"
 "QLabel#wait_lbl{\n"
 "    color: white;\n"
-"    font: 20px \"Sylfaen\";\n"
+"    font: 24px \"Sylfaen\";\n"
 "}\n"
 "QLabel#msg_lbl {\n"
 "    color: white;\n"
-"    font: 16px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "}\n"
 "\n"
 "QProgressBar{\n"
@@ -59,7 +59,7 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton {\n"
 "    color: white;\n"
-"    font: 18px\"Sylfaen\";\n"
+"    font: 20px\"Sylfaen\";\n"
 "    background-color:#2F3538;\n"
 "}\n"
 "\n"
@@ -117,26 +117,26 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton {\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color:#2F3538;\n"
 "}\n"
 "\n"
 "QPushButton:hover {\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color:#404040;\n"
 "}\n"
 "\n"
 "QComboBox {\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color:#2F3538;\n"
 "    selection-background-color:#2F3538;\n"
 "}\n"
 "\n"
 "QComboBox QAbstractItemView {\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color:#2F3538;\n"
 "    selection-background-color: #404040;\n"
@@ -144,13 +144,13 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QScrollBar:vertical {\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background:#404040;\n"
 "}\n"
 "\n"
 "QPushButton#settings_btn{\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    qproperty-iconSize: 30px;\n"
 "}\n"
@@ -183,7 +183,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QListWidget{\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
 "    border: 1px solid rgba(255, 255, 255, 0.3);\n"
@@ -191,13 +191,13 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QListWidget::item:hover {\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color: rgba(47, 53, 56, 0.3);\n"
 "}\n"
 "\n"
 "QListWidget::item:selected {\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    color: white;\n"
 "    background-color: rgba(64, 64, 64, 0.3);\n"
 "}\n"
@@ -446,23 +446,23 @@ class Ui_MainWindow(object):
 "\n"
 "QCheckBox {\n"
 "    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "}\n"
 "\n"
 "QLabel {\n"
 "    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "}\n"
 "\n"
 "QPushButton {\n"
 "    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    background-color:#2F3538;\n"
 "}\n"
 "\n"
 "QPushButton:hover {\n"
 "    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    background-color:#404040;\n"
 "}\n"
 "\n"
@@ -472,14 +472,14 @@ class Ui_MainWindow(object):
 "\n"
 "QComboBox {\n"
 "    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    background-color:#2F3538;\n"
 "    selection-background-color:#2F3538;\n"
 "}\n"
 "\n"
 "QComboBox QAbstractItemView {\n"
 "    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    background-color:#2F3538;\n"
 "    selection-background-color: #404040;\n"
 "    outline: 0;\n"
@@ -487,21 +487,21 @@ class Ui_MainWindow(object):
 "\n"
 "QScrollBar:vertical {    \n"
 "    color: white;\n"
-"    font: 18px \"Sylfaen\";\n"
+"    font: 20px \"Sylfaen\";\n"
 "    background:#404040;\n"
 "}")
         self.settings.setObjectName("settings")
         self.startup_check = QtWidgets.QCheckBox(self.settings)
-        self.startup_check.setGeometry(QtCore.QRect(20, 80, 600, 40))
+        self.startup_check.setGeometry(QtCore.QRect(20, 90, 870, 40))
         self.startup_check.setChecked(False)
         self.startup_check.setObjectName("startup_check")
         self.reset_lbl = QtWidgets.QLabel(self.settings)
-        self.reset_lbl.setGeometry(QtCore.QRect(170, 220, 600, 50))
+        self.reset_lbl.setGeometry(QtCore.QRect(170, 260, 600, 50))
         self.reset_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.reset_lbl.setWordWrap(True)
         self.reset_lbl.setObjectName("reset_lbl")
         self.reload_btn = QtWidgets.QPushButton(self.settings)
-        self.reload_btn.setGeometry(QtCore.QRect(20, 280, 140, 30))
+        self.reload_btn.setGeometry(QtCore.QRect(20, 330, 140, 30))
         self.reload_btn.setCheckable(False)
         self.reload_btn.setObjectName("reload_btn")
         self.bg_2 = QtWidgets.QLabel(self.settings)
@@ -511,7 +511,7 @@ class Ui_MainWindow(object):
         self.bg_2.setScaledContents(True)
         self.bg_2.setObjectName("bg_2")
         self.tray_check = QtWidgets.QCheckBox(self.settings)
-        self.tray_check.setGeometry(QtCore.QRect(20, 40, 600, 40))
+        self.tray_check.setGeometry(QtCore.QRect(20, 40, 800, 40))
         self.tray_check.setChecked(False)
         self.tray_check.setObjectName("tray_check")
         self.save_btn = QtWidgets.QPushButton(self.settings)
@@ -522,7 +522,7 @@ class Ui_MainWindow(object):
         self.settings_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.settings_lbl.setObjectName("settings_lbl")
         self.notif_combo = QtWidgets.QComboBox(self.settings)
-        self.notif_combo.setGeometry(QtCore.QRect(20, 130, 50, 30))
+        self.notif_combo.setGeometry(QtCore.QRect(20, 150, 50, 30))
         self.notif_combo.setStyleSheet("")
         self.notif_combo.setObjectName("notif_combo")
         self.notif_combo.addItem("")
@@ -533,16 +533,16 @@ class Ui_MainWindow(object):
         self.back_btn.setGeometry(QtCore.QRect(460, 550, 80, 30))
         self.back_btn.setObjectName("back_btn")
         self.reload_lbl = QtWidgets.QLabel(self.settings)
-        self.reload_lbl.setGeometry(QtCore.QRect(170, 270, 600, 50))
+        self.reload_lbl.setGeometry(QtCore.QRect(170, 320, 600, 50))
         self.reload_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.reload_lbl.setWordWrap(True)
         self.reload_lbl.setObjectName("reload_lbl")
         self.reset_btn = QtWidgets.QPushButton(self.settings)
-        self.reset_btn.setGeometry(QtCore.QRect(20, 230, 140, 30))
+        self.reset_btn.setGeometry(QtCore.QRect(20, 270, 140, 30))
         self.reset_btn.setCheckable(False)
         self.reset_btn.setObjectName("reset_btn")
         self.refr_combo = QtWidgets.QComboBox(self.settings)
-        self.refr_combo.setGeometry(QtCore.QRect(20, 180, 50, 30))
+        self.refr_combo.setGeometry(QtCore.QRect(20, 210, 50, 30))
         self.refr_combo.setStyleSheet("")
         self.refr_combo.setObjectName("refr_combo")
         self.refr_combo.addItem("")
@@ -550,26 +550,26 @@ class Ui_MainWindow(object):
         self.refr_combo.addItem("")
         self.refr_combo.addItem("")
         self.notif_lbl = QtWidgets.QLabel(self.settings)
-        self.notif_lbl.setGeometry(QtCore.QRect(80, 120, 600, 50))
+        self.notif_lbl.setGeometry(QtCore.QRect(80, 140, 800, 50))
         self.notif_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.notif_lbl.setWordWrap(True)
         self.notif_lbl.setObjectName("notif_lbl")
         self.refr_lbl = QtWidgets.QLabel(self.settings)
-        self.refr_lbl.setGeometry(QtCore.QRect(80, 170, 600, 50))
+        self.refr_lbl.setGeometry(QtCore.QRect(80, 200, 800, 50))
         self.refr_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.refr_lbl.setWordWrap(True)
         self.refr_lbl.setObjectName("refr_lbl")
         self.authors_lbl = QtWidgets.QLabel(self.settings)
-        self.authors_lbl.setGeometry(QtCore.QRect(290, 320, 320, 35))
+        self.authors_lbl.setGeometry(QtCore.QRect(290, 380, 320, 35))
         self.authors_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.authors_lbl.setObjectName("authors_lbl")
         self.author_lbl = QtWidgets.QLabel(self.settings)
-        self.author_lbl.setGeometry(QtCore.QRect(20, 360, 600, 50))
+        self.author_lbl.setGeometry(QtCore.QRect(20, 420, 800, 50))
         self.author_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.author_lbl.setWordWrap(True)
         self.author_lbl.setObjectName("author_lbl")
         self.designer_lbl = QtWidgets.QLabel(self.settings)
-        self.designer_lbl.setGeometry(QtCore.QRect(20, 410, 600, 50))
+        self.designer_lbl.setGeometry(QtCore.QRect(20, 470, 800, 50))
         self.designer_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.designer_lbl.setWordWrap(True)
         self.designer_lbl.setObjectName("designer_lbl")
@@ -612,7 +612,7 @@ class Ui_MainWindow(object):
         self.remove_btn.setText(_translate("MainWindow", "Remove"))
         self.add_btn.setText(_translate("MainWindow", "Add"))
         self.title_lbl.setText(_translate("MainWindow", "Shrine of Secrets"))
-        self.startup_check.setText(_translate("MainWindow", "Run with startup - Adds/Removes shortcut to the application executable to the Autostart direcory."))
+        self.startup_check.setText(_translate("MainWindow", "Run with startup - Adds/Removes shortcut to the application executable to the autostart folder."))
         self.reset_lbl.setText(_translate("MainWindow", "Redownload local database of perks"))
         self.reload_btn.setText(_translate("MainWindow", "Reload shrine"))
         self.tray_check.setText(_translate("MainWindow", "Minimize to tray on exit - Enables/Disables working in the background."))
