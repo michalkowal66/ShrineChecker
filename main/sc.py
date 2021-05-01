@@ -432,7 +432,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 print('No need to download shrine')
                 return None
 
-        shrine_url = 'https://deadbydaylight.gamepedia.com/Shrine_of_Secrets#Current_Shrine_of_Secrets'
+        shrine_url = 'https://deadbydaylight.fandom.com/wiki/Dead_by_Daylight_Wiki'
         try:
             req_shrine = requests.get(shrine_url)
         except:
