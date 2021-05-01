@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
+from rsc import rsc
 
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -9,6 +10,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def setupUi(self, MainWindow):
         super().setupUi(self)
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg.png'))
 
 
 if __name__ == "__main__":
