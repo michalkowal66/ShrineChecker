@@ -948,10 +948,6 @@ QPushButton:hover {
 	background-color:#404040;
 }
 
-QLabel#bg_2 {
-	border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 QComboBox {
 	color: white;
 	font: 20px &quot;Sylfaen&quot;;
@@ -1311,6 +1307,104 @@ QScrollBar:vertical {
      <zorder>authors_lbl</zorder>
      <zorder>author_lbl</zorder>
      <zorder>designer_lbl</zorder>
+    </widget>
+    <widget class="QWidget" name="error">
+     <property name="styleSheet">
+      <string notr="true">QLabel#error_lbl{
+	color: white;
+	font: 24px &quot;Sylfaen&quot;;
+}
+QLabel#error_msg_lbl {
+	color: white;
+	font: 20px &quot;Sylfaen&quot;;
+}
+
+QLabel#author_contact_lbl {
+	color: white;
+	font: 20px &quot;Sylfaen&quot;;
+}
+</string>
+     </property>
+     <widget class="QLabel" name="error_msg_lbl">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>80</y>
+        <width>800</width>
+        <height>400</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Error message</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="bg_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>900</width>
+        <height>600</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="error_lbl">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>30</y>
+        <width>420</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Oops, application encountered an error!</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="author_contact_lbl">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>490</y>
+        <width>800</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;In case of recurring problems contact app author: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Michał Kowal, michal.kowal.66@gmail.com, r/Virtozenho&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::AutoText</enum>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <zorder>bg_3</zorder>
+     <zorder>error_msg_lbl</zorder>
+     <zorder>error_lbl</zorder>
+     <zorder>author_contact_lbl</zorder>
     </widget>
    </widget>
   </widget>

@@ -466,10 +466,6 @@ class Ui_MainWindow(object):
 "    background-color:#404040;\n"
 "}\n"
 "\n"
-"QLabel#bg_2 {\n"
-"    border: 1px solid rgba(255, 255, 255, 0.2);\n"
-"}\n"
-"\n"
 "QComboBox {\n"
 "    color: white;\n"
 "    font: 20px \"Sylfaen\";\n"
@@ -591,6 +587,48 @@ class Ui_MainWindow(object):
         self.author_lbl.raise_()
         self.designer_lbl.raise_()
         self.stackedWidget.addWidget(self.settings)
+        self.error = QtWidgets.QWidget()
+        self.error.setStyleSheet("QLabel#error_lbl{\n"
+"    color: white;\n"
+"    font: 24px \"Sylfaen\";\n"
+"}\n"
+"QLabel#error_msg_lbl {\n"
+"    color: white;\n"
+"    font: 20px \"Sylfaen\";\n"
+"}\n"
+"\n"
+"QLabel#author_contact_lbl {\n"
+"    color: white;\n"
+"    font: 20px \"Sylfaen\";\n"
+"}\n"
+"")
+        self.error.setObjectName("error")
+        self.error_msg_lbl = QtWidgets.QLabel(self.error)
+        self.error_msg_lbl.setGeometry(QtCore.QRect(50, 80, 800, 400))
+        self.error_msg_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.error_msg_lbl.setWordWrap(True)
+        self.error_msg_lbl.setObjectName("error_msg_lbl")
+        self.bg_3 = QtWidgets.QLabel(self.error)
+        self.bg_3.setGeometry(QtCore.QRect(0, 0, 900, 600))
+        self.bg_3.setStyleSheet("")
+        self.bg_3.setText("")
+        self.bg_3.setScaledContents(True)
+        self.bg_3.setObjectName("bg_3")
+        self.error_lbl = QtWidgets.QLabel(self.error)
+        self.error_lbl.setGeometry(QtCore.QRect(240, 30, 420, 20))
+        self.error_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.error_lbl.setObjectName("error_lbl")
+        self.author_contact_lbl = QtWidgets.QLabel(self.error)
+        self.author_contact_lbl.setGeometry(QtCore.QRect(50, 490, 800, 100))
+        self.author_contact_lbl.setTextFormat(QtCore.Qt.AutoText)
+        self.author_contact_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.author_contact_lbl.setWordWrap(True)
+        self.author_contact_lbl.setObjectName("author_contact_lbl")
+        self.bg_3.raise_()
+        self.error_msg_lbl.raise_()
+        self.error_lbl.raise_()
+        self.author_contact_lbl.raise_()
+        self.stackedWidget.addWidget(self.error)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -634,6 +672,9 @@ class Ui_MainWindow(object):
         self.authors_lbl.setText(_translate("MainWindow", "App authors"))
         self.author_lbl.setText(_translate("MainWindow", "App author- Michał Kowal, michal.kowal.66@gmail.com, r/virtozenho"))
         self.designer_lbl.setText(_translate("MainWindow", "Graphics designer - Urszula Kowal, @kowalowna"))
+        self.error_msg_lbl.setText(_translate("MainWindow", "Error message"))
+        self.error_lbl.setText(_translate("MainWindow", "Oops, application encountered an error!"))
+        self.author_contact_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">In case of recurring problems contact app author: </span></p><p><span style=\" font-size:12pt;\">Michał Kowal, michal.kowal.66@gmail.com, r/Virtozenho</span></p></body></html>"))
 
 
 if __name__ == "__main__":
