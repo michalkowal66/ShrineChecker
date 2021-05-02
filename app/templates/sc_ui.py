@@ -176,6 +176,12 @@ class Ui_MainWindow(object):
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "\n"
+"QLabel#dateinfo_lbl {\n"
+"    font: 16px \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"\n"
 "QLabel#date_lbl {\n"
 "    font: 16px \"Sylfaen\";\n"
 "    color: #6e6d6d;\n"
@@ -343,16 +349,16 @@ class Ui_MainWindow(object):
         self.perk3_lbl.setStyleSheet("")
         self.perk3_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk3_lbl.setObjectName("perk3_lbl")
-        self.date_lbl = QtWidgets.QLabel(self.main)
-        self.date_lbl.setGeometry(QtCore.QRect(565, 565, 330, 30))
+        self.dateinfo_lbl = QtWidgets.QLabel(self.main)
+        self.dateinfo_lbl.setGeometry(QtCore.QRect(560, 565, 180, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.date_lbl.sizePolicy().hasHeightForWidth())
-        self.date_lbl.setSizePolicy(sizePolicy)
-        self.date_lbl.setStyleSheet("")
-        self.date_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
-        self.date_lbl.setObjectName("date_lbl")
+        sizePolicy.setHeightForWidth(self.dateinfo_lbl.sizePolicy().hasHeightForWidth())
+        self.dateinfo_lbl.setSizePolicy(sizePolicy)
+        self.dateinfo_lbl.setStyleSheet("")
+        self.dateinfo_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
+        self.dateinfo_lbl.setObjectName("dateinfo_lbl")
         self.remove_btn = QtWidgets.QPushButton(self.main)
         self.remove_btn.setGeometry(QtCore.QRect(185, 520, 120, 30))
         self.remove_btn.setObjectName("remove_btn")
@@ -411,6 +417,16 @@ class Ui_MainWindow(object):
         self.perk2_img.setText("")
         self.perk2_img.setAlignment(QtCore.Qt.AlignCenter)
         self.perk2_img.setObjectName("perk2_img")
+        self.date_lbl = QtWidgets.QLabel(self.main)
+        self.date_lbl.setGeometry(QtCore.QRect(745, 565, 145, 30))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.date_lbl.sizePolicy().hasHeightForWidth())
+        self.date_lbl.setSizePolicy(sizePolicy)
+        self.date_lbl.setStyleSheet("")
+        self.date_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
+        self.date_lbl.setObjectName("date_lbl")
         self.bg_1.raise_()
         self.perk1_frame.raise_()
         self.perk1_lbl.raise_()
@@ -425,13 +441,14 @@ class Ui_MainWindow(object):
         self.perk4_img.raise_()
         self.perk4_frame.raise_()
         self.perk3_lbl.raise_()
-        self.date_lbl.raise_()
+        self.dateinfo_lbl.raise_()
         self.remove_btn.raise_()
         self.perk1_img.raise_()
         self.add_btn.raise_()
         self.perk2_frame.raise_()
         self.title_lbl.raise_()
         self.perk2_img.raise_()
+        self.date_lbl.raise_()
         self.stackedWidget.addWidget(self.main)
         self.settings = QtWidgets.QWidget()
         self.settings.setStyleSheet("QLabel#settings_lbl {\n"
@@ -646,10 +663,11 @@ class Ui_MainWindow(object):
         self.info_lbl.setText(_translate("MainWindow", "Desired perks:"))
         self.perk4_lbl.setText(_translate("MainWindow", "TextLabel"))
         self.perk3_lbl.setText(_translate("MainWindow", "TextLabel"))
-        self.date_lbl.setText(_translate("MainWindow", "Shrine refreshes on DD/MM/YY GMT+0"))
+        self.dateinfo_lbl.setText(_translate("MainWindow", "Shrine refreshes on: "))
         self.remove_btn.setText(_translate("MainWindow", "Remove"))
         self.add_btn.setText(_translate("MainWindow", "Add"))
         self.title_lbl.setText(_translate("MainWindow", "Shrine of Secrets"))
+        self.date_lbl.setText(_translate("MainWindow", "DD/MM/YY GMT+0"))
         self.startup_check.setText(_translate("MainWindow", "Run with startup - Adds/Removes shortcut to the application executable to the autostart folder."))
         self.reset_lbl.setText(_translate("MainWindow", "Redownload local database of perks"))
         self.reload_btn.setText(_translate("MainWindow", "Reload shrine"))

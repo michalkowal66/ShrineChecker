@@ -262,6 +262,12 @@ QLabel#perk4_lbl {
 	background-color: rgba(0, 0, 0, 0);
 }
 
+QLabel#dateinfo_lbl {
+	font: 16px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
 QLabel#date_lbl {
 	font: 16px &quot;Sylfaen&quot;;
 	color: #6e6d6d;
@@ -687,12 +693,12 @@ QListWidget::item:selected {
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QLabel" name="date_lbl">
+     <widget class="QLabel" name="dateinfo_lbl">
       <property name="geometry">
        <rect>
-        <x>565</x>
+        <x>560</x>
         <y>565</y>
-        <width>330</width>
+        <width>180</width>
         <height>30</height>
        </rect>
       </property>
@@ -706,7 +712,7 @@ QListWidget::item:selected {
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Shrine refreshes on DD/MM/YY GMT+0</string>
+       <string>Shrine refreshes on: </string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -892,6 +898,31 @@ QListWidget::item:selected {
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
+     <widget class="QLabel" name="date_lbl">
+      <property name="geometry">
+       <rect>
+        <x>745</x>
+        <y>565</y>
+        <width>145</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>DD/MM/YY GMT+0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+      </property>
+     </widget>
      <zorder>bg_1</zorder>
      <zorder>perk1_frame</zorder>
      <zorder>perk1_lbl</zorder>
@@ -906,13 +937,14 @@ QListWidget::item:selected {
      <zorder>perk4_img</zorder>
      <zorder>perk4_frame</zorder>
      <zorder>perk3_lbl</zorder>
-     <zorder>date_lbl</zorder>
+     <zorder>dateinfo_lbl</zorder>
      <zorder>remove_btn</zorder>
      <zorder>perk1_img</zorder>
      <zorder>add_btn</zorder>
      <zorder>perk2_frame</zorder>
      <zorder>title_lbl</zorder>
      <zorder>perk2_img</zorder>
+     <zorder>date_lbl</zorder>
     </widget>
     <widget class="QWidget" name="settings">
      <property name="styleSheet">
