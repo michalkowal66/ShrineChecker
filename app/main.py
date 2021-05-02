@@ -26,7 +26,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        self.local_data = {
+        self.data_container = {
             "settings": {
                 "path": self.settings_path,
                 "data": {
@@ -67,6 +67,48 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 }
             },
         }
+        self.json_schemes = {
+            "settings": {
+                "type": "object",
+                "properties": {
+                    "minimize": {"type": "boolean"},
+                    "startup": {"type": "boolean"},
+                    "notification": {"type": "integer"},
+                    "refresh": {"type": "integer"}
+                }
+            },
+            "shrine": {
+                "type": "object",
+                "properties": {
+                    "perk1_name": {"type": "string"},
+                    "perk1_img": {"type": "string"},
+                    "perk1_frame": {"type": "boolean"},
+                    "perk2_name": {"type": "string"},
+                    "perk2_img": {"type": "string"},
+                    "perk2_frame": {"type": "boolean"},
+                    "perk3_name": {"type": "string"},
+                    "perk3_img": {"type": "string"},
+                    "perk3_frame": {"type": "boolean"},
+                    "perk4_name": {"type": "string"},
+                    "perk4_img": {"type": "string"},
+                    "perk4_frame": {"type": "boolean"},
+                    "download_date": {"type": "string"}
+                }
+            },
+            "perks": {
+                "type": "object",
+                "properties": {
+                    "perks_list": {"type": "array"}
+                }
+            },
+            "user_perks": {
+                "type": "object",
+                "properties": {
+                    "perks_list": {"type": "array"}
+                }
+            }
+        }
+        self.local_data = {}
 
         self.init_data()
 
@@ -90,47 +132,68 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if not os.path.exists(self.local_dir):
             # loading screen
             if not self.prepare_local_dir():
-                # stay at loading screen, done button disabled
-                print("Wasn't able to create a local directory properly")
                 return False
-        if self.verify_local_files():
-            if self.load_data():
-                # change screen to main
-                return True
-        else:
-            # move to error screen
-            print("Error while initializing data")
-            return False
+        if self.load_data():
+            if self.verify_local_files():
+                if self.update_containers():
+                    return True
+        return False
 
     def prepare_local_dir(self):
         try:
             os.mkdir(self.local_dir)
             os.mkdir(self.local_img_dir)
 
-            for data_container in self.local_data:
-                path = self.local_data[data_container]["path"]
-                dict_data = self.local_data[data_container]["data"]
+            for container_type in self.data_container:
+                path = self.data_container[container_type]["path"]
+                dict_data = self.data_container[container_type]["data"]
                 container = { key:dict_data[key]["val"] for key in dict_data}
                 with open(path, 'w') as f:
                     containerJson = json.dumps(container, indent=4)
                     f.write(containerJson)
         except:
-            print("Error while creating directory")
             if os.path.exists(self.local_dir):
                 shutil.rmtree(self.local_dir)
+            self.error_occured("Wasn't able to create a local directory properly")
+        else:
+            return True
+
+    def load_data(self):
+        try:
+            for container_type in self.data_container:
+                path = self.data_container[container_type]["path"]
+                with open(path, "r") as f:
+                    json_content = json.load(f)
+                    self.local_data[container_type] = json_content
+        except:
+            self.error_occured("Could not load local data")
             return False
         else:
-            print("Local directory created")
             return True
 
     def verify_local_files(self):
+        try:
+            validated = all([self.verifyJson(self.local_data[key], key) for key in self.local_data])
+        except:
+            self.error_occured("Error while validating json")
+            return False
+        else:
+            return validated
+
+    def verifyJson(self, jsonDict, scheme):
+        try:
+            validate(instance=jsonDict, schema=self.json_schemes[scheme])
+        except:
+            return False
+        else:
+            return True
+
+    def update_containers(self):
         return True
 
-    def verifyJson(self, jsonFile, scheme):
-        return True
-
-    def load_data(self):
-        return True
+    def error_occured(self, message):
+        self.stackedWidget.setCurrentIndex(3)
+        self.error_msg_lbl.setText(message)
 
 
 if __name__ == "__main__":
