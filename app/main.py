@@ -14,6 +14,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg_0.setPixmap(QtGui.QPixmap(':/Background/img/bg_0.png'))
         self.bg_1.setPixmap(QtGui.QPixmap(':/Background/img/bg_1.png'))
         self.bg_2.setPixmap(QtGui.QPixmap(':/Background/img/bg_2.png'))
+        self.bg_3.setPixmap(QtGui.QPixmap(':/Background/img/bg_2.png'))
 
         self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/img/settings.png'))
 
