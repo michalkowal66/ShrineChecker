@@ -102,10 +102,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         }
         # Initialize dictionary for storing loaded local data before validation
         self.local_data = {}
-
         # Initialize all data to user interface
         self.init_data()
-
 
     def setupUi(self, MainWindow):
         super().setupUi(self)
@@ -117,7 +115,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg_3.setPixmap(QtGui.QPixmap(':/Background/img/bg_2.png'))
 
         # Load shrine perks frame images
-        for _ in range(1,5):
+        for _ in range(1, 5):
             frame = self.main_page.findChild(QtWidgets.QLabel, f"perk{_}_frame")
             frame.setPixmap(QtGui.QPixmap(':/Decorations/img/frame.png'))
             frame.setHidden(True)
@@ -190,13 +188,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def verify_local_files(self):
         # Call validator on each read dictionary in self.local_data
-        if all([self.verifyJson(self.local_data[key], key) for key in self.local_data]):
+        if all([self.verify_json(self.local_data[key], key) for key in self.local_data]):
             return True
         # On error display error message
         self.error_occured("Error while validating json")
         return False
 
-    def verifyJson(self, jsonDict, scheme):
+    def verify_json(self, jsonDict, scheme):
         try:
             # Call validate from jsonschema with data dictionary and appropriate scheme
             validate(instance=jsonDict, schema=self.json_schemes[scheme])
@@ -342,8 +340,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             target_data = self.data_dict[target_type]["data"]
             container = {key: target_data[key]["val"] for key in target_data}
             with open(path, 'w') as f:
-                containerJson = json.dumps(container, indent=4)
-                f.write(containerJson)
+                container_json = json.dumps(container, indent=4)
+                f.write(container_json)
 
 
 if __name__ == "__main__":
