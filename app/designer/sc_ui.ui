@@ -54,7 +54,7 @@
     <property name="currentIndex">
      <number>1</number>
     </property>
-    <widget class="QWidget" name="loading">
+    <widget class="QWidget" name="loading_page">
      <property name="styleSheet">
       <string notr="true">QLabel#bg_loading {
 	border: 1px solid white;
@@ -188,7 +188,7 @@ QPushButton:disabled {
      <zorder>progress_bar</zorder>
      <zorder>wait_lbl</zorder>
     </widget>
-    <widget class="QWidget" name="main">
+    <widget class="QWidget" name="main_page">
      <property name="styleSheet">
       <string notr="true">QLabel#info_lbl{
 	font: 24px &quot;Sylfaen&quot;;
@@ -958,7 +958,7 @@ QListWidget::item:selected {
      <zorder>perk2_img</zorder>
      <zorder>date_lbl</zorder>
     </widget>
-    <widget class="QWidget" name="settings">
+    <widget class="QWidget" name="settings_page">
      <property name="styleSheet">
       <string notr="true">QLabel#settings_lbl {
 	color: white;
@@ -1352,7 +1352,7 @@ QScrollBar:vertical {
      <zorder>author_lbl</zorder>
      <zorder>designer_lbl</zorder>
     </widget>
-    <widget class="QWidget" name="error">
+    <widget class="QWidget" name="error_page">
      <property name="styleSheet">
       <string notr="true">QLabel#error_lbl{
 	color: white;
