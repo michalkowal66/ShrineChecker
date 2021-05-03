@@ -9,8 +9,6 @@ from rsc import rsc
 
 # TODO add scraper
 # TODO add missing button actions
-# TODO add implement check_shrine
-# TODO load perk frames
 # TODO implement signals for loading data
 
 
@@ -26,41 +24,42 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
+        self.settings = {
+            "minimize": {"val": True, "container": self.tray_check},
+            "startup": {"val": True, "container": self.startup_check},
+            "notification": {"val": "2", "container": self.notif_combo},
+            "refresh": {"val": "2", "container": self.refr_combo}
+        }
+        self.shrine = {
+            "perk1": {"val": "perk1_name", "container": self.perk1_lbl, "frame": self.perk1_frame},
+            "perk2": {"val": "perk2_name", "container": self.perk2_lbl, "frame": self.perk2_frame},
+            "perk3": {"val": "perk3_name", "container": self.perk3_lbl, "frame": self.perk3_frame},
+            "perk4": {"val": "perk4_name", "container": self.perk4_lbl, "frame": self.perk4_frame},
+            "download_date": {"val": "dd.mm.yyyy hh:mm", "container": self.date_lbl}
+        }
+        self.perks = {
+            "perks_list": {"val": [], "container": self.perks_combo}
+        }
+        self.user_perks = {
+            "perks_list": {"val": [], "container": self.perks_list}
+        }
+
         self.data_dict = {
             "settings": {
                 "path": self.settings_path,
-                "data": {
-                    "minimize": {"val": True, "container": self.tray_check},
-                    "startup": {"val": True, "container": self.startup_check},
-                    "notification": {"val": 2, "container": self.notif_combo},
-                    "refresh": {"val": 2, "container": self.refr_combo}
-                }
+                "data": self.settings
             },
             "shrine": {
                 "path": self.shrine_path,
-                "data": {
-                    "perk1_name": {"val": "perk1_name", "container": self.perk1_lbl},
-                    "perk1_img": {"val": "perk1_img", "container": self.perk1_img},
-                    "perk2_name": {"val": "perk2_name", "container": self.perk2_lbl},
-                    "perk2_img": {"val": "perk2_img", "container": self.perk2_img},
-                    "perk3_name": {"val": "perk3_name", "container": self.perk3_lbl},
-                    "perk3_img": {"val": "perk4_img", "container": self.perk3_img},
-                    "perk4_name": {"val": "perk4_name", "container": self.perk4_lbl},
-                    "perk4_img": {"val": "perk4_img", "container": self.perk4_img},
-                    "download_date": {"val": "dd.mm.yyyy hh:mm", "container": self.date_lbl}
-                }
+                "data": self.shrine
             },
             "perks": {
                 "path": self.perks_path,
-                "data": {
-                    "perks_list": {"val": [], "container": self.perks_combo}
-                }
+                "data": self.perks
             },
             "user_perks": {
                 "path": self.user_perks_path,
-                "data": {
-                    "perks_list": {"val": [], "container": self.perks_list}
-                }
+                "data": self.user_perks
             },
         }
         self.json_schemes = {
@@ -76,14 +75,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             "shrine": {
                 "type": "object",
                 "properties": {
-                    "perk1_name": {"type": "string"},
-                    "perk1_img": {"type": "string"},
-                    "perk2_name": {"type": "string"},
-                    "perk2_img": {"type": "string"},
-                    "perk3_name": {"type": "string"},
-                    "perk3_img": {"type": "string"},
-                    "perk4_name": {"type": "string"},
-                    "perk4_img": {"type": "string"},
+                    "perk1": {"type": "string"},
+                    "perk2": {"type": "string"},
+                    "perk3": {"type": "string"},
+                    "perk4": {"type": "string"},
                     "download_date": {"type": "string"}
                 }
             },
@@ -113,6 +108,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bg_2.setPixmap(QtGui.QPixmap(':/Background/img/bg_2.png'))
         self.bg_3.setPixmap(QtGui.QPixmap(':/Background/img/bg_2.png'))
 
+        for _ in range(1,5):
+            frame = self.main_page.findChild(QtWidgets.QLabel, f"perk{_}_frame")
+            frame.setPixmap(QtGui.QPixmap(':/Decorations/img/frame.png'))
+            frame.setHidden(True)
+
         self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/img/settings.png'))
 
         self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
@@ -134,6 +134,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.load_local_data():
                     self.update_main_containers()
                     self.update_settings_containers()
+                    self.check_shrine()
                     return True
         return False
 
@@ -178,21 +179,24 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return True
 
     def load_local_data(self, target="all"):
-        if target == "all":
-            for target_type in self.data_dict:
-                for key in self.data_dict[target_type]["data"]:
-                    self.data_dict[target_type]["data"][key]["val"] = self.local_data[target_type][key]
-        return True
+        try:
+            if target == "all":
+                for target_type in self.data_dict:
+                    for key in self.data_dict[target_type]["data"]:
+                        self.data_dict[target_type]["data"][key]["val"] = self.local_data[target_type][key]
+        except:
+            return False
+        else:
+            return True
 
     def update_main_containers(self, target="ui"):
         try:
             if target == "ui":
-                target = ["shrine", "perks", "user_perks"]
-            for target_type in target:
-                target_data = self.data_dict[target_type]["data"]
-                for key in target_data:
-                    value = target_data[key]["val"]
-                    container = target_data[key]["container"]
+                target = [self.shrine, self.perks, self.user_perks]
+            for data_dict in target:
+                for key in data_dict:
+                    value = data_dict[key]["val"]
+                    container = data_dict[key]["container"]
                     self.load_value(container, value)
         except:
             self.error_occured("Wasn't able to update main ui containers")
@@ -202,10 +206,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def update_settings_containers(self):
         try:
-            target_data = self.data_dict["settings"]["data"]
-            for key in target_data:
-                value = target_data[key]["val"]
-                container = target_data[key]["container"]
+            for key in self.settings:
+                value = self.settings[key]["val"]
+                container = self.settings[key]["container"]
                 self.set_value(container, value)
         except:
             self.error_occured("Wasn't able to update settings containers")
@@ -235,7 +238,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.check_shrine()
 
     def check_shrine(self):
-        pass
+        list_items = [self.perks_list.item(x).text() for x in range(self.perks_list.count())]
+        for perk_key in self.shrine:
+            perk = self.shrine[perk_key]
+            if perk.get("frame") is None:
+                continue
+            if perk["val"] in list_items:
+                perk["frame"].setHidden(False)
+            else:
+                perk["frame"].setHidden(True)
 
     def error_occured(self, message):
         self.stackedWidget.setCurrentIndex(3)
