@@ -8,9 +8,9 @@ from rsc import rsc
 
 
 # TODO add scraper
-# TODO add data loader method
 # TODO add missing button actions
-# TODO create data structure
+# TODO add implement check_shrine
+# TODO load perk frames
 # TODO implement signals for loading data
 
 
@@ -69,8 +69,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 "properties": {
                     "minimize": {"type": "boolean"},
                     "startup": {"type": "boolean"},
-                    "notification": {"type": "integer"},
-                    "refresh": {"type": "integer"}
+                    "notification": {"type": "string"},
+                    "refresh": {"type": "string"}
                 }
             },
             "shrine": {
@@ -117,19 +117,24 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
 
-        self.settings_btn.clicked.connect(lambda n: self.stackedWidget.setCurrentIndex(2))
-        self.back_btn.clicked.connect(lambda n: self.stackedWidget.setCurrentIndex(1))
+        self.settings_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
+        self.back_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
+
+        self.save_btn.clicked.connect(lambda: self.update_globally(target="settings"))
+        self.add_btn.clicked.connect(self.add_perk)
+        self.remove_btn.clicked.connect(self.remove_perk)
 
     def init_data(self):
         if not os.path.exists(self.local_dir):
             # loading screen
             if not self.prepare_local_dir():
                 return False
-        if self.load_data():
+        if self.read_local_files():
             if self.verify_local_files():
-                if self.update_data_dict():
-                    if self.update_containers("ui"):
-                        return True
+                if self.load_local_data():
+                    self.update_main_containers()
+                    self.update_settings_containers()
+                    return True
         return False
 
     def prepare_local_dir(self):
@@ -137,13 +142,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             os.mkdir(self.local_dir)
             os.mkdir(self.local_img_dir)
 
-            for target_type in self.data_dict:
-                path = self.data_dict[target_type]["path"]
-                target_data = self.data_dict[target_type]["data"]
-                container = {key:target_data[key]["val"] for key in target_data}
-                with open(path, 'w') as f:
-                    containerJson = json.dumps(container, indent=4)
-                    f.write(containerJson)
+            self.save_data(target="all")
         except:
             if os.path.exists(self.local_dir):
                 shutil.rmtree(self.local_dir)
@@ -151,7 +150,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             return True
 
-    def load_data(self):
+    def read_local_files(self):
         try:
             for target_type in self.data_dict:
                 path = self.data_dict[target_type]["path"]
@@ -159,19 +158,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     json_content = json.load(f)
                     self.local_data[target_type] = json_content
         except:
-            self.error_occured("Could not load local data")
+            self.error_occured("Could not read local data")
             return False
         else:
             return True
 
     def verify_local_files(self):
-        try:
-            validated = all([self.verifyJson(self.local_data[key], key) for key in self.local_data])
-        except:
-            self.error_occured("Error while validating json")
-            return False
-        else:
-            return validated
+        if all([self.verifyJson(self.local_data[key], key) for key in self.local_data]):
+            return True
+        self.error_occured("Error while validating json")
+        return False
 
     def verifyJson(self, jsonDict, scheme):
         try:
@@ -181,34 +177,72 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             return True
 
-    def update_data_dict(self, target="all"):
+    def load_local_data(self, target="all"):
         if target == "all":
             for target_type in self.data_dict:
                 for key in self.data_dict[target_type]["data"]:
                     self.data_dict[target_type]["data"][key]["val"] = self.local_data[target_type][key]
         return True
 
-    def update_containers(self, target):
-        if target == "ui":
-            for target_type in ["shrine", "perks", "user_perks"]:
+    def update_main_containers(self, target="ui"):
+        try:
+            if target == "ui":
+                target = ["shrine", "perks", "user_perks"]
+            for target_type in target:
                 target_data = self.data_dict[target_type]["data"]
                 for key in target_data:
                     value = target_data[key]["val"]
                     container = target_data[key]["container"]
-                    self.setValue(container, value)
-        elif target == "settings":
+                    self.load_value(container, value)
+        except:
+            self.error_occured("Wasn't able to update main ui containers")
+            return False
+        else:
+            return True
+
+    def update_settings_containers(self):
+        try:
             target_data = self.data_dict["settings"]["data"]
-            # ...
-        return True
+            for key in target_data:
+                value = target_data[key]["val"]
+                container = target_data[key]["container"]
+                self.set_value(container, value)
+        except:
+            self.error_occured("Wasn't able to update settings containers")
+            return False
+        else:
+            return True
+
+    def update_globally(self, target):
+        for key in self.data_dict[target]["data"]:
+            container = self.data_dict[target]["data"][key]["container"]
+            self.data_dict[target]["data"][key]["val"] = self.read_value(container=container)
+        self.save_data(target=target)
+
+    def add_perk(self):
+        list_items = [self.perks_list.item(x).text() for x in range(self.perks_list.count())]
+        perk = self.perks_combo.currentText()
+        if perk not in list_items:
+            self.perks_list.addItem(perk)
+            self.update_globally("user_perks")
+            self.check_shrine()
+
+    def remove_perk(self):
+        selected_item = self.perks_list.currentItem()
+        if selected_item is not None:
+            self.perks_list.takeItem(self.perks_list.row(selected_item))
+            self.update_globally("user_perks")
+            self.check_shrine()
+
+    def check_shrine(self):
+        pass
 
     def error_occured(self, message):
         self.stackedWidget.setCurrentIndex(3)
         self.error_msg_lbl.setText(message)
 
-    def setValue(self, container, value):
-        if type(container) == QtWidgets.QCheckBox:
-            container.setChecked(value)
-        elif type(container) == QtWidgets.QLabel:
+    def load_value(self, container, value):
+        if type(container) == QtWidgets.QLabel:
             if container.objectName().endswith("img"):
                 container.setPixmap(QtGui.QPixmap(f"{self.local_img_dir}\\{value}"))
                 container.setScaledContents(True)
@@ -216,6 +250,34 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 container.setText(value)
         elif type(container) in [QtWidgets.QComboBox, QtWidgets.QListWidget]:
             container.addItems(value)
+
+    def set_value(self, container, value):
+        if type(container) == QtWidgets.QCheckBox:
+            container.setChecked(value)
+        elif type(container) == QtWidgets.QComboBox:
+            container.setCurrentText(str(value))
+
+    def read_value(self, container):
+        if type(container) == QtWidgets.QCheckBox:
+            return container.isChecked()
+        elif type(container) == QtWidgets.QListWidget:
+            return [container.item(x).text() for x in range(container.count())]
+        elif type(container) == QtWidgets.QComboBox:
+            return container.currentText()
+
+    def save_data(self, target):
+        if target == "all":
+            targets = self.data_dict.keys()
+        else:
+            targets = [target]
+
+        for target_type in targets:
+            path = self.data_dict[target_type]["path"]
+            target_data = self.data_dict[target_type]["data"]
+            container = {key: target_data[key]["val"] for key in target_data}
+            with open(path, 'w') as f:
+                containerJson = json.dumps(container, indent=4)
+                f.write(containerJson)
 
 
 if __name__ == "__main__":
