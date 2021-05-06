@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
+from scraper import *
 import os
 import json
 import shutil
@@ -159,8 +160,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             os.mkdir(self.local_dir)
             os.mkdir(self.local_img_dir)
 
+            # Download and load shrine and perks to self.shrine and self.perks dicts
+            shrine = get_shrine()
+            self.load_shrine(shrine=shrine)
+            perks = get_perks()
+            self.load_perks(perks=perks)
+
             # Save settings data to json files in created directory
             self.save_data(target="all")
+
+            download_imgs(self.local_img_dir, perks_tuple=perks)
         except:
             # On error delete local directory and display error message
             if os.path.exists(self.local_dir):
@@ -345,6 +354,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 container_json = json.dumps(container, indent=4)
                 f.write(container_json)
 
+    def load_shrine(self, shrine):
+        # Loads fetched shrine to the self.shrine dict
+        for _ in range(1, 5):
+            self.shrine[f"shrine_perk{_}"]["val"] = shrine[_-1]
+        self.shrine["download_date"]["val"] = "Date"
+
+    def load_perks(self, perks):
+        # Loads fetched perks to the self.perks dict
+        perks_stripped = [perk_tuple[0] for perk_tuple in perks]
+        self.perks["perks_list"]["val"] = perks_stripped
 
 if __name__ == "__main__":
     import sys
