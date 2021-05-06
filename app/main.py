@@ -1,6 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
-from scraper import *
+from bs4 import BeautifulSoup as bs
+import requests
+import lxml
 import os
 import json
 import shutil
@@ -35,11 +37,34 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             "refresh": {"val": "2", "container": self.refr_combo}
         }
         self.shrine = {
-            "shrine_perk1": {"val": "perk1_name", "container": self.perk1_lbl, "img_container": self.perk1_img, "frame": self.perk1_frame},
-            "shrine_perk2": {"val": "perk2_name", "container": self.perk2_lbl, "img_container": self.perk2_img, "frame": self.perk2_frame},
-            "shrine_perk3": {"val": "perk3_name", "container": self.perk3_lbl, "img_container": self.perk3_img, "frame": self.perk3_frame},
-            "shrine_perk4": {"val": "perk4_name", "container": self.perk4_lbl, "img_container": self.perk4_img, "frame": self.perk4_frame},
-            "download_date": {"val": "dd.mm.yyyy hh:mm", "container": self.date_lbl}
+            "shrine_perk1": {
+                "val": "perk1_name",
+                "container": self.perk1_lbl,
+                "img_container": self.perk1_img,
+                "frame": self.perk1_frame
+            },
+            "shrine_perk2": {
+                "val": "perk2_name",
+                "container": self.perk2_lbl,
+                "img_container": self.perk2_img,
+                "frame": self.perk2_frame
+            },
+            "shrine_perk3": {
+                "val": "perk3_name",
+                "container": self.perk3_lbl,
+                "img_container": self.perk3_img,
+                "frame": self.perk3_frame
+            },
+            "shrine_perk4": {
+                "val": "perk4_name",
+                "container": self.perk4_lbl,
+                "img_container": self.perk4_img,
+                "frame": self.perk4_frame
+            },
+            "download_date": {
+                "val": "dd.mm.yyyy hh:mm",
+                "container": self.date_lbl
+            }
         }
         self.perks = {
             "perks_list": {"val": [], "container": self.perks_combo}
@@ -161,15 +186,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             os.mkdir(self.local_img_dir)
 
             # Download and load shrine and perks to self.shrine and self.perks dicts
-            shrine = get_shrine()
+            shrine = self.get_shrine()
             self.load_shrine(shrine=shrine)
-            perks = get_perks()
+            perks = self.get_perks()
             self.load_perks(perks=perks)
 
             # Save settings data to json files in created directory
             self.save_data(target="all")
 
-            download_imgs(self.local_img_dir, perks_tuple=perks)
+            # Download perk images to local directory
+            self.download_imgs(self.local_img_dir, perks_tuple=perks)
         except:
             # On error delete local directory and display error message
             if os.path.exists(self.local_dir):
@@ -358,12 +384,62 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         # Loads fetched shrine to the self.shrine dict
         for _ in range(1, 5):
             self.shrine[f"shrine_perk{_}"]["val"] = shrine[_-1]
-        self.shrine["download_date"]["val"] = "Date"
+        self.shrine["download_date"]["val"] = "DATE_PLACEHOLDER"
 
     def load_perks(self, perks):
         # Loads fetched perks to the self.perks dict
         perks_stripped = [perk_tuple[0] for perk_tuple in perks]
         self.perks["perks_list"]["val"] = perks_stripped
+
+    def get_shrine(self, source=1):
+        shrine_urls = {
+            1: "https://deadbydaylight.fandom.com/wiki/Dead_by_Daylight_Wiki",
+            2: "https://deadbydaylight.fandom.com/wiki/Shrine_of_Secrets"
+        }
+        shrine = []
+
+        request = requests.get(shrine_urls[source])
+        soup = bs(request.content, "lxml")
+
+        shrine_table = soup.find("table", {"class": "wikitable"}).find("tbody").find_all("tr")
+
+        for row in shrine_table:
+            cell = row.find("td")
+            if cell is not None:
+                perk = cell.get_text(strip=True)
+                shrine.append(perk)
+
+        return shrine
+
+    def get_perks(self):
+        perks_url = "https://deadbydaylight.gamepedia.com/Perks"
+        perks = []
+
+        request = requests.get(perks_url)
+        soup = bs(request.content, "lxml")
+
+        tables = soup.find_all("table", {"class": "wikitable sortable"})
+        survivor_table, killer_table = [table.find("tbody").find_all("tr") for table in tables]
+        for table in [survivor_table, killer_table]:
+            for row in table[1:]:
+                if row.contents[7].get_text(strip=True) == "All":
+                    continue
+                perk_img_url = row.contents[1].find("a").find("img")["src"]
+                perk_name = row.contents[3].find("a").get_text(strip=True)
+
+                perks.append((perk_name, perk_img_url))
+
+        return perks
+
+    def download_imgs(self, directory, perks_tuple):
+        for tuple in perks_tuple:
+            perk, img_url = tuple
+            if ":" in perk:
+                perk = perk.replace(":", "_")
+            with open(f'{directory}/{perk}.png', 'wb') as f:
+                img = requests.get(img_url)
+                f.write(img.content)
+
 
 if __name__ == "__main__":
     import sys
