@@ -34,10 +34,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             "refresh": {"val": "2", "container": self.refr_combo}
         }
         self.shrine = {
-            "perk1": {"val": "perk1_name", "container": self.perk1_lbl, "frame": self.perk1_frame},
-            "perk2": {"val": "perk2_name", "container": self.perk2_lbl, "frame": self.perk2_frame},
-            "perk3": {"val": "perk3_name", "container": self.perk3_lbl, "frame": self.perk3_frame},
-            "perk4": {"val": "perk4_name", "container": self.perk4_lbl, "frame": self.perk4_frame},
+            "shrine_perk1": {"val": "perk1_name", "container": self.perk1_lbl, "img_container": self.perk1_img, "frame": self.perk1_frame},
+            "shrine_perk2": {"val": "perk2_name", "container": self.perk2_lbl, "img_container": self.perk2_img, "frame": self.perk2_frame},
+            "shrine_perk3": {"val": "perk3_name", "container": self.perk3_lbl, "img_container": self.perk3_img, "frame": self.perk3_frame},
+            "shrine_perk4": {"val": "perk4_name", "container": self.perk4_lbl, "img_container": self.perk4_img, "frame": self.perk4_frame},
             "download_date": {"val": "dd.mm.yyyy hh:mm", "container": self.date_lbl}
         }
         self.perks = {
@@ -80,10 +80,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             "shrine": {
                 "type": "object",
                 "properties": {
-                    "perk1": {"type": "string"},
-                    "perk2": {"type": "string"},
-                    "perk3": {"type": "string"},
-                    "perk4": {"type": "string"},
+                    "shrine_perk1": {"type": "string"},
+                    "shrine_perk2": {"type": "string"},
+                    "shrine_perk3": {"type": "string"},
+                    "shrine_perk4": {"type": "string"},
                     "download_date": {"type": "string"}
                 }
             },
@@ -140,20 +140,18 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if not os.path.exists(self.local_dir):
             # TODO loading screen
             # Try to create local directory
-            if not self.prepare_local_dir():
-                return False
-        # Try to read local files to self.local_data
-        if self.read_local_files():
+            self.prepare_local_dir()
+        else:
+            # Try to read local files to self.local_data
+            self.read_local_files()
             # Try to read data with schemes
-            if self.verify_local_files():
-                # Try to load data to self.data_dict
-                if self.load_local_data():
-                    # Try to update containers on main page, settings page, and check shrine
-                    self.update_main_containers()
-                    self.update_settings_containers()
-                    self.check_shrine()
-                    return True
-        return False
+            self.verify_local_files()
+            # Try to load data to self.data_dict
+            self.load_local_data()
+        # Try to update containers on main page, settings page, and check shrine
+        self.update_main_containers()
+        self.update_settings_containers()
+        self.check_shrine()
 
     def prepare_local_dir(self):
         try:
@@ -194,10 +192,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.error_occured("Error while validating json")
         return False
 
-    def verify_json(self, jsonDict, scheme):
+    def verify_json(self, json_dict, scheme):
         try:
             # Call validate from jsonschema with data dictionary and appropriate scheme
-            validate(instance=jsonDict, schema=self.json_schemes[scheme])
+            validate(instance=json_dict, schema=self.json_schemes[scheme])
         except:
             return False
         else:
@@ -222,9 +220,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 target = [self.shrine, self.perks, self.user_perks]
             for data_dict in target:
                 for key in data_dict:
-                    value = data_dict[key]["val"]
-                    container = data_dict[key]["container"]
-                    self.load_value(container, value)
+                    self.load_value(data_dict, key)
         except:
             # On error display error message
             self.error_occured("Wasn't able to update main ui containers")
@@ -295,17 +291,23 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         # Display error message
         self.error_msg_lbl.setText(message)
 
-    def load_value(self, container, value):
+    def load_value(self, data_dict, key):
+        value = data_dict[key]["val"]
+        container = data_dict[key]["container"]
+        img_container = None
+        if key.startswith("shrine"):
+            img_container = data_dict[key]["img_container"]
+
         # Load containers with data - used for main page
         if type(container) == QtWidgets.QLabel:
             # Catch image labels
-            if container.objectName().endswith("img"):
+            if img_container is not None:
+                img_filename = value.replace(":", "_")
                 # Load perk image
-                container.setPixmap(QtGui.QPixmap(f"{self.local_img_dir}\\{value}"))
-                container.setScaledContents(True)
-            else:
-                # Load perk name
-                container.setText(value)
+                img_container.setPixmap(QtGui.QPixmap(f"{self.local_img_dir}\\{img_filename}"))
+                img_container.setScaledContents(True)
+            # Load perk name
+            container.setText(value)
         elif type(container) in [QtWidgets.QComboBox, QtWidgets.QListWidget]:
             # Add items to ComboBox or ListWidget
             container.addItems(value)
