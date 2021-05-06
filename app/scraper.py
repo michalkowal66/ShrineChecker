@@ -46,7 +46,9 @@ def get_perks():
 def download_imgs(directory, perks_tuple):
     for tuple in perks_tuple:
         perk, img_url = tuple
-        with open(f'{directory}/img/{perk}.png', 'wb') as f:
+        if ":" in perk:
+            perk = perk.replace(":", "_")
+        with open(f'{directory}/{perk}.png', 'wb') as f:
             img = requests.get(img_url)
             f.write(img.content)
 
