@@ -43,6 +43,13 @@ def get_perks():
 
     return perks
 
+def download_imgs(directory, perks_tuple):
+    for tuple in perks_tuple:
+        perk, img_url = tuple
+        with open(f'{directory}/img/{perk}.png', 'wb') as f:
+            img = requests.get(img_url)
+            f.write(img.content)
+
 if __name__ == "__main__":
     print(get_shrine())
     print(get_perks())
