@@ -9,10 +9,10 @@ import shutil
 from jsonschema import validate
 from rsc import rsc
 
-
-# TODO add scraper
 # TODO add missing button actions
 # TODO implement signals for loading data
+# TODO try to modify data structure to make use of Qt objects naming
+# TODO add shrine refresh logic
 
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -146,25 +146,34 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             frame.setPixmap(QtGui.QPixmap(':/Decorations/img/frame.png'))
             frame.setHidden(True)
 
+        # Prepare loading screen
+        self.progress_bar.setValue(0)
+        self.msg_lbl.setText("Starting work...")
+
         # Set settings button icon
         self.settings_btn.setIcon(QtGui.QIcon(':/Decorations/img/settings.png'))
 
         # Set application window icon
         self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
 
+        # Disable done button on loading screen
+        self.done_btn.setDisabled(True)
+
         # Connect navigation buttons with appropriate stackedWidget pages
         self.settings_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
         self.back_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
+        self.done_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
 
         # Connect functional buttons with appropriate functions
         self.save_btn.clicked.connect(lambda: self.update_globally(target="settings"))
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
+        self.reset_btn.clicked.connect(self.reload_perks)
+        self.reload_btn.clicked.connect(lambda: self.reload_shrine(force=True))
 
     def init_data(self):
         # Check whether local directory exists
         if not os.path.exists(self.local_dir):
-            # TODO loading screen
             # Try to create local directory
             self.prepare_local_dir()
         else:
@@ -178,6 +187,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.update_main_containers()
         self.update_settings_containers()
         self.check_shrine()
+        self.done_btn.setDisabled(False)
+        self.show()
 
     def prepare_local_dir(self):
         try:
@@ -252,8 +263,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             # Update content of application containers in main screen using loaded data
             if target == "ui":
-                target = [self.shrine, self.perks, self.user_perks]
-            for data_dict in target:
+                targets = [self.shrine, self.perks, self.user_perks]
+            else:
+                targets = [self.data_dict[target]["data"]]
+            for data_dict in targets:
                 for key in data_dict:
                     self.load_value(data_dict, key)
         except:
@@ -316,9 +329,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if perk["val"] in list_items:
                 # Show frame on match
                 perk["frame"].setHidden(False)
+                # Apply white color to perk name
+                perk["container"].setStyleSheet("color: white")
             else:
                 # Ensure frame is hidden when no match
                 perk["frame"].setHidden(True)
+                # Restore previous perk name color
+                perk["container"].setStyleSheet("")
 
     def error_occured(self, message):
         # Change stackedWidget page to error page
@@ -440,11 +457,26 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 img = requests.get(img_url)
                 f.write(img.content)
 
+    def reload_perks(self):
+        perks = self.get_perks()
+        self.load_perks(perks)
+        self.perks_combo.clear()
+        self.update_main_containers("perks")
+        self.save_data("perks")
+
+    def reload_shrine(self, force=False):
+        if not force:
+            # time logic
+            pass
+        shrine = self.get_shrine()
+        self.load_shrine(shrine)
+        self.update_main_containers("shrine")
+        self.save_data("shrine")
+
 
 if __name__ == "__main__":
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
-    window.show()
     sys.exit(app.exec_())
