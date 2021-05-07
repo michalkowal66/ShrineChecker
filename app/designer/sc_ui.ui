@@ -705,9 +705,9 @@ QListWidget::item:selected {
      <widget class="QLabel" name="dateinfo_lbl">
       <property name="geometry">
        <rect>
-        <x>560</x>
+        <x>549</x>
         <y>565</y>
-        <width>180</width>
+        <width>221</width>
         <height>30</height>
        </rect>
       </property>
@@ -721,7 +721,7 @@ QListWidget::item:selected {
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Shrine refreshes on: </string>
+       <string>Shrine was downloaded on: </string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -913,9 +913,9 @@ QListWidget::item:selected {
      <widget class="QLabel" name="date_lbl">
       <property name="geometry">
        <rect>
-        <x>745</x>
+        <x>769</x>
         <y>565</y>
-        <width>145</width>
+        <width>121</width>
         <height>30</height>
        </rect>
       </property>
@@ -929,7 +929,7 @@ QListWidget::item:selected {
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>DD/MM/YY GMT+0</string>
+       <string>00/00/0000 00:00</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -1306,7 +1306,7 @@ QScrollBar:vertical {
        </rect>
       </property>
       <property name="text">
-       <string>App author- Michał Kowal, michal.kowal.66@gmail.com, r/virtozenho</string>
+       <string>App author - Michał Kowal, michal.kowal.66@gmail.com, r/virtozenho</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
