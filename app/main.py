@@ -189,7 +189,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.initialize_data()
 
-
     def initialize_data(self):
         # Try to read local files to self.local_data
         self.read_local_files()
@@ -473,33 +472,44 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         return perks
 
     def download_imgs(self, directory, perks_tuple):
-        for tuple in perks_tuple:
-            perk, img_url = tuple
-            self.progress_signal.emit(perks_tuple.index(tuple) + 1, len(perks_tuple), f"Downloading {perk}")
-            if ":" in perk:
-                perk = perk.replace(":", "_")
-            with open(f'{directory}/{perk}.png', 'wb') as f:
-                img = requests.get(img_url)
-                f.write(img.content)
+        try:
+            for tuple in perks_tuple:
+                perk, img_url = tuple
+                self.progress_signal.emit(perks_tuple.index(tuple) + 1, len(perks_tuple), f"Downloading {perk}")
+                if ":" in perk:
+                    perk = perk.replace(":", "_")
+                with open(f'{directory}/{perk}.png', 'wb') as f:
+                    img = requests.get(img_url)
+                    f.write(img.content)
+        except:
+            self.error_occured("Error while downloading perk images. Check internet connection and trt again.")
 
     def reload_perks(self):
-        perks = self.get_perks()
-        self.load_perks(perks)
-        self.perks_combo.clear()
-        self.update_main_containers("perks")
-        self.save_data("perks")
+        try:
+            perks = self.get_perks()
+        except:
+            self.error_occured("Error while downloading perks. Check internet connection and trt again.")
+        else:
+            self.load_perks(perks)
+            self.perks_combo.clear()
+            self.update_main_containers("perks")
+            self.save_data("perks")
 
     def reload_shrine(self, force=False):
         if not force:
             # time logic
             pass
-        shrine = self.get_shrine()
-        self.load_shrine(shrine)
-        self.update_main_containers("shrine")
-        self.save_data("shrine")
+        try:
+            shrine = self.get_shrine()
+        except:
+            self.error_occured("Error while downloading Shrine of Secrets. Check internet connection and trt again.")
+        else:
+            self.load_shrine(shrine)
+            self.update_main_containers("shrine")
+            self.save_data("shrine")
 
     def update_progress(self, task, total_tasks, message):
-        self.progress_bar.setValue(100.0 * task / total_tasks)
+        self.progress_bar.setValue(int(100*task/total_tasks))
         self.msg_lbl.setText(message)
 
 
