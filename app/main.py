@@ -16,6 +16,8 @@ from rsc import rsc
 
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
+    progress_signal = QtCore.pyqtSignal(int, int, str)
+
     def __init__(self):
         super().__init__()
         # Prepare path variables
@@ -28,6 +30,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set up user interface
         self.setupUi(self)
+
+        # Set up thread workers
+        self.loader = Loader(task="init")
+        self.loader.finish_signal.connect(lambda: self.done_btn.setDisabled(False))
+        self.progress_signal.connect(self.update_progress)
 
         # Create data dictionaries
         self.settings = {
@@ -129,7 +136,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         # Initialize dictionary for storing loaded local data before validation
         self.local_data = {}
         # Initialize all data to user interface
-        self.init_data()
+        self.initial_check()
 
     def setupUi(self, MainWindow):
         super().setupUi(self)
@@ -171,42 +178,58 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.reset_btn.clicked.connect(self.reload_perks)
         self.reload_btn.clicked.connect(lambda: self.reload_shrine(force=True))
 
-    def init_data(self):
+    def initial_check(self):
         # Check whether local directory exists
         if not os.path.exists(self.local_dir):
-            # Try to create local directory
-            self.prepare_local_dir()
+            self.stackedWidget.setCurrentIndex(0)
+            self.show()
+            # Try to create local directory via loader thread
+            self.loader.start()
+            # self.prepare_local_dir()
         else:
-            # Try to read local files to self.local_data
-            self.read_local_files()
-            # Try to read data with schemes
-            self.verify_local_files()
-            # Try to load data to self.data_dict
-            self.load_local_data()
+            self.initialize_data()
+
+
+    def initialize_data(self):
+        # Try to read local files to self.local_data
+        self.read_local_files()
+        # Try to read data with schemes
+        self.verify_local_files()
+        # Try to load data to self.data_dict
+        self.load_local_data()
         # Try to update containers on main page, settings page, and check shrine
         self.update_main_containers()
         self.update_settings_containers()
         self.check_shrine()
-        self.done_btn.setDisabled(False)
         self.show()
 
     def prepare_local_dir(self):
         try:
             # Create local folders
+            self.progress_signal.emit(0, 1, "Creating local directory")
             os.mkdir(self.local_dir)
             os.mkdir(self.local_img_dir)
+            self.progress_signal.emit(1, 1, "Created local directory")
 
             # Download and load shrine and perks to self.shrine and self.perks dicts
+            self.progress_signal.emit(0, 1, "Downloading Shrine of Secrets")
             shrine = self.get_shrine()
             self.load_shrine(shrine=shrine)
+            self.progress_signal.emit(1, 1, "Downloaded shrine")
+            self.progress_signal.emit(0, 1, "Downloading survivor and killer perks")
             perks = self.get_perks()
             self.load_perks(perks=perks)
+            self.progress_signal.emit(1, 1, "Survivor and killer perks")
 
             # Save settings data to json files in created directory
+            self.progress_signal.emit(0, 1, "Saving data in the local directory")
             self.save_data(target="all")
+            self.progress_signal.emit(0, 1, "Saved data in the local directory")
 
             # Download perk images to local directory
+            self.progress_signal.emit(0, 1, "Downloading perk images")
             self.download_imgs(self.local_img_dir, perks_tuple=perks)
+            self.progress_signal.emit(1, 1, "Application is ready!")
         except:
             # On error delete local directory and display error message
             if os.path.exists(self.local_dir):
@@ -291,7 +314,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return True
 
     def update_globally(self, target):
-        # Update data_dict and flies in local directory
+        # Update data_dict and files in local directory with data in container
+        # e.g. load user perks to data dict and save to file
         for key in self.data_dict[target]["data"]:
             container = self.data_dict[target]["data"][key]["container"]
             self.data_dict[target]["data"][key]["val"] = self.read_value(container=container)
@@ -451,6 +475,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def download_imgs(self, directory, perks_tuple):
         for tuple in perks_tuple:
             perk, img_url = tuple
+            self.progress_signal.emit(perks_tuple.index(tuple) + 1, len(perks_tuple), f"Downloading {perk}")
             if ":" in perk:
                 perk = perk.replace(":", "_")
             with open(f'{directory}/{perk}.png', 'wb') as f:
@@ -472,6 +497,25 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.load_shrine(shrine)
         self.update_main_containers("shrine")
         self.save_data("shrine")
+
+    def update_progress(self, task, total_tasks, message):
+        self.progress_bar.setValue(100.0 * task / total_tasks)
+        self.msg_lbl.setText(message)
+
+
+class Loader(QtCore.QThread):
+    finish_signal = QtCore.pyqtSignal()
+
+    def __init__(self, task, parent=None):
+        super().__init__(parent)
+        self.task = task
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        if self.task == "init":
+            window.prepare_local_dir()
+            window.initialize_data()
+            window.done_btn.setDisabled(False)
 
 
 if __name__ == "__main__":
