@@ -1,18 +1,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
 from bs4 import BeautifulSoup as bs
+from jsonschema import validate
+from rsc import rsc
+from datetime import datetime, timedelta
+import time
+import dateutil.relativedelta as REL
 import requests
 import lxml
 import os
 import json
 import shutil
-from jsonschema import validate
-from rsc import rsc
 
 # TODO add missing button actions
 # TODO implement signals for loading data
 # TODO try to modify data structure to make use of Qt objects naming
-# TODO add shrine refresh logic
 
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -185,21 +187,29 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.show()
             # Try to create local directory via loader thread
             self.loader.start()
-            # self.prepare_local_dir()
         else:
             self.initialize_data()
 
     def initialize_data(self):
         # Try to read local files to self.local_data
-        self.read_local_files()
-        # Try to read data with schemes
-        self.verify_local_files()
+        if not self.read_local_files():
+            # On error display error message
+            self.error_occured("Could not read local data")
+            return False
+        # Try to verify data with schemes
+        if not self.verify_local_files():
+            self.error_occured("Some local files didn't pass the verification.")
+            return False
         # Try to load data to self.data_dict
-        self.load_local_data()
+        if not self.load_local_data():
+            self.error_occured("Couldn't load local data.")
+            return False
         # Try to update containers on main page, settings page, and check shrine
         self.update_main_containers()
         self.update_settings_containers()
+        self.reload_shrine()
         self.check_shrine()
+        self.done_btn.setDisabled(False)
         self.show()
 
     def prepare_local_dir(self):
@@ -246,8 +256,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     json_content = json.load(f)
                     self.local_data[target_type] = json_content
         except:
-            # On error display error message
-            self.error_occured("Could not read local data")
             return False
         else:
             return True
@@ -256,8 +264,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         # Call validator on each read dictionary in self.local_data
         if all([self.verify_json(self.local_data[key], key) for key in self.local_data]):
             return True
-        # On error display error message
-        self.error_occured("Error while validating json")
         return False
 
     def verify_json(self, json_dict, scheme):
@@ -423,8 +429,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def load_shrine(self, shrine):
         # Loads fetched shrine to the self.shrine dict
         for _ in range(1, 5):
-            self.shrine[f"shrine_perk{_}"]["val"] = shrine[_-1]
-        self.shrine["download_date"]["val"] = "DATE_PLACEHOLDER"
+            self.shrine[f"shrine_perk{_}"]["val"] = shrine["perks"][_-1]
+        self.shrine["download_date"]["val"] = shrine["date"]
 
     def load_perks(self, perks):
         # Loads fetched perks to the self.perks dict
@@ -436,7 +442,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             1: "https://deadbydaylight.fandom.com/wiki/Dead_by_Daylight_Wiki",
             2: "https://deadbydaylight.fandom.com/wiki/Shrine_of_Secrets"
         }
-        shrine = []
+        shrine = {
+            "perks": [],
+            "date": "DOWNLOAD DATE"
+        }
 
         request = requests.get(shrine_urls[source])
         soup = bs(request.content, "lxml")
@@ -447,7 +456,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             cell = row.find("td")
             if cell is not None:
                 perk = cell.get_text(strip=True)
-                shrine.append(perk)
+                shrine["perks"].append(perk)
+        shrine["date"] = str(datetime.now().strftime('%d/%m/%Y %H:%M'))
 
         return shrine
 
@@ -497,12 +507,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def reload_shrine(self, force=False):
         if not force:
-            # time logic
-            pass
+            today = datetime.now().date()
+            rd = REL.relativedelta(days=1, weekday=REL.TH)
+            next_refresh = today + rd
+            days_to_refresh = (next_refresh - today).days
+            if days_to_refresh > 1:
+                return False
         try:
             shrine = self.get_shrine()
         except:
-            self.error_occured("Error while downloading Shrine of Secrets. Check internet connection and trt again.")
+            self.error_occured("Error while downloading Shrine of Secrets. Check internet connection and try again.")
         else:
             self.load_shrine(shrine)
             self.update_main_containers("shrine")
@@ -525,7 +539,6 @@ class Loader(QtCore.QThread):
         if self.task == "init":
             window.prepare_local_dir()
             window.initialize_data()
-            window.done_btn.setDisabled(False)
 
 
 if __name__ == "__main__":
