@@ -12,8 +12,12 @@ import os
 import json
 import shutil
 
-# TODO add missing button actions
-# TODO implement signals for loading data
+
+# TODO implement add to startup
+# TODO implement refresher
+# TODO implement notification dialog
+# TODO add perk description box on hover
+# TODO find better way to catch exceptions
 # TODO try to modify data structure to make use of Qt objects naming
 
 
@@ -29,6 +33,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.shrine_path = self.local_dir + "\\shrine.json"
         self.perks_path = self.local_dir + "\\perks.json"
         self.user_perks_path = self.local_dir + "\\user_perks.json"
+
+        # Initialize tray icon
+        self.tray_icon = QtWidgets.QSystemTrayIcon(self)
 
         # Set up user interface
         self.setupUi(self)
@@ -164,6 +171,25 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set application window icon
         self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
+
+        # Set tray icon
+        self.tray_icon.setIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
+
+        # Prepare tray context menu actions
+        show_action = QtWidgets.QAction("Show", self)
+        quit_action = QtWidgets.QAction("Exit", self)
+        hide_action = QtWidgets.QAction("Hide", self)
+        show_action.triggered.connect(self.show)
+        hide_action.triggered.connect(self.hide)
+        quit_action.triggered.connect(QtCore.QCoreApplication.quit)
+        tray_menu = QtWidgets.QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+
+        # Set up context menu
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
 
         # Disable done button on loading screen
         self.done_btn.setDisabled(True)
@@ -525,6 +551,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def update_progress(self, task, total_tasks, message):
         self.progress_bar.setValue(int(100*task/total_tasks))
         self.msg_lbl.setText(message)
+
+    def closeEvent(self, event):
+        if self.isHidden() == True or not self.tray_check.isChecked():
+            event.accept()
+        else:
+            event.ignore()
+            self.hide()
 
 
 class Loader(QtCore.QThread):
