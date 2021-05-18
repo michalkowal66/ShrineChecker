@@ -11,9 +11,11 @@ import lxml
 import os
 import json
 import shutil
+import pythoncom
+import winshell
+import win32com.client
 
 
-# TODO implement add to startup
 # TODO implement refresher
 # TODO implement notification dialog
 # TODO add perk description box on hover
@@ -79,7 +81,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             },
             "download_date": {
                 "val": "dd.mm.yyyy hh:mm",
-                "container": self.date_lbl
+                "container": self.datedl_lbl
+            },
+            "refresh_date": {
+                "val": "dd.mm.yyyy",
+                "container": self.dateref_lbl
             }
         }
         self.perks = {
@@ -126,7 +132,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     "shrine_perk2": {"type": "string"},
                     "shrine_perk3": {"type": "string"},
                     "shrine_perk4": {"type": "string"},
-                    "download_date": {"type": "string"}
+                    "download_date": {"type": "string"},
+                    "refresh_date": {"type": "string"}
                 }
             },
             "perks": {
@@ -200,11 +207,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.done_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
 
         # Connect functional buttons with appropriate functions
-        self.save_btn.clicked.connect(lambda: self.update_globally(target="settings"))
+        self.save_btn.clicked.connect(self.save_settings)
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reset_btn.clicked.connect(self.reload_perks)
         self.reload_btn.clicked.connect(lambda: self.reload_shrine(force=True))
+
+        # Connect settings container with function catching change of state
+        self.startup_check.stateChanged.connect(lambda: self.save_btn.setEnabled(True))
+        self.tray_check.stateChanged.connect(lambda: self.save_btn.setEnabled(True))
+        self.refr_combo.currentIndexChanged.connect(lambda: self.save_btn.setEnabled(True))
+        self.notif_combo.currentIndexChanged.connect(lambda: self.save_btn.setEnabled(True))
 
     def initial_check(self):
         # Check whether local directory exists
@@ -236,6 +249,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.reload_shrine()
         self.check_shrine()
         self.done_btn.setDisabled(False)
+        self.save_btn.setDisabled(True)
         self.show()
 
     def prepare_local_dir(self):
@@ -454,9 +468,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def load_shrine(self, shrine):
         # Loads fetched shrine to the self.shrine dict
+        today = datetime.now().date()
+
         for _ in range(1, 5):
             self.shrine[f"shrine_perk{_}"]["val"] = shrine["perks"][_-1]
-        self.shrine["download_date"]["val"] = shrine["date"]
+        self.shrine["download_date"]["val"] = shrine["download_date"]
+        self.shrine["refresh_date"]["val"] = self.get_next_refresh(today=today).strftime('%d/%m/%Y')
 
     def load_perks(self, perks):
         # Loads fetched perks to the self.perks dict
@@ -470,7 +487,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         }
         shrine = {
             "perks": [],
-            "date": "DOWNLOAD DATE"
+            "download_date" : "DOWNLOAD DATE"
         }
 
         request = requests.get(shrine_urls[source])
@@ -483,7 +500,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if cell is not None:
                 perk = cell.get_text(strip=True)
                 shrine["perks"].append(perk)
-        shrine["date"] = str(datetime.now().strftime('%d/%m/%Y %H:%M'))
+        shrine["download_date"] = str(datetime.now().strftime('%d/%m/%Y %H:%M'))
 
         return shrine
 
@@ -532,11 +549,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.save_data("perks")
 
     def reload_shrine(self, force=False):
+        today = datetime.now().date()
+        next_refresh = self.get_next_refresh(today=today)
+        days_to_refresh = (next_refresh - today).days
+
         if not force:
-            today = datetime.now().date()
-            rd = REL.relativedelta(days=1, weekday=REL.TH)
-            next_refresh = today + rd
-            days_to_refresh = (next_refresh - today).days
             if days_to_refresh > 1:
                 return False
         try:
@@ -544,6 +561,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         except:
             self.error_occured("Error while downloading Shrine of Secrets. Check internet connection and try again.")
         else:
+            shrine["refresh_date"] = next_refresh
             self.load_shrine(shrine)
             self.update_main_containers("shrine")
             self.save_data("shrine")
@@ -559,6 +577,30 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             event.ignore()
             self.hide()
 
+    def get_next_refresh(self, today):
+        rd = REL.relativedelta(days=1, weekday=REL.TH)
+        next_refresh = today + rd
+        return next_refresh
+
+    def toggle_autostart(self):
+        pythoncom.CoInitialize()
+        startup = winshell.startup()
+        shortcut_path = os.path.join(startup, 'SC.lnk')
+        if self.startup_check.isChecked():
+            target = sys.argv[0]
+            shell = win32com.client.Dispatch("WScript.Shell")
+            shortcut = shell.CreateShortCut(shortcut_path)
+            shortcut.Targetpath = target
+            shortcut.WindowStyle = 7
+            shortcut.save()
+        else:
+            if os.path.isfile(shortcut_path):
+                os.remove(shortcut_path)
+
+    def save_settings(self):
+        self.toggle_autostart()
+        self.update_globally(target="settings")
+        self.save_btn.setEnabled(False)
 
 class Loader(QtCore.QThread):
     finish_signal = QtCore.pyqtSignal()
