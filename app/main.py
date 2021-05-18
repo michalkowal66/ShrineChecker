@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
 from bs4 import BeautifulSoup as bs
 from jsonschema import validate
+from schemes import schemes
 from rsc import rsc
 from datetime import datetime, timedelta
 import time
@@ -115,40 +116,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             },
         }
         # Create schemes for json validation
-        self.json_schemes = {
-            "settings": {
-                "type": "object",
-                "properties": {
-                    "minimize": {"type": "boolean"},
-                    "startup": {"type": "boolean"},
-                    "notification": {"type": "string"},
-                    "refresh": {"type": "string"}
-                }
-            },
-            "shrine": {
-                "type": "object",
-                "properties": {
-                    "shrine_perk1": {"type": "string"},
-                    "shrine_perk2": {"type": "string"},
-                    "shrine_perk3": {"type": "string"},
-                    "shrine_perk4": {"type": "string"},
-                    "download_date": {"type": "string"},
-                    "refresh_date": {"type": "string"}
-                }
-            },
-            "perks": {
-                "type": "object",
-                "properties": {
-                    "perks_list": {"type": "array"}
-                }
-            },
-            "user_perks": {
-                "type": "object",
-                "properties": {
-                    "perks_list": {"type": "array"}
-                }
-            }
-        }
+        self.json_schemes = schemes.validation_schemes
         # Initialize dictionary for storing loaded local data before validation
         self.local_data = {}
         # Initialize all data to user interface
