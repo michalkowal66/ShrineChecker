@@ -90,10 +90,12 @@ QPushButton:hover {
 	background-color:#404040;
 }
 
+
 QPushButton:disabled {
 	color: black;
 	background-color:#141718;
 }
+
 </string>
      </property>
      <widget class="QLabel" name="msg_lbl">
@@ -268,7 +270,19 @@ QLabel#dateinfo_lbl {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-QLabel#date_lbl {
+QLabel#dateinfo_lbl_2 {
+	font: 16px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QLabel#datedl_lbl {
+	font: 16px &quot;Sylfaen&quot;;
+	color: #6e6d6d;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+QLabel#dateref_lbl {
 	font: 16px &quot;Sylfaen&quot;;
 	color: #6e6d6d;
 	background-color: rgba(0, 0, 0, 0);
@@ -705,9 +719,9 @@ QListWidget::item:selected {
      <widget class="QLabel" name="dateinfo_lbl">
       <property name="geometry">
        <rect>
-        <x>549</x>
+        <x>330</x>
         <y>565</y>
-        <width>221</width>
+        <width>241</width>
         <height>30</height>
        </rect>
       </property>
@@ -910,10 +924,10 @@ QListWidget::item:selected {
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="date_lbl">
+     <widget class="QLabel" name="datedl_lbl">
       <property name="geometry">
        <rect>
-        <x>769</x>
+        <x>570</x>
         <y>565</y>
         <width>121</width>
         <height>30</height>
@@ -930,6 +944,56 @@ QListWidget::item:selected {
       </property>
       <property name="text">
        <string>00/00/0000 00:00</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="dateinfo_lbl_2">
+      <property name="geometry">
+       <rect>
+        <x>680</x>
+        <y>565</y>
+        <width>131</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Next refresh on:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="dateref_lbl">
+      <property name="geometry">
+       <rect>
+        <x>819</x>
+        <y>565</y>
+        <width>75</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>00/00/0000</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -956,7 +1020,9 @@ QListWidget::item:selected {
      <zorder>perk2_frame</zorder>
      <zorder>title_lbl</zorder>
      <zorder>perk2_img</zorder>
-     <zorder>date_lbl</zorder>
+     <zorder>datedl_lbl</zorder>
+     <zorder>dateinfo_lbl_2</zorder>
+     <zorder>dateref_lbl</zorder>
     </widget>
     <widget class="QWidget" name="settings_page">
      <property name="styleSheet">
@@ -1011,6 +1077,12 @@ QScrollBar:vertical {
 	color: white;
 	font: 20px &quot;Sylfaen&quot;;
 	background:#404040;
+}
+
+
+QPushButton:disabled {
+	color: grey;
+	background-color:#141718;
 }</string>
      </property>
      <widget class="QCheckBox" name="startup_check">
@@ -1100,6 +1172,9 @@ QScrollBar:vertical {
       </property>
      </widget>
      <widget class="QPushButton" name="save_btn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>360</x>
@@ -1110,6 +1185,9 @@ QScrollBar:vertical {
       </property>
       <property name="text">
        <string>Save</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
       </property>
      </widget>
      <widget class="QLabel" name="settings_lbl">

@@ -67,10 +67,12 @@ class Ui_MainWindow(object):
 "    background-color:#404040;\n"
 "}\n"
 "\n"
+"\n"
 "QPushButton:disabled {\n"
 "    color: black;\n"
 "    background-color:#141718;\n"
 "}\n"
+"\n"
 "")
         self.loading_page.setObjectName("loading_page")
         self.msg_lbl = QtWidgets.QLabel(self.loading_page)
@@ -182,7 +184,19 @@ class Ui_MainWindow(object):
 "    background-color: rgba(0, 0, 0, 0);\n"
 "}\n"
 "\n"
-"QLabel#date_lbl {\n"
+"QLabel#dateinfo_lbl_2 {\n"
+"    font: 16px \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"\n"
+"QLabel#datedl_lbl {\n"
+"    font: 16px \"Sylfaen\";\n"
+"    color: #6e6d6d;\n"
+"    background-color: rgba(0, 0, 0, 0);\n"
+"}\n"
+"\n"
+"QLabel#dateref_lbl {\n"
 "    font: 16px \"Sylfaen\";\n"
 "    color: #6e6d6d;\n"
 "    background-color: rgba(0, 0, 0, 0);\n"
@@ -353,7 +367,7 @@ class Ui_MainWindow(object):
         self.perk3_lbl.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.perk3_lbl.setObjectName("perk3_lbl")
         self.dateinfo_lbl = QtWidgets.QLabel(self.main_page)
-        self.dateinfo_lbl.setGeometry(QtCore.QRect(549, 565, 221, 30))
+        self.dateinfo_lbl.setGeometry(QtCore.QRect(330, 565, 241, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -421,16 +435,36 @@ class Ui_MainWindow(object):
         self.perk2_img.setText("")
         self.perk2_img.setAlignment(QtCore.Qt.AlignCenter)
         self.perk2_img.setObjectName("perk2_img")
-        self.date_lbl = QtWidgets.QLabel(self.main_page)
-        self.date_lbl.setGeometry(QtCore.QRect(769, 565, 121, 30))
+        self.datedl_lbl = QtWidgets.QLabel(self.main_page)
+        self.datedl_lbl.setGeometry(QtCore.QRect(570, 565, 121, 30))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.date_lbl.sizePolicy().hasHeightForWidth())
-        self.date_lbl.setSizePolicy(sizePolicy)
-        self.date_lbl.setStyleSheet("")
-        self.date_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
-        self.date_lbl.setObjectName("date_lbl")
+        sizePolicy.setHeightForWidth(self.datedl_lbl.sizePolicy().hasHeightForWidth())
+        self.datedl_lbl.setSizePolicy(sizePolicy)
+        self.datedl_lbl.setStyleSheet("")
+        self.datedl_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
+        self.datedl_lbl.setObjectName("datedl_lbl")
+        self.dateinfo_lbl_2 = QtWidgets.QLabel(self.main_page)
+        self.dateinfo_lbl_2.setGeometry(QtCore.QRect(680, 565, 131, 30))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.dateinfo_lbl_2.sizePolicy().hasHeightForWidth())
+        self.dateinfo_lbl_2.setSizePolicy(sizePolicy)
+        self.dateinfo_lbl_2.setStyleSheet("")
+        self.dateinfo_lbl_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
+        self.dateinfo_lbl_2.setObjectName("dateinfo_lbl_2")
+        self.dateref_lbl = QtWidgets.QLabel(self.main_page)
+        self.dateref_lbl.setGeometry(QtCore.QRect(819, 565, 75, 30))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.dateref_lbl.sizePolicy().hasHeightForWidth())
+        self.dateref_lbl.setSizePolicy(sizePolicy)
+        self.dateref_lbl.setStyleSheet("")
+        self.dateref_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
+        self.dateref_lbl.setObjectName("dateref_lbl")
         self.bg_1.raise_()
         self.perk1_frame.raise_()
         self.perk1_lbl.raise_()
@@ -452,7 +486,9 @@ class Ui_MainWindow(object):
         self.perk2_frame.raise_()
         self.title_lbl.raise_()
         self.perk2_img.raise_()
-        self.date_lbl.raise_()
+        self.datedl_lbl.raise_()
+        self.dateinfo_lbl_2.raise_()
+        self.dateref_lbl.raise_()
         self.stackedWidget.addWidget(self.main_page)
         self.settings_page = QtWidgets.QWidget()
         self.settings_page.setStyleSheet("QLabel#settings_lbl {\n"
@@ -506,6 +542,12 @@ class Ui_MainWindow(object):
 "    color: white;\n"
 "    font: 20px \"Sylfaen\";\n"
 "    background:#404040;\n"
+"}\n"
+"\n"
+"\n"
+"QPushButton:disabled {\n"
+"    color: grey;\n"
+"    background-color:#141718;\n"
 "}")
         self.settings_page.setObjectName("settings_page")
         self.startup_check = QtWidgets.QCheckBox(self.settings_page)
@@ -532,7 +574,9 @@ class Ui_MainWindow(object):
         self.tray_check.setChecked(False)
         self.tray_check.setObjectName("tray_check")
         self.save_btn = QtWidgets.QPushButton(self.settings_page)
+        self.save_btn.setEnabled(True)
         self.save_btn.setGeometry(QtCore.QRect(360, 550, 80, 30))
+        self.save_btn.setCheckable(False)
         self.save_btn.setObjectName("save_btn")
         self.settings_lbl = QtWidgets.QLabel(self.settings_page)
         self.settings_lbl.setGeometry(QtCore.QRect(290, 5, 320, 35))
@@ -671,7 +715,9 @@ class Ui_MainWindow(object):
         self.remove_btn.setText(_translate("MainWindow", "Remove"))
         self.add_btn.setText(_translate("MainWindow", "Add"))
         self.title_lbl.setText(_translate("MainWindow", "Shrine of Secrets"))
-        self.date_lbl.setText(_translate("MainWindow", "00/00/0000 00:00"))
+        self.datedl_lbl.setText(_translate("MainWindow", "00/00/0000 00:00"))
+        self.dateinfo_lbl_2.setText(_translate("MainWindow", "Next refresh on:"))
+        self.dateref_lbl.setText(_translate("MainWindow", "00/00/0000"))
         self.startup_check.setText(_translate("MainWindow", "Run with startup - Adds/Removes shortcut to the application executable to the autostart folder."))
         self.reset_lbl.setText(_translate("MainWindow", "Redownload local database of perks"))
         self.reload_btn.setText(_translate("MainWindow", "Reload shrine"))
