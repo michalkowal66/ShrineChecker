@@ -1,11 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
+from templates.sc_notification import Ui_NotificationTemplate
 from bs4 import BeautifulSoup as bs
 from jsonschema import validate
 from schemes import schemes
 from rsc import rsc
 from datetime import datetime, timedelta
-import time
+from time import sleep
 import dateutil.relativedelta as REL
 import requests
 import lxml
@@ -17,10 +18,9 @@ import winshell
 import win32com.client
 
 
-# TODO implement refresher
-# TODO implement notification dialog
 # TODO add perk description box on hover
 # TODO find better way to catch exceptions
+# TODO optimize app loading time
 # TODO try to modify data structure to make use of Qt objects naming
 
 
@@ -44,9 +44,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Set up thread workers
-        self.loader = Loader(task="init")
-        self.loader.finish_signal.connect(lambda: self.done_btn.setDisabled(False))
+        self.loader = Loader()
         self.progress_signal.connect(self.update_progress)
+
+        self.refresher = Refresher()
+        self.refresher.refresh.connect(self.reload_shrine)
+        self.refresher.refresh.connect(self.refresher.start)
+
+        self.notifier = Notifier()
+        self.notifier.notify.connect(self.notify)
+        self.notifier.notify.connect(self.notifier.start)
 
         # Create data dictionaries
         self.settings = {
@@ -115,12 +122,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 "data": self.user_perks
             },
         }
-        # Create schemes for json validation
+
+        # Load schemes for json validation
         self.json_schemes = schemes.validation_schemes
+
         # Initialize dictionary for storing loaded local data before validation
         self.local_data = {}
-        # Initialize all data to user interface
-        self.initial_check()
 
     def setupUi(self, MainWindow):
         super().setupUi(self)
@@ -154,8 +161,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         show_action = QtWidgets.QAction("Show", self)
         quit_action = QtWidgets.QAction("Exit", self)
         hide_action = QtWidgets.QAction("Hide", self)
-        show_action.triggered.connect(self.show)
-        hide_action.triggered.connect(self.hide)
+        show_action.triggered.connect(self.show_ui)
+        hide_action.triggered.connect(self.hide_ui)
         quit_action.triggered.connect(QtCore.QCoreApplication.quit)
         tray_menu = QtWidgets.QMenu()
         tray_menu.addAction(show_action)
@@ -165,9 +172,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         # Set up context menu
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
-
-        # Disable done button on loading screen
-        self.done_btn.setDisabled(True)
 
         # Connect navigation buttons with appropriate stackedWidget pages
         self.settings_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
@@ -199,6 +203,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def initialize_data(self):
         # Try to read local files to self.local_data
+        self.progress_signal.emit(0, 1, "Initializing app information")
         if not self.read_local_files():
             # On error display error message
             self.error_occured("Could not read local data")
@@ -216,9 +221,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.update_settings_containers()
         self.reload_shrine()
         self.check_shrine()
-        self.done_btn.setDisabled(False)
-        self.save_btn.setDisabled(True)
-        self.show()
+        # Disable save button on settings screen
+        self.save_btn.setEnabled(False)
+        self.progress_signal.emit(1, 1, "Application is ready!")
+        # Enable button to proceed to main app screen
+        self.done_btn.setEnabled(True)
+        self.show_ui()
 
     def prepare_local_dir(self):
         try:
@@ -232,11 +240,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.progress_signal.emit(0, 1, "Downloading Shrine of Secrets")
             shrine = self.get_shrine()
             self.load_shrine(shrine=shrine)
-            self.progress_signal.emit(1, 1, "Downloaded shrine")
+            self.progress_signal.emit(1, 1, "Downloaded Shrine of Secrets")
             self.progress_signal.emit(0, 1, "Downloading survivor and killer perks")
             perks = self.get_perks()
             self.load_perks(perks=perks)
-            self.progress_signal.emit(1, 1, "Survivor and killer perks")
+            self.progress_signal.emit(1, 1, "Downloaded survivor and killer perks")
 
             # Save settings data to json files in created directory
             self.progress_signal.emit(0, 1, "Saving data in the local directory")
@@ -246,7 +254,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             # Download perk images to local directory
             self.progress_signal.emit(0, 1, "Downloading perk images")
             self.download_imgs(self.local_img_dir, perks_tuple=perks)
-            self.progress_signal.emit(1, 1, "Application is ready!")
+            self.progress_signal.emit(1, 1, "Downloaded perk images")
         except:
             # On error delete local directory and display error message
             if os.path.exists(self.local_dir):
@@ -357,6 +365,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def check_shrine(self):
         # Check for matches between shrine perks and user perks
+        matches = []
         list_items = [self.perks_list.item(x).text() for x in range(self.perks_list.count())]
         for perk_key in self.shrine:
             perk = self.shrine[perk_key]
@@ -368,11 +377,14 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 perk["frame"].setHidden(False)
                 # Apply white color to perk name
                 perk["container"].setStyleSheet("color: white")
+                # Add matching perk to matches list
+                matches.append(perk["val"])
             else:
                 # Ensure frame is hidden when no match
                 perk["frame"].setHidden(True)
                 # Restore previous perk name color
                 perk["container"].setStyleSheet("")
+        return matches
 
     def error_occured(self, message):
         # Change stackedWidget page to error page
@@ -543,7 +555,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             event.accept()
         else:
             event.ignore()
-            self.hide()
+            self.hide_ui()
 
     def get_next_refresh(self, today):
         rd = REL.relativedelta(days=1, weekday=REL.TH)
@@ -565,23 +577,109 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if os.path.isfile(shortcut_path):
                 os.remove(shortcut_path)
 
+    def notify(self):
+        matches = self.check_shrine()
+        if len(matches) == 0:
+            print("No matches")
+        else:
+            if notification.isHidden():
+                notification.setup_notification(matches)
+                notification.show()
+
     def save_settings(self):
         self.toggle_autostart()
+        if self.refr_combo.currentText() != self.settings["refresh"]["val"]:
+            QtCore.QTimer.singleShot(2000, lambda: self.refresher.start())
         self.update_globally(target="settings")
         self.save_btn.setEnabled(False)
 
+    def show_ui(self):
+        if self.isHidden():
+            self.show()
+        self.reload_shrine()
+        self.refresher.start()
+
+    def hide_ui(self):
+        self.hide()
+        self.notifier.start()
+
+
+class Notification(QtWidgets.QDialog, Ui_NotificationTemplate):
+    def __init__(self):
+        super().__init__()
+        self.local_dir = os.path.expanduser('~') + '\\Documents\\ShrineChecker'
+        self.local_img_dir = self.local_dir + '\\img'
+        self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+
+    def setupUi(self, Dialog):
+        super().setupUi(self)
+
+        self.setWindowIcon(QtGui.QIcon(':/Icon/img/icon.ico'))
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg_1.png'))
+
+        self.close_btn.clicked.connect(window.notifier.start)
+        self.close_btn.clicked.connect(self.hide)
+        self.show_btn.clicked.connect(window.show_ui)
+        self.show_btn.clicked.connect(self.hide)
+
+        screen = QtWidgets.QDesktopWidget().screenGeometry()
+        widget = self.geometry()
+        x = screen.width() - widget.width()
+        self.move(x, 40)
+
+        frames = [label for label in self.findChildren(QtWidgets.QLabel) if label.objectName().startswith("frame")]
+        for frame in frames:
+            frame.setPixmap(QtGui.QPixmap(':/Decorations/img/frame.png'))
+            frame.setScaledContents(True)
+
+    def setup_notification(self, matches):
+        self.resize(350, 180+(len(matches)-1)*140)
+        for _ in range(len(matches)):
+            img = self.findChild(QtWidgets.QLabel, f"img{_ + 1}")
+            img.setPixmap(QtGui.QPixmap(f"{self.local_img_dir}\\{matches[_]}.png"))
+            img.setScaledContents(True)
+            perk_name = self.findChild(QtWidgets.QLabel, f"perk{_ + 1}_lbl")
+            perk_name.setText(matches[_])
+            message = self.findChild(QtWidgets.QLabel, f"msg{_ + 1}_lbl")
+            message.setText(f"{matches[_]} is now available!")
+
+
 class Loader(QtCore.QThread):
-    finish_signal = QtCore.pyqtSignal()
-
-    def __init__(self, task, parent=None):
-        super().__init__(parent)
-        self.task = task
-
-    @QtCore.pyqtSlot()
     def run(self):
-        if self.task == "init":
-            window.prepare_local_dir()
-            window.initialize_data()
+        window.prepare_local_dir()
+        window.initialize_data()
+
+
+class Refresher(QtCore.QThread):
+    refresh = QtCore.pyqtSignal()
+
+    def run(self):
+        print("Starting refreshing")
+        refresh_interval = int(window.settings["refresh"]["val"])
+        for _ in range(refresh_interval*60*60):
+            sleep(1)
+            check_interval = int(window.settings["refresh"]["val"])
+            if window.isHidden() or refresh_interval != check_interval:
+                print("Refresher thread interrupted")
+                return None
+        self.refresh.emit()
+        print("Ending refreshing thread")
+
+
+class Notifier(QtCore.QThread):
+    notify = QtCore.pyqtSignal()
+
+    def run(self):
+        print("Starting notification thread")
+        notification_interval = int(window.settings["notification"]["val"])
+        for _ in range(notification_interval*60*60):
+            sleep(1)
+            if not window.isHidden():
+                print("Notification thread interrupted")
+                return None
+        self.notify.emit()
+        print("Ending notification thread")
 
 
 if __name__ == "__main__":
@@ -589,4 +687,6 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
+    window.initial_check()
+    notification = Notification()
     sys.exit(app.exec_())

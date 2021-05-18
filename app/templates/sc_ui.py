@@ -69,7 +69,7 @@ class Ui_MainWindow(object):
 "\n"
 "\n"
 "QPushButton:disabled {\n"
-"    color: black;\n"
+"    color: grey;\n"
 "    background-color:#141718;\n"
 "}\n"
 "\n"
@@ -81,6 +81,7 @@ class Ui_MainWindow(object):
         self.msg_lbl.setWordWrap(True)
         self.msg_lbl.setObjectName("msg_lbl")
         self.done_btn = QtWidgets.QPushButton(self.loading_page)
+        self.done_btn.setEnabled(False)
         self.done_btn.setGeometry(QtCore.QRect(410, 550, 80, 30))
         self.done_btn.setStyleSheet("")
         self.done_btn.setObjectName("done_btn")
@@ -574,7 +575,7 @@ class Ui_MainWindow(object):
         self.tray_check.setChecked(False)
         self.tray_check.setObjectName("tray_check")
         self.save_btn = QtWidgets.QPushButton(self.settings_page)
-        self.save_btn.setEnabled(True)
+        self.save_btn.setEnabled(False)
         self.save_btn.setGeometry(QtCore.QRect(360, 550, 80, 30))
         self.save_btn.setCheckable(False)
         self.save_btn.setObjectName("save_btn")

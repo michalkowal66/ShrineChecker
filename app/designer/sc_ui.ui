@@ -92,7 +92,7 @@ QPushButton:hover {
 
 
 QPushButton:disabled {
-	color: black;
+	color: grey;
 	background-color:#141718;
 }
 
@@ -118,6 +118,9 @@ QPushButton:disabled {
       </property>
      </widget>
      <widget class="QPushButton" name="done_btn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>410</x>
@@ -1173,7 +1176,7 @@ QPushButton:disabled {
      </widget>
      <widget class="QPushButton" name="save_btn">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
