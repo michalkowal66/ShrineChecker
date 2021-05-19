@@ -22,7 +22,8 @@ validation_schemes = {
             "perks": {
                 "type": "object",
                 "properties": {
-                    "perks_list": {"type": "array"}
+                    "perks_list": {"type": "array"},
+                    "descriptions": {"type": "object"}
                 }
             },
             "user_perks": {

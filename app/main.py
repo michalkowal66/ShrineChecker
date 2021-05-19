@@ -101,7 +101,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             }
         }
         self.perks = {
-            "perks_list": {"val": [], "container": self.perks_combo}
+            "perks_list": {"val": [], "container": self.perks_combo},
+            "descriptions": {"val": {}, "container": None}
         }
         self.user_perks = {
             "perks_list": {"val": [], "container": self.perks_list}
@@ -465,8 +466,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def load_perks(self, perks):
         # Loads fetched perks to the self.perks dict
-        perks_stripped = [perk_tuple[0] for perk_tuple in perks]
+        perks_stripped = [perk_tuple[0] for perk_tuple in perks["perks"]]
         self.perks["perks_list"]["val"] = perks_stripped
+        self.perks["descriptions"]["val"] = perks["descriptions"]
 
     def get_shrine(self, source=1):
         shrine_urls = {
@@ -494,7 +496,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def get_perks(self):
         perks_url = "https://deadbydaylight.gamepedia.com/Perks"
-        perks = []
+        perks = {"perks": [],
+                 "descriptions": {}}
 
         request = requests.get(perks_url)
         soup = bs(request.content, "lxml")
@@ -507,8 +510,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     continue
                 perk_img_url = row.contents[1].find("a").find("img")["src"]
                 perk_name = row.contents[3].find("a").get_text(strip=True)
+                perk_description = row.contents[5].text
 
-                perks.append((perk_name, perk_img_url))
+                perks["perks"].append((perk_name, perk_img_url))
+                perks["descriptions"][perk_name] = perk_description
 
         return perks
 
@@ -617,7 +622,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def eventFilter(self, object, event):
         if event.type() == QtCore.QEvent.Enter:
             print(f"Mouse is over the label {object.objectName()}")
-            dialog.prepare_dialog(object, f"Description for {object.objectName()}")
+            label_name = object.objectName().replace("_img", "_lbl")
+            perk_name = self.main_page.findChild(QtWidgets.QLabel, label_name).text()
+            description = self.perks["descriptions"]["val"][perk_name]
+            dialog.prepare_dialog(object, description)
             dialog.show()
             return True
         elif event.type() == QtCore.QEvent.Leave:
@@ -678,7 +686,13 @@ class Dialog(QtWidgets.QDialog, Ui_Dialog):
 
     def prepare_dialog(self, source, description):
         self.description_lbl.setText(description)
-        self.move(window.x()+source.x()-130, window.y()+source.y()+175)
+        self.description_lbl.adjustSize()
+        new_height = 10+self.description_lbl.height()
+        self.resize(420, new_height)
+        self.bg.resize(420, new_height)
+        dialog_x = window.x()+source.x()-160
+        dialog_y = window.y()+source.y()+175
+        self.move(dialog_x, dialog_y)
 
 
 class Loader(QtCore.QThread):
@@ -696,7 +710,10 @@ class Refresher(QtCore.QThread):
         for _ in range(refresh_interval*60*60):
             sleep(1)
             check_interval = int(window.settings["refresh"]["val"])
-            if window.isHidden() or refresh_interval != check_interval:
+            conditions = [window.isHidden(),
+                          refresh_interval != check_interval,
+                          window.stackedWidget.currentIndex() == 3]
+            if any(conditions):
                 print("Refresher thread interrupted")
                 return None
         self.refresh.emit()
