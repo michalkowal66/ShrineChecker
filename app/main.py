@@ -262,7 +262,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # Download perk images to local directory
             self.progress_signal.emit(0, 1, "Downloading perk images")
-            self.download_imgs(self.local_img_dir, perks_tuple=perks)
+            self.download_imgs(self.local_img_dir, perks_tuple=perks["perks"])
             self.progress_signal.emit(1, 1, "Downloaded perk images")
         except:
             # On error delete local directory and display error message
@@ -528,13 +528,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     img = requests.get(img_url)
                     f.write(img.content)
         except:
-            self.error_occured("Error while downloading perk images. Check internet connection and trt again.")
+            self.error_occured("Error while downloading perk images. Check internet connection and try again.")
 
     def reload_perks(self):
         try:
             perks = self.get_perks()
         except:
-            self.error_occured("Error while downloading perks. Check internet connection and trt again.")
+            self.error_occured("Error while downloading perks. Check internet connection and try again.")
         else:
             self.load_perks(perks)
             self.perks_combo.clear()
