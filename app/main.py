@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from templates.sc_ui import Ui_MainWindow
 from templates.sc_notification import Ui_NotificationTemplate
+from templates.sc_dialog import Ui_Dialog
 from bs4 import BeautifulSoup as bs
 from jsonschema import validate
 from schemes import schemes
@@ -19,8 +20,11 @@ import win32com.client
 
 
 # TODO add perk description box on hover
+# TODO add screen with all perks and descriptions
 # TODO find better way to catch exceptions
-# TODO optimize app loading time
+# TODO minimize time of white screen before loading app
+# TODO move error messages to separate file
+# TODO add retry button/automatic retry to exceptions of methods based on requests
 # TODO try to modify data structure to make use of Qt objects naming
 
 
@@ -43,7 +47,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         # Set up user interface
         self.setupUi(self)
 
-        # Set up thread workers
+        # Set up thread workers and connect signals with methods
         self.loader = Loader()
         self.progress_signal.connect(self.update_progress)
 
@@ -190,6 +194,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tray_check.stateChanged.connect(lambda: self.save_btn.setEnabled(True))
         self.refr_combo.currentIndexChanged.connect(lambda: self.save_btn.setEnabled(True))
         self.notif_combo.currentIndexChanged.connect(lambda: self.save_btn.setEnabled(True))
+
+        # Add event filter to shrine perks imgs
+        for perk_img in [self.main_page.findChild(QtWidgets.QLabel, f"perk{i}_img") for i in range(1,5)]:
+            perk_img.installEventFilter(self)
 
     def initial_check(self):
         # Check whether local directory exists
@@ -551,7 +559,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.msg_lbl.setText(message)
 
     def closeEvent(self, event):
-        if self.isHidden() == True or not self.tray_check.isChecked():
+        conditions = [self.isHidden() == True,
+                      not self.tray_check.isChecked(),
+                      self.stackedWidget.currentIndex() == 3]
+        if any(conditions):
             event.accept()
         else:
             event.ignore()
@@ -594,15 +605,25 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.save_btn.setEnabled(False)
 
     def show_ui(self):
-        if self.isHidden():
-            self.show()
         self.reload_shrine()
         self.refresher.start()
+        if self.isHidden():
+            self.show()
 
     def hide_ui(self):
         self.hide()
         self.notifier.start()
 
+    def eventFilter(self, object, event):
+        if event.type() == QtCore.QEvent.Enter:
+            print(f"Mouse is over the label {object.objectName()}")
+            dialog.prepare_dialog(object, f"Description for {object.objectName()}")
+            dialog.show()
+            return True
+        elif event.type() == QtCore.QEvent.Leave:
+            print("Mouse is not over the label")
+            dialog.hide()
+        return False
 
 class Notification(QtWidgets.QDialog, Ui_NotificationTemplate):
     def __init__(self):
@@ -643,6 +664,21 @@ class Notification(QtWidgets.QDialog, Ui_NotificationTemplate):
             perk_name.setText(matches[_])
             message = self.findChild(QtWidgets.QLabel, f"msg{_ + 1}_lbl")
             message.setText(f"{matches[_]} is now available!")
+
+
+class Dialog(QtWidgets.QDialog, Ui_Dialog):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+
+    def setupUi(self, Dialog):
+        super().setupUi(self)
+        self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg_1.png'))
+
+    def prepare_dialog(self, source, description):
+        self.description_lbl.setText(description)
+        self.move(window.x()+source.x()-130, window.y()+source.y()+175)
 
 
 class Loader(QtCore.QThread):
@@ -687,6 +723,8 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
-    window.initial_check()
     notification = Notification()
+    dialog = Dialog()
+    window.initial_check()
     sys.exit(app.exec_())
+
