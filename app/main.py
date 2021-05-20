@@ -19,10 +19,10 @@ import winshell
 import win32com.client
 
 
+# TODO add images downloading to perks reload
 # TODO add screen with all perks and descriptions
 # TODO find better way to catch exceptions
 # TODO move error messages to separate file
-# TODO add retry button/automatic retry to exceptions of methods based on requests
 # TODO try to modify data structure to make use of Qt objects naming
 
 
@@ -38,6 +38,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.shrine_path = self.local_dir + "\\shrine.json"
         self.perks_path = self.local_dir + "\\perks.json"
         self.user_perks_path = self.local_dir + "\\user_perks.json"
+
+        # Indicate whether app was run first time
+        self.initial_run = None
 
         # Initialize tray icon
         self.tray_icon = QtWidgets.QSystemTrayIcon(self)
@@ -180,6 +183,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settings_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
         self.back_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
         self.done_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
+        self.error_back_btn.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
 
         # Connect functional buttons with appropriate functions
         self.save_btn.clicked.connect(self.save_settings)
@@ -187,6 +191,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.remove_btn.clicked.connect(self.remove_perk)
         self.reset_btn.clicked.connect(self.reload_perks)
         self.reload_btn.clicked.connect(lambda: self.reload_shrine(force=True))
+
+        # Disable button on error screen after pressing
+        self.error_back_btn.clicked.connect(lambda: self.error_back_btn.setEnabled(False))
 
         # Connect settings container with function catching change of state
         self.startup_check.stateChanged.connect(lambda: self.save_btn.setEnabled(True))
@@ -201,11 +208,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def initial_check(self):
         # Check whether local directory exists
         if not os.path.exists(self.local_dir):
+            self.initial_run = True
             self.stackedWidget.setCurrentIndex(0)
             self.show()
             # Try to create local directory via loader thread
             self.loader.start()
         else:
+            self.initial_run = False
             self.initialize_data()
 
     def initialize_data(self):
@@ -213,15 +222,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.progress_signal.emit(0, 1, "Initializing app information")
         if not self.read_local_files():
             # On error display error message
-            self.error_occured("Could not read local data")
+            self.error_occured("data reading", "Could not read local data")
             return False
         # Try to verify data with schemes
         if not self.verify_local_files():
-            self.error_occured("Some local files didn't pass the verification.")
+            self.error_occured("files verification", "Some local files didn't pass the verification.")
             return False
         # Try to load data to self.data_dict
         if not self.load_local_data():
-            self.error_occured("Couldn't load local data.")
+            self.error_occured("data loading", "Couldn't load local data.")
             return False
         # Try to update containers on main page, settings page, and check shrine
         self.update_main_containers()
@@ -266,7 +275,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             # On error delete local directory and display error message
             if os.path.exists(self.local_dir):
                 shutil.rmtree(self.local_dir)
-            self.error_occured("Wasn't able to create a local directory properly")
+            self.error_occured("creating directory", "Wasn't able to create a local directory properly")
         else:
             return True
 
@@ -322,7 +331,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.load_value(data_dict, key)
         except:
             # On error display error message
-            self.error_occured("Wasn't able to update main ui containers")
+            self.error_occured("updating main containers", "Wasn't able to update main ui containers")
             return False
         else:
             return True
@@ -336,7 +345,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.set_value(container, value)
         except:
             # On error display error message
-            self.error_occured("Wasn't able to update settings containers")
+            self.error_occured("updating settings containers", "Wasn't able to update settings containers")
             return False
         else:
             return True
@@ -393,7 +402,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 perk["container"].setStyleSheet("")
         return matches
 
-    def error_occured(self, message):
+    def error_occured(self, source ,message):
+        if source == "network" and not self.initial_run:
+            self.error_back_btn.setEnabled(True)
         # Change stackedWidget page to error page
         self.stackedWidget.setCurrentIndex(3)
         # Display error message
@@ -529,13 +540,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     img = requests.get(img_url)
                     f.write(img.content)
         except:
-            self.error_occured("Error while downloading perk images. Check internet connection and try again.")
+            self.error_occured("download", "Error while downloading perk images. Check internet connection and try again.")
 
     def reload_perks(self):
         try:
             perks = self.get_perks()
         except:
-            self.error_occured("Error while downloading perks. Check internet connection and try again.")
+            self.error_occured("network", "Error while downloading perks. Check internet connection and try again.")
         else:
             self.load_perks(perks)
             self.perks_combo.clear()
@@ -548,12 +559,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         days_to_refresh = ((next_refresh.date()+timedelta(days=1)) - today).days
 
         if not force:
-            if days_to_refresh > 1:
+            if days_to_refresh > 1 and days_to_refresh < 7:
                 return False
         try:
             shrine = self.get_shrine()
         except:
-            self.error_occured("Error while downloading Shrine of Secrets. Check internet connection and try again.")
+            self.error_occured("network", "Error while downloading Shrine of Secrets. Check internet connection and try again.")
         else:
             self.load_shrine(shrine)
             self.update_main_containers("shrine")

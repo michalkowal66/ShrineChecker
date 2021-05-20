@@ -1114,7 +1114,7 @@ QPushButton:disabled {
        </rect>
       </property>
       <property name="text">
-       <string>Redownload local database of perks</string>
+       <string>Redownload local database of perks and images</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1387,7 +1387,7 @@ QPushButton:disabled {
        </rect>
       </property>
       <property name="text">
-       <string>App author - Michał Kowal, michal.kowal.66@gmail.com, r/virtozenho</string>
+       <string>App author - Michał Kowal, michal.kowal.66@gmail.com</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1447,6 +1447,21 @@ QLabel#error_msg_lbl {
 QLabel#author_contact_lbl {
 	color: white;
 	font: 20px &quot;Sylfaen&quot;;
+}
+
+QPushButton {
+	color: white;
+	font: 20px&quot;Sylfaen&quot;;
+	background-color:#2F3538;
+}
+
+QPushButton:hover {
+	background-color:#404040;
+}
+
+QPushButton:disabled {
+	color: grey;
+	background-color:#141718;
 }
 </string>
      </property>
@@ -1509,12 +1524,12 @@ QLabel#author_contact_lbl {
        <rect>
         <x>50</x>
         <y>490</y>
-        <width>800</width>
+        <width>331</width>
         <height>100</height>
        </rect>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;In case of recurring problems contact app author: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Michał Kowal, michal.kowal.66@gmail.com, r/Virtozenho&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;In case of recurring problems contact app author: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Michał Kowal, michal.kowal.66@gmail.com&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="textFormat">
        <enum>Qt::AutoText</enum>
@@ -1526,10 +1541,27 @@ QLabel#author_contact_lbl {
        <bool>true</bool>
       </property>
      </widget>
+     <widget class="QPushButton" name="error_back_btn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>550</y>
+        <width>80</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+     </widget>
      <zorder>bg_3</zorder>
      <zorder>error_msg_lbl</zorder>
      <zorder>error_lbl</zorder>
      <zorder>author_contact_lbl</zorder>
+     <zorder>error_back_btn</zorder>
     </widget>
    </widget>
   </widget>

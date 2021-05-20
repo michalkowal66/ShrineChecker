@@ -667,6 +667,21 @@ class Ui_MainWindow(object):
 "    color: white;\n"
 "    font: 20px \"Sylfaen\";\n"
 "}\n"
+"\n"
+"QPushButton {\n"
+"    color: white;\n"
+"    font: 20px\"Sylfaen\";\n"
+"    background-color:#2F3538;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color:#404040;\n"
+"}\n"
+"\n"
+"QPushButton:disabled {\n"
+"    color: grey;\n"
+"    background-color:#141718;\n"
+"}\n"
 "")
         self.error_page.setObjectName("error_page")
         self.error_msg_lbl = QtWidgets.QLabel(self.error_page)
@@ -685,15 +700,20 @@ class Ui_MainWindow(object):
         self.error_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.error_lbl.setObjectName("error_lbl")
         self.author_contact_lbl = QtWidgets.QLabel(self.error_page)
-        self.author_contact_lbl.setGeometry(QtCore.QRect(50, 490, 800, 100))
+        self.author_contact_lbl.setGeometry(QtCore.QRect(50, 490, 331, 100))
         self.author_contact_lbl.setTextFormat(QtCore.Qt.AutoText)
         self.author_contact_lbl.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.author_contact_lbl.setWordWrap(True)
         self.author_contact_lbl.setObjectName("author_contact_lbl")
+        self.error_back_btn = QtWidgets.QPushButton(self.error_page)
+        self.error_back_btn.setEnabled(False)
+        self.error_back_btn.setGeometry(QtCore.QRect(410, 550, 80, 30))
+        self.error_back_btn.setObjectName("error_back_btn")
         self.bg_3.raise_()
         self.error_msg_lbl.raise_()
         self.error_lbl.raise_()
         self.author_contact_lbl.raise_()
+        self.error_back_btn.raise_()
         self.stackedWidget.addWidget(self.error_page)
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -720,7 +740,7 @@ class Ui_MainWindow(object):
         self.dateinfo_lbl_2.setText(_translate("MainWindow", "Next refresh on:"))
         self.dateref_lbl.setText(_translate("MainWindow", "00/00/0000"))
         self.startup_check.setText(_translate("MainWindow", "Run with startup - Adds/Removes shortcut to the application executable to the autostart folder."))
-        self.reset_lbl.setText(_translate("MainWindow", "Redownload local database of perks"))
+        self.reset_lbl.setText(_translate("MainWindow", "Redownload local database of perks and images"))
         self.reload_btn.setText(_translate("MainWindow", "Reload shrine"))
         self.tray_check.setText(_translate("MainWindow", "Minimize to tray on exit - Enables/Disables working in the background."))
         self.save_btn.setText(_translate("MainWindow", "Save"))
@@ -739,11 +759,12 @@ class Ui_MainWindow(object):
         self.notif_lbl.setText(_translate("MainWindow", "Notification interval (hours) - Time between displaying a notification about matching perks."))
         self.refr_lbl.setText(_translate("MainWindow", "Auto-refresh interval (hours) - Time between checking for new shrine."))
         self.authors_lbl.setText(_translate("MainWindow", "App authors"))
-        self.author_lbl.setText(_translate("MainWindow", "App author - Michał Kowal, michal.kowal.66@gmail.com, r/virtozenho"))
+        self.author_lbl.setText(_translate("MainWindow", "App author - Michał Kowal, michal.kowal.66@gmail.com"))
         self.designer_lbl.setText(_translate("MainWindow", "Graphics designer - Urszula Kowal, @kowalowna"))
         self.error_msg_lbl.setText(_translate("MainWindow", "Error message"))
         self.error_lbl.setText(_translate("MainWindow", "Oops, application encountered an error!"))
-        self.author_contact_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">In case of recurring problems contact app author: </span></p><p><span style=\" font-size:12pt;\">Michał Kowal, michal.kowal.66@gmail.com, r/Virtozenho</span></p></body></html>"))
+        self.author_contact_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">In case of recurring problems contact app author: </span></p><p><span style=\" font-size:12pt;\">Michał Kowal, michal.kowal.66@gmail.com</span></p></body></html>"))
+        self.error_back_btn.setText(_translate("MainWindow", "Back"))
 
 
 if __name__ == "__main__":
