@@ -19,7 +19,6 @@ import winshell
 import win32com.client
 
 
-# TODO add images downloading to perks reload
 # TODO add screen with all perks and descriptions
 # TODO find better way to catch exceptions
 # TODO move error messages to separate file
@@ -45,11 +44,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         # Initialize tray icon
         self.tray_icon = QtWidgets.QSystemTrayIcon(self)
 
-        # Set up user interface
-        self.setupUi(self)
-
         # Set up thread workers and connect signals with methods
-        self.loader = Loader()
+        self.loader = Loader("first_run")
         self.progress_signal.connect(self.update_progress)
 
         self.refresher = Refresher()
@@ -59,6 +55,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.notifier = Notifier()
         self.notifier.notify.connect(self.notify)
         self.notifier.notify.connect(self.notifier.start)
+
+        self.reloader = Loader("reload")
+
+        # Set up user interface
+        self.setupUi(self)
 
         # Create data dictionaries
         self.settings = {
@@ -189,11 +190,14 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.save_btn.clicked.connect(self.save_settings)
         self.add_btn.clicked.connect(self.add_perk)
         self.remove_btn.clicked.connect(self.remove_perk)
-        self.reset_btn.clicked.connect(self.reload_perks)
+        self.reset_btn.clicked.connect(self.reloader.start)
         self.reload_btn.clicked.connect(lambda: self.reload_shrine(force=True))
 
         # Disable button on error screen after pressing
         self.error_back_btn.clicked.connect(lambda: self.error_back_btn.setEnabled(False))
+
+        # Disable button on loading screen after pressing
+        self.done_btn.clicked.connect(lambda: self.done_btn.setEnabled(False))
 
         # Connect settings container with function catching change of state
         self.startup_check.stateChanged.connect(lambda: self.save_btn.setEnabled(True))
@@ -241,7 +245,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.save_btn.setEnabled(False)
         self.progress_signal.emit(1, 1, "Application is ready!")
         # Enable button to proceed to main app screen
-        self.done_btn.setEnabled(True)
+        if self.initial_run:
+            self.done_btn.setEnabled(True)
         self.show_ui()
 
     def prepare_local_dir(self):
@@ -543,15 +548,21 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.error_occured("download", "Error while downloading perk images. Check internet connection and try again.")
 
     def reload_perks(self):
+        self.progress_signal.emit(0, 1, "Downloading perk images")
+        self.stackedWidget.setCurrentIndex(0)
         try:
             perks = self.get_perks()
         except:
             self.error_occured("network", "Error while downloading perks. Check internet connection and try again.")
         else:
+            self.download_imgs(self.local_img_dir, perks_tuple=perks["perks"])
             self.load_perks(perks)
             self.perks_combo.clear()
             self.update_main_containers("perks")
+            self.update_main_containers("shrine")
             self.save_data("perks")
+            self.progress_signal.emit(1, 1, "Perks reloaded")
+            self.done_btn.setEnabled(True)
 
     def reload_shrine(self, force=False):
         today = datetime.now().date()
@@ -702,9 +713,16 @@ class Dialog(QtWidgets.QDialog, Ui_Dialog):
 
 
 class Loader(QtCore.QThread):
+    def __init__(self, role):
+        super().__init__()
+        self.role = role
+
     def run(self):
-        window.prepare_local_dir()
-        window.initialize_data()
+        if self.role == "first_run":
+            window.prepare_local_dir()
+            window.initialize_data()
+        elif self.role == "reload":
+            window.reload_perks()
 
 
 class Refresher(QtCore.QThread):
