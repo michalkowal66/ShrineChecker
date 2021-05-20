@@ -1003,7 +1003,10 @@ QListWidget::item:selected {
       </property>
      </widget>
      <zorder>bg_1</zorder>
+     <zorder>perk4_frame</zorder>
+     <zorder>perk3_frame</zorder>
      <zorder>perk1_frame</zorder>
+     <zorder>perk2_frame</zorder>
      <zorder>perk1_lbl</zorder>
      <zorder>perks_combo</zorder>
      <zorder>perk2_lbl</zorder>
@@ -1012,15 +1015,12 @@ QListWidget::item:selected {
      <zorder>settings_btn</zorder>
      <zorder>perk3_img</zorder>
      <zorder>perk4_lbl</zorder>
-     <zorder>perk3_frame</zorder>
      <zorder>perk4_img</zorder>
-     <zorder>perk4_frame</zorder>
      <zorder>perk3_lbl</zorder>
      <zorder>dateinfo_lbl</zorder>
      <zorder>remove_btn</zorder>
      <zorder>perk1_img</zorder>
      <zorder>add_btn</zorder>
-     <zorder>perk2_frame</zorder>
      <zorder>title_lbl</zorder>
      <zorder>perk2_img</zorder>
      <zorder>datedl_lbl</zorder>
