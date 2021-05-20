@@ -19,10 +19,8 @@ import winshell
 import win32com.client
 
 
-# TODO add perk description box on hover
 # TODO add screen with all perks and descriptions
 # TODO find better way to catch exceptions
-# TODO minimize time of white screen before loading app
 # TODO move error messages to separate file
 # TODO add retry button/automatic retry to exceptions of methods based on requests
 # TODO try to modify data structure to make use of Qt objects naming
@@ -457,12 +455,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def load_shrine(self, shrine):
         # Loads fetched shrine to the self.shrine dict
-        today = datetime.now().date()
-
         for _ in range(1, 5):
             self.shrine[f"shrine_perk{_}"]["val"] = shrine["perks"][_-1]
         self.shrine["download_date"]["val"] = shrine["download_date"]
-        self.shrine["refresh_date"]["val"] = self.get_next_refresh(today=today).strftime('%d/%m/%Y')
+        self.shrine["refresh_date"]["val"] = shrine["refresh_date"]
 
     def load_perks(self, perks):
         # Loads fetched perks to the self.perks dict
@@ -477,8 +473,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         }
         shrine = {
             "perks": [],
-            "download_date" : "DOWNLOAD DATE"
+            "download_date": "DOWNLOAD DATE",
+            "refresh_date": "REFRESH DATE"
         }
+        today = datetime.now()
+        rd = REL.relativedelta(days=1, weekday=REL.WE)
+        next_refresh = today + rd
 
         request = requests.get(shrine_urls[source])
         soup = bs(request.content, "lxml")
@@ -490,7 +490,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if cell is not None:
                 perk = cell.get_text(strip=True)
                 shrine["perks"].append(perk)
-        shrine["download_date"] = str(datetime.now().strftime('%d/%m/%Y %H:%M'))
+        shrine["download_date"] = str(today.strftime('%d/%m/%Y %H:%M'))
+        shrine["refresh_date"] = str(next_refresh.strftime('%d/%m/%Y'))
 
         return shrine
 
@@ -543,8 +544,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def reload_shrine(self, force=False):
         today = datetime.now().date()
-        next_refresh = self.get_next_refresh(today=today)
-        days_to_refresh = (next_refresh - today).days
+        next_refresh = datetime.strptime(self.shrine["refresh_date"]["val"], '%d/%m/%Y')
+        days_to_refresh = ((next_refresh.date()+timedelta(days=1)) - today).days
 
         if not force:
             if days_to_refresh > 1:
@@ -554,7 +555,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         except:
             self.error_occured("Error while downloading Shrine of Secrets. Check internet connection and try again.")
         else:
-            shrine["refresh_date"] = next_refresh
             self.load_shrine(shrine)
             self.update_main_containers("shrine")
             self.save_data("shrine")
@@ -572,11 +572,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             event.ignore()
             self.hide_ui()
-
-    def get_next_refresh(self, today):
-        rd = REL.relativedelta(days=1, weekday=REL.TH)
-        next_refresh = today + rd
-        return next_refresh
 
     def toggle_autostart(self):
         pythoncom.CoInitialize()
