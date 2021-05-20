@@ -657,6 +657,7 @@ class Notification(QtWidgets.QDialog, Ui_NotificationTemplate):
         self.local_img_dir = self.local_dir + '\\img'
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_ShowWithoutActivating)
 
     def setupUi(self, Dialog):
         super().setupUi(self)
