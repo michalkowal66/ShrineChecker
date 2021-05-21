@@ -408,6 +408,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         return matches
 
     def error_occured(self, source ,message):
+        if self.isHidden():
+            self.show()
         if source == "network" and not self.initial_run:
             self.error_back_btn.setEnabled(True)
         # Change stackedWidget page to error page

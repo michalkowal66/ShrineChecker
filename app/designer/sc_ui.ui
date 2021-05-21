@@ -430,7 +430,7 @@ QListWidget::item:selected {
         <x>25</x>
         <y>120</y>
         <width>280</width>
-        <height>390</height>
+        <height>431</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -473,22 +473,6 @@ QListWidget::item:selected {
       </property>
       <property name="scaledContents">
        <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="settings_btn">
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>520</y>
-        <width>30</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string/>
       </property>
      </widget>
      <widget class="QLabel" name="perk3_img">
@@ -747,9 +731,9 @@ QListWidget::item:selected {
      <widget class="QPushButton" name="remove_btn">
       <property name="geometry">
        <rect>
-        <x>185</x>
-        <y>520</y>
-        <width>120</width>
+        <x>170</x>
+        <y>560</y>
+        <width>135</width>
         <height>30</height>
        </rect>
       </property>
@@ -807,8 +791,8 @@ QListWidget::item:selected {
       <property name="geometry">
        <rect>
         <x>25</x>
-        <y>520</y>
-        <width>120</width>
+        <y>560</y>
+        <width>135</width>
         <height>30</height>
        </rect>
       </property>
@@ -1002,6 +986,22 @@ QListWidget::item:selected {
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
      </widget>
+     <widget class="QPushButton" name="settings_btn">
+      <property name="geometry">
+       <rect>
+        <x>855</x>
+        <y>15</y>
+        <width>30</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
      <zorder>bg_1</zorder>
      <zorder>perk4_frame</zorder>
      <zorder>perk3_frame</zorder>
@@ -1012,7 +1012,6 @@ QListWidget::item:selected {
      <zorder>perk2_lbl</zorder>
      <zorder>perks_list</zorder>
      <zorder>info_lbl</zorder>
-     <zorder>settings_btn</zorder>
      <zorder>perk3_img</zorder>
      <zorder>perk4_lbl</zorder>
      <zorder>perk4_img</zorder>
@@ -1026,6 +1025,7 @@ QListWidget::item:selected {
      <zorder>datedl_lbl</zorder>
      <zorder>dateinfo_lbl_2</zorder>
      <zorder>dateref_lbl</zorder>
+     <zorder>settings_btn</zorder>
     </widget>
     <widget class="QWidget" name="settings_page">
      <property name="styleSheet">
@@ -1180,7 +1180,7 @@ QPushButton:disabled {
       </property>
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>460</x>
         <y>550</y>
         <width>80</width>
         <height>30</height>
@@ -1245,7 +1245,7 @@ QPushButton:disabled {
      <widget class="QPushButton" name="back_btn">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>360</x>
         <y>550</y>
         <width>80</width>
         <height>30</height>
