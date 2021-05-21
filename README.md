@@ -14,11 +14,11 @@ Currently the application can be run only on Windows.
 On first run application creates a local directory in `Documents`, where it downloads all necessary data  
 (such as perks names, images, current shrine) from [Dead by Daylight wikipedia](https://deadbydaylight.fandom.com/wiki/Dead_by_Daylight_Wiki) and creates local files.  
 
-### Adding and removing perks to the list
+### Adding and removing perks
   
 After initialization the application is ready to use. Using a dropbox in the top left corner choose  
 perks that You'd like to be notified about, and click `Add` button, the perk should appear then in the list below.  
-Perks can be then removed by simply selecting the perk in the list and pressing `remove` button.
+Perks can be then removed by simply selecting the perk on the list and pressing `remove` button.
 
 ### Current Shrine of Secrets
 
