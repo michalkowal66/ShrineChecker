@@ -6,25 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
+    <width>520</width>
     <height>200</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+   <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>420</width>
-    <height>100</height>
+    <width>520</width>
+    <height>200</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>420</width>
+    <width>520</width>
     <height>1200</height>
    </size>
   </property>
@@ -51,15 +51,27 @@ QLabel#description_lbl {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>420</width>
+     <width>520</width>
      <height>200</height>
     </rect>
    </property>
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>520</width>
+     <height>200</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>520</width>
+     <height>16777215</height>
+    </size>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
@@ -73,7 +85,7 @@ QLabel#description_lbl {
     <rect>
      <x>20</x>
      <y>5</y>
-     <width>380</width>
+     <width>480</width>
      <height>35</height>
     </rect>
    </property>
@@ -85,13 +97,13 @@ QLabel#description_lbl {
    </property>
    <property name="minimumSize">
     <size>
-     <width>380</width>
+     <width>480</width>
      <height>0</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>380</width>
+     <width>480</width>
      <height>16777215</height>
     </size>
    </property>
@@ -107,26 +119,26 @@ QLabel#description_lbl {
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>380</width>
-     <height>130</height>
+     <width>480</width>
+     <height>150</height>
     </rect>
    </property>
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
    <property name="minimumSize">
     <size>
-     <width>380</width>
-     <height>0</height>
+     <width>480</width>
+     <height>150</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>380</width>
-     <height>16777215</height>
+     <width>480</width>
+     <height>1200</height>
     </size>
    </property>
    <property name="text">

@@ -484,7 +484,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.perks["perks_list"]["val"] = perks_stripped
         self.perks["descriptions"]["val"] = perks["descriptions"]
 
-    def get_shrine(self, source=1):
+    def get_shrine(self, source=2):
         shrine_urls = {
             1: "https://deadbydaylight.fandom.com/wiki/Dead_by_Daylight_Wiki",
             2: "https://deadbydaylight.fandom.com/wiki/Shrine_of_Secrets"
@@ -501,7 +501,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         request = requests.get(shrine_urls[source])
         soup = bs(request.content, "lxml")
 
-        shrine_table = soup.find("table", {"class": "wikitable"}).find("tbody").find_all("tr")
+        shrine_table = soup.find("table", {"class": "sosTable"}).find("tbody").find_all("tr")
 
         for row in shrine_table:
             cell = row.find("td")
@@ -691,7 +691,7 @@ class Notification(QtWidgets.QDialog, Ui_NotificationTemplate):
             perk_name = self.findChild(QtWidgets.QLabel, f"perk{_ + 1}_lbl")
             perk_name.setText(matches[_])
             message = self.findChild(QtWidgets.QLabel, f"msg{_ + 1}_lbl")
-            message.setText(f"{matches[_]} is now available!")
+            message.setText("is now available!")
 
 
 class Dialog(QtWidgets.QDialog, Ui_Dialog):
@@ -705,12 +705,17 @@ class Dialog(QtWidgets.QDialog, Ui_Dialog):
         self.bg.setPixmap(QtGui.QPixmap(':/Background/img/bg_1.png'))
 
     def prepare_dialog(self, source, description):
+        if description.endswith("\n"):
+            description = description[:-2]
+        elif description.endswith("\n\n"):
+            description = description[:-4]
+        # TODO think of alternative to if statement and while loop
         self.description_lbl.setText(description)
         self.description_lbl.adjustSize()
-        new_height = 10+self.description_lbl.height()
-        self.resize(420, new_height)
-        self.bg.resize(420, new_height)
-        dialog_x = window.x()+source.x()-160
+        new_height = 50+self.description_lbl.height()
+        self.resize(520, new_height)
+        self.bg.resize(520, new_height)
+        dialog_x = window.x()+source.x()-(self.width()/2-50)
         dialog_y = window.y()+source.y()+175
         self.move(dialog_x, dialog_y)
 
