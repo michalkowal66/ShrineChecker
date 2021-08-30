@@ -640,7 +640,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def eventFilter(self, object, event):
         if event.type() == QtCore.QEvent.Enter:
-            print(f"Mouse is over the label {object.objectName()}")
             label_name = object.objectName().replace("_img", "_lbl")
             perk_name = self.main_page.findChild(QtWidgets.QLabel, label_name).text()
             description = self.perks["descriptions"]["val"][perk_name]
@@ -648,7 +647,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             dialog.show()
             return True
         elif event.type() == QtCore.QEvent.Leave:
-            print("Mouse is not over the label")
             dialog.hide()
         return False
 
@@ -699,6 +697,7 @@ class Dialog(QtWidgets.QDialog, Ui_Dialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        self.setAttribute(QtCore.Qt.WA_ShowWithoutActivating)
 
     def setupUi(self, Dialog):
         super().setupUi(self)
@@ -715,8 +714,8 @@ class Dialog(QtWidgets.QDialog, Ui_Dialog):
         new_height = 50+self.description_lbl.height()
         self.resize(520, new_height)
         self.bg.resize(520, new_height)
-        dialog_x = window.x()+source.x()-(self.width()/2-50)
-        dialog_y = window.y()+source.y()+175
+        dialog_x = int(window.x()+source.x()-(self.width()/2-50))
+        dialog_y = int(window.y()+source.y()+175)
         self.move(dialog_x, dialog_y)
 
 
